@@ -1,14 +1,19 @@
 import { Component, OnInit, Input, SimpleChange, NgZone } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ErrorMessagesService } from '../../../_messages/error-messages.service';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
 import { ReferenceComponent } from '../../infra/reference/reference.component';
+import { AssignmentCardComponent } from '../assignment-card/assignment-card.component';
+import { MultiStepComponent } from '../multi-step/multi-step.component';
 
 @Component({
   selector: 'app-assignment',
   templateUrl: './assignment.component.html',
   styleUrls: ['./assignment.component.scss'],
+  standalone: true,
+  imports: [CommonModule, MultiStepComponent, AssignmentCardComponent]
 })
 export class AssignmentComponent implements OnInit {
   @Input() pConn$: any;
@@ -234,7 +239,11 @@ export class AssignmentComponent implements OnInit {
             // what comes back now in configObject is the children of the flowContainer
             this.arNavigationSteps$ = JSON.parse(JSON.stringify(oCaseInfo.navigation.steps));
             this.arCurrentStepIndicies$ = new Array();
-            this.arCurrentStepIndicies$ = this.findCurrentIndicies(this.arNavigationSteps$, this.arCurrentStepIndicies$, 0);
+            this.arCurrentStepIndicies$ = this.findCurrentIndicies(
+              this.arNavigationSteps$,
+              this.arCurrentStepIndicies$,
+              0
+            );
           });
         } else {
           this.bHasNavigation$ = false;

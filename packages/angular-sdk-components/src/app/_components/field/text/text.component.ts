@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 
@@ -6,6 +7,8 @@ import { Utils } from '../../../_helpers/utils';
   selector: 'app-text',
   templateUrl: './text.component.html',
   styleUrls: ['./text.component.scss'],
+  standalone: true,
+  imports: [CommonModule]
 })
 export class TextComponent implements OnInit {
   @Input() pConn$: any;

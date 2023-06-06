@@ -1,12 +1,30 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { MultiReferenceReadonlyComponent } from '../multi-reference-readonly/multi-reference-readonly.component';
+import { SingleReferenceReadonlyComponent } from '../single-reference-readonly/single-reference-readonly.component';
+import { SemanticLinkComponent } from '../../field/semantic-link/semantic-link.component';
+import { SimpleTableSelectComponent } from '../simple-table-select/simple-table-select.component';
+import { AutoCompleteComponent } from '../../field/auto-complete/auto-complete.component';
+import { DropdownComponent } from '../../field/dropdown/dropdown.component';
+
 const SELECTION_MODE = { SINGLE: 'single', MULTI: 'multi' };
 
 @Component({
   selector: 'app-data-reference',
   templateUrl: './data-reference.component.html',
   styleUrls: ['./data-reference.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    DropdownComponent,
+    AutoCompleteComponent,
+    SimpleTableSelectComponent,
+    SemanticLinkComponent,
+    SingleReferenceReadonlyComponent,
+    MultiReferenceReadonlyComponent
+  ]
 })
 export class DataReferenceComponent implements OnInit {
   @Input() pConn$: any;
@@ -87,7 +105,8 @@ export class DataReferenceComponent implements OnInit {
     this.viewName = this.rawViewMetadata.name;
     this.firstChildMeta = this.rawViewMetadata.children[0];
     const refList = this.rawViewMetadata.config.referenceList;
-    this.canBeChangedInReviewMode = allowAndPersistChangesInReviewMode && (displayAs === 'autocomplete' || displayAs === 'dropdown');
+    this.canBeChangedInReviewMode =
+      allowAndPersistChangesInReviewMode && (displayAs === 'autocomplete' || displayAs === 'dropdown');
     // this.childrenToRender = this.children;
     this.isDisplayModeEnabled = ['LABELS_LEFT', 'STACKED_LARGE_VAL'].includes(displayMode);
 
@@ -134,7 +153,9 @@ export class DataReferenceComponent implements OnInit {
     const caseKey = this.pConn$.getCaseInfo().getKey();
     const refreshOptions = { autoDetectRefresh: true };
     if (this.canBeChangedInReviewMode && this.pConn$.getValue('__currentPageTabViewName')) {
-      this.pConn$.getActionsApi().refreshCaseView(caseKey, this.pConn$.getValue('__currentPageTabViewName'), null, refreshOptions);
+      this.pConn$
+        .getActionsApi()
+        .refreshCaseView(caseKey, this.pConn$.getValue('__currentPageTabViewName'), null, refreshOptions);
       this.PCore$.getDeferLoadManager().refreshActiveComponents(this.pConn$.getContextName());
     } else {
       const pgRef = this.pConn$.getPageReference().replace('caseInfo.content', '');
@@ -170,9 +191,17 @@ export class DataReferenceComponent implements OnInit {
           });
 
           this.PCore$.getDataApiUtils()
-            .updateCaseEditFieldsData(caseKey, { [caseKey]: commitData }, caseResponse.headers.etag, this.pConn$.getContextName())
+            .updateCaseEditFieldsData(
+              caseKey,
+              { [caseKey]: commitData },
+              caseResponse.headers.etag,
+              this.pConn$.getContextName()
+            )
             .then((response) => {
-              this.PCore$.getContainerUtils().updateChildContainersEtag(this.pConn$.getContextName(), response.headers.etag);
+              this.PCore$.getContainerUtils().updateChildContainersEtag(
+                this.pConn$.getContextName(),
+                response.headers.etag
+              );
             });
         });
     }
@@ -185,7 +214,7 @@ export class DataReferenceComponent implements OnInit {
     const { type, config } = this.firstChildMeta;
     if (this.firstChildMeta?.type !== 'Region') {
       this.pConn$.clearErrorMessages({
-        property: this.propName,
+        property: this.propName
       });
       if (!this.canBeChangedInReviewMode && this.isDisplayModeEnabled && this.selectionMode === SELECTION_MODE.SINGLE) {
         this.displaySingleRef = true;
@@ -214,10 +243,12 @@ export class DataReferenceComponent implements OnInit {
           localeReference: this.rawViewMetadata.config.localeReference,
           ...(this.selectionMode === SELECTION_MODE.SINGLE ? { referenceType: this.referenceType } : ''),
           dataRelationshipContext:
-            this.rawViewMetadata.config.contextClass && this.rawViewMetadata.config.name ? this.rawViewMetadata.config.name : null,
+            this.rawViewMetadata.config.contextClass && this.rawViewMetadata.config.name
+              ? this.rawViewMetadata.config.name
+              : null,
           hideLabel: this.hideLabel,
-          onRecordChange: this.handleSelection,
-        },
+          onRecordChange: this.handleSelection
+        }
       });
     }
   }

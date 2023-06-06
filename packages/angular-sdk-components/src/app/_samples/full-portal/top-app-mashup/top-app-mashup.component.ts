@@ -1,10 +1,13 @@
 import { Component, OnInit, NgZone } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { interval, Subscription } from 'rxjs';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
 import { ResetPConnectService } from '../../../_messages/reset-pconnect.service';
 import { ServerConfigService } from '../../../_services/server-config.service';
 import { AuthService } from '../../../_services/auth.service';
 import { compareSdkPCoreVersions } from '../../../_helpers/versionHelpers';
+import { RootContainerComponent } from '../../../_components/infra/root-container/root-container.component';
 
 declare global {
   interface Window {
@@ -34,6 +37,8 @@ declare global {
   selector: 'app-top-app-mashup',
   templateUrl: './top-app-mashup.component.html',
   styleUrls: ['./top-app-mashup.component.scss'],
+  standalone: true,
+  imports: [CommonModule, MatProgressSpinnerModule, RootContainerComponent]
 })
 export class TopAppMashupComponent implements OnInit {
   PCore$: any;

@@ -1,8 +1,24 @@
-import { Component, OnInit, Input, NgZone } from '@angular/core';
+import { Component, OnInit, Input, NgZone, forwardRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectService } from '../../../../_bridge/angular-pconnect';
 import { ProgressSpinnerService } from '../../../../_messages/progress-spinner.service';
 import { ReferenceComponent } from '../../reference/reference.component';
+import { RegionComponent } from '../../region/region.component';
+import { PageComponent } from '../../../template/page/page.component';
+import { ViewComponent } from '../../view/view.component';
+import { ListPageComponent } from '../../../template/list-page/list-page.component';
+import { CaseViewComponent } from '../../../template/case-view/case-view.component';
+import { ThreeColumnPageComponent } from '../../../template/three-column-page/three-column-page.component';
+import { TwoColumnPageComponent } from '../../../template/two-column-page/two-column-page.component';
+import { OneColumnPageComponent } from '../../../template/one-column-page/one-column-page.component';
+import { ThreeColumnComponent } from '../../../template/three-column/three-column.component';
+import { TwoColumnComponent } from '../../../template/two-column/two-column.component';
+import { OneColumnComponent } from '../../../template/one-column/one-column.component';
+import { WideNarrowPageComponent } from '../../../template/wide-narrow-page/wide-narrow-page.component';
+import { WideNarrowFormComponent } from '../../../template/wide-narrow-form/wide-narrow-form.component';
+import { NarrowWideFormComponent } from '../../../template/narrow-wide-form/narrow-wide-form.component';
+import { DefaultFormComponent } from '../../../template/default-form/default-form.component';
 
 /**
  * WARNING:  It is not expected that this file should be modified.  It is part of infrastructure code that works with
@@ -14,6 +30,26 @@ import { ReferenceComponent } from '../../reference/reference.component';
   selector: 'app-view-container',
   templateUrl: './view-container.component.html',
   styleUrls: ['./view-container.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    DefaultFormComponent,
+    NarrowWideFormComponent,
+    WideNarrowFormComponent,
+    WideNarrowPageComponent,
+    OneColumnComponent,
+    TwoColumnComponent,
+    ThreeColumnComponent,
+    OneColumnPageComponent,
+    TwoColumnPageComponent,
+    ThreeColumnPageComponent,
+    CaseViewComponent,
+    ListPageComponent,
+    ViewComponent,
+    PageComponent,
+    RegionComponent,
+    forwardRef(() => ViewContainerComponent)
+  ]
 })
 export class ViewContainerComponent implements OnInit {
   @Input() pConn$: any;
@@ -41,7 +77,11 @@ export class ViewContainerComponent implements OnInit {
   state: any;
   dispatchObject: any;
 
-  constructor(private angularPConnect: AngularPConnectService, private psService: ProgressSpinnerService, private ngZone: NgZone) {}
+  constructor(
+    private angularPConnect: AngularPConnectService,
+    private psService: ProgressSpinnerService,
+    private ngZone: NgZone
+  ) {}
 
   ngOnInit() {
     if (this.PCore$ == null) {
@@ -84,7 +124,7 @@ export class ViewContainerComponent implements OnInit {
       dispatchObject: this.dispatchObject,
       // PCore is defined in pxBootstrapShell - eventually will be exported in place of constellationCore
 
-      visible: !this.PCore$['checkIfSemanticURL'](),
+      visible: !this.PCore$['checkIfSemanticURL']()
     };
 
     // here, to match Nebula/Constellation, the constructor of ViewContainer is only called once, and thus init/add container is only
@@ -97,7 +137,7 @@ export class ViewContainerComponent implements OnInit {
       // initializeContainer before, code will get executed that needs state that wasn't defined.
 
       containerMgr.initializeContainers({
-        type: mode === CONTAINER_TYPE.MULTIPLE ? CONTAINER_TYPE.MULTIPLE : CONTAINER_TYPE.SINGLE,
+        type: mode === CONTAINER_TYPE.MULTIPLE ? CONTAINER_TYPE.MULTIPLE : CONTAINER_TYPE.SINGLE
       });
 
       if (mode === CONTAINER_TYPE.MULTIPLE && limit) {
@@ -184,7 +224,7 @@ export class ViewContainerComponent implements OnInit {
             pageReference: context || this.pConn$.getPageReference(),
             containerName: this.pConn$.getContainerName(),
             containerItemName: key,
-            hasForm: viewName === CREATE_DETAILS_VIEW_NAME,
+            hasForm: viewName === CREATE_DETAILS_VIEW_NAME
           };
           const configObject = this.PCore$.createPConnect(config);
 
@@ -263,7 +303,7 @@ export class ViewContainerComponent implements OnInit {
     return {
       semanticURL: '',
       context: baseContext,
-      acName,
+      acName
     };
   }
 

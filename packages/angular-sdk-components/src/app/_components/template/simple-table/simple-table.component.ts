@@ -1,12 +1,17 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
+import { SimpleTableManualComponent } from '../simple-table-manual/simple-table-manual.component';
+import { FieldGroupTemplateComponent } from '../field-group-template/field-group-template.component';
 
 @Component({
   selector: 'app-simple-table',
   templateUrl: './simple-table.component.html',
   styleUrls: ['./simple-table.component.scss'],
+  standalone: true,
+  imports: [CommonModule, FieldGroupTemplateComponent, SimpleTableManualComponent]
 })
 export class SimpleTableComponent implements OnInit {
   @Input() pConn$: any;

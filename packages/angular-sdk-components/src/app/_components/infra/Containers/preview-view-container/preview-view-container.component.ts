@@ -12,6 +12,7 @@ import { Component, OnInit, Input } from '@angular/core';
   selector: 'app-preview-view-container',
   templateUrl: './preview-view-container.component.html',
   styleUrls: ['./preview-view-container.component.scss'],
+  standalone: true
 })
 export class PreviewViewContainerComponent implements OnInit {
   @Input() pConn$: any;
@@ -22,7 +23,7 @@ export class PreviewViewContainerComponent implements OnInit {
     const containerMgr = this.pConn$.getContainerManager();
 
     containerMgr.initializeContainers({
-      type: 'multiple',
+      type: 'multiple'
     });
   }
 

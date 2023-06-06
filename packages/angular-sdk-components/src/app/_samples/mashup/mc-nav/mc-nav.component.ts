@@ -1,5 +1,10 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Title } from '@angular/platform-browser';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Subscription, interval } from 'rxjs';
 
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
@@ -10,6 +15,7 @@ import { endpoints } from '../../../_services/endpoints';
 import { ServerConfigService } from '../../../_services/server-config.service';
 import { Utils } from '../../../_helpers/utils';
 import { compareSdkPCoreVersions } from '../../../_helpers/versionHelpers';
+import { MainScreenComponent } from '../main-screen/main-screen.component';
 
 declare global {
   interface Window {
@@ -22,6 +28,15 @@ declare global {
   templateUrl: './mc-nav.component.html',
   styleUrls: ['./mc-nav.component.scss'],
   providers: [Utils],
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatProgressSpinnerModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatButtonModule,
+    MainScreenComponent
+  ]
 })
 export class MCNavComponent implements OnInit {
   starterPackVersion$: string = endpoints.SP_VERSION;
@@ -118,7 +133,9 @@ export class MCNavComponent implements OnInit {
       const regex = /[-:]/g;
       sISOTime = sISOTime.replace(regex, '');
       // Service package to use custom auth with Basic
-      const sB64 = window.btoa(`${sdkConfigAuth.mashupUserIdentifier}:${window.atob(sdkConfigAuth.mashupPassword)}:${sISOTime}`);
+      const sB64 = window.btoa(
+        `${sdkConfigAuth.mashupUserIdentifier}:${window.atob(sdkConfigAuth.mashupPassword)}:${sISOTime}`
+      );
       this.aService.setAuthHeader(`Basic ${sB64}`);
     }
 

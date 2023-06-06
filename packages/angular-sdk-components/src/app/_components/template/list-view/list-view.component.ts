@@ -1,11 +1,23 @@
 /* eslint-disable max-classes-per-file */
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { CommonModule } from '@angular/common';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag } from '@angular/cdk/drag-drop';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
 import { Utils } from '../../../_helpers/utils';
+import { ActionButtonsComponent } from '../../infra/action-buttons/action-buttons.component';
 
 const SELECTION_MODE = { SINGLE: 'single', MULTI: 'multi' };
 
@@ -23,6 +35,26 @@ export class Group {
   selector: 'app-list-view',
   templateUrl: './list-view.component.html',
   styleUrls: ['./list-view.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatTableModule,
+    MatSortModule,
+    CdkDropList,
+    CdkDrag,
+    MatButtonModule,
+    MatMenuModule,
+    MatIconModule,
+    MatRadioModule,
+    MatCheckboxModule,
+    MatPaginatorModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatDatepickerModule,
+    ActionButtonsComponent
+  ]
 })
 export class ListViewComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -66,7 +98,7 @@ export class ListViewComponent implements OnInit {
 
   compareType: string;
   compareRef: string;
-  arrowDirection: string = "down";
+  arrowDirection: string = 'down';
 
   filterByColumns: Array<any> = [];
   bShowFilterPopover$: boolean = false;
@@ -348,7 +380,7 @@ export class ListViewComponent implements OnInit {
     this.compareRef = columnData.config.name;
     // this.arrowDirection = arrowImage.getAttribute('arrow');
     this.arrowDirection = this.arrowDirection === 'up' ? 'down' : 'up';
-    
+
     this.filterSortGroupBy();
   }
 
@@ -609,7 +641,11 @@ export class ListViewComponent implements OnInit {
   filterData(item: any) {
     let bKeep = true;
     for (let filterObj of this.filterByColumns) {
-      if (filterObj.containsFilterValue != '' || filterObj.containsFilter == 'null' || filterObj.containsFilter == 'notnull') {
+      if (
+        filterObj.containsFilterValue != '' ||
+        filterObj.containsFilter == 'null' ||
+        filterObj.containsFilter == 'notnull'
+      ) {
         let value: any;
         let filterValue: any;
 
@@ -617,7 +653,10 @@ export class ListViewComponent implements OnInit {
           case 'Date':
           case 'DateTime':
           case 'Time':
-            value = item[filterObj.ref] != null ?? item[filterObj.ref] != '' ? this.utils.getSeconds(item[filterObj.ref]) : null;
+            value =
+              item[filterObj.ref] != null ?? item[filterObj.ref] != ''
+                ? this.utils.getSeconds(item[filterObj.ref])
+                : null;
             filterValue =
               filterObj.containsFilterValue != null && filterObj.containsFilterValue != ''
                 ? this.utils.getSeconds(filterObj.containsFilterValue)
@@ -960,7 +999,7 @@ export class ListViewComponent implements OnInit {
       grouped: false,
       minWidth: 50,
       cellRenderer: this.getType(field) === 'text' ? null : field.type,
-      filter: true,
+      filter: true
     }));
   }
 

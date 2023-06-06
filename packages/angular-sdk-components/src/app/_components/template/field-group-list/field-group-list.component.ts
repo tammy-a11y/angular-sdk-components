@@ -1,9 +1,12 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-field-group-list',
   templateUrl: './field-group-list.component.html',
   styleUrls: ['./field-group-list.component.scss'],
+  standalone: true,
+  imports: [CommonModule]
 })
 export class FieldGroupListComponent implements OnInit {
   @Input() item;

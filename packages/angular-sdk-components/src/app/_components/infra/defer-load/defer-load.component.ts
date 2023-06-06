@@ -1,7 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
 import { ReferenceComponent } from '../../infra/reference/reference.component';
+import { ViewComponent } from '../view/view.component';
 
 /**
  * WARNING:  It is not expected that this file should be modified.  It is part of infrastructure code that works with
@@ -13,6 +14,8 @@ import { ReferenceComponent } from '../../infra/reference/reference.component';
   selector: 'app-defer-load',
   templateUrl: './defer-load.component.html',
   styleUrls: ['./defer-load.component.scss'],
+  standalone: true,
+  imports: [CommonModule, ViewComponent]
 })
 export class DeferLoadComponent implements OnInit {
   @Input() pConn$: any;
@@ -51,7 +54,10 @@ export class DeferLoadComponent implements OnInit {
   ngOnDestroy(): void {
     this.PCore$.getPubSubUtils().unsubscribe(this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL, 'loadActiveTab');
 
-    this.PCore$.getPubSubUtils().unsubscribe(this.PCore$.getConstants().PUB_SUB_EVENTS.CASE_EVENTS.ASSIGNMENT_SUBMISSION, 'loadActiveTab');
+    this.PCore$.getPubSubUtils().unsubscribe(
+      this.PCore$.getConstants().PUB_SUB_EVENTS.CASE_EVENTS.ASSIGNMENT_SUBMISSION,
+      'loadActiveTab'
+    );
   }
 
   ngOnChanges() {
@@ -78,7 +84,8 @@ export class DeferLoadComponent implements OnInit {
       //  and prefers that over PZINSKEY
       loadView(
         encodeURI(
-          this.pConn$.getValue(this.PCore$.getConstants().CASE_INFO.CASE_INFO_ID) || this.pConn$.getValue(this.PCore$.getConstants().PZINSKEY)
+          this.pConn$.getValue(this.PCore$.getConstants().CASE_INFO.CASE_INFO_ID) ||
+            this.pConn$.getValue(this.PCore$.getConstants().PZINSKEY)
         ),
         name
       ).then((data) => {
@@ -86,8 +93,8 @@ export class DeferLoadComponent implements OnInit {
           meta: data,
           options: {
             context: baseContext,
-            pageReference: basePageReference,
-          },
+            pageReference: basePageReference
+          }
         };
 
         let configObject = this.PCore$.createPConnect(config);

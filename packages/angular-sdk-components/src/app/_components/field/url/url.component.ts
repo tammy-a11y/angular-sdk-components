@@ -1,13 +1,19 @@
 import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { interval } from 'rxjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
+import { TextComponent } from '../text/text.component';
 
 @Component({
   selector: 'app-url',
   templateUrl: './url.component.html',
   styleUrls: ['./url.component.scss'],
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, TextComponent]
 })
 export class UrlComponent implements OnInit {
   @Input() pConn$: any;
@@ -29,7 +35,11 @@ export class UrlComponent implements OnInit {
 
   fieldControl = new FormControl('', null);
 
-  constructor(private angularPConnect: AngularPConnectService, private cdRef: ChangeDetectorRef, private utils: Utils) {}
+  constructor(
+    private angularPConnect: AngularPConnectService,
+    private cdRef: ChangeDetectorRef,
+    private utils: Utils
+  ) {}
 
   ngOnInit(): void {
     // First thing in initialization is registering and subscribing to the AngularPConnect service

@@ -2,11 +2,14 @@ import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ReferenceComponent } from '../../infra/reference/reference.component';
+import { MaterialCaseSummaryComponent } from '../../designSystemExtension/material-case-summary/material-case-summary.component';
 
 @Component({
   selector: 'app-case-summary',
   templateUrl: './case-summary.component.html',
   styleUrls: ['./case-summary.component.scss'],
+  standalone: true,
+  imports: [MaterialCaseSummaryComponent]
 })
 export class CaseSummaryComponent implements OnInit {
   @Input() pConn$: any;

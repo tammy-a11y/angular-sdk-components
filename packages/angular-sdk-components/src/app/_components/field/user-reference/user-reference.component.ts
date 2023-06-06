@@ -1,15 +1,34 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatInputModule } from '@angular/material/input';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
+import { OperatorComponent } from '../../designSystemExtension/operator/operator.component';
 
 const OPERATORS_DP = 'D_pyGetOperatorsForCurrentApplication';
 const DROPDOWN_LIST = 'Drop-down list';
 const SEARCH_BOX = 'Search box';
+
 @Component({
   selector: 'app-user-reference',
   templateUrl: './user-reference.component.html',
   styleUrls: ['./user-reference.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    OperatorComponent,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatInputModule,
+    MatAutocompleteModule
+  ]
 })
 export class UserReferenceComponent implements OnInit {
   @Input() pConn$: any;
@@ -126,14 +145,14 @@ export class UserReferenceComponent implements OnInit {
       }
     } else if (displayAs === DROPDOWN_LIST || displayAs === SEARCH_BOX) {
       const queryPayload = {
-        dataViewName: OPERATORS_DP,
+        dataViewName: OPERATORS_DP
       };
       this.PCore$.getRestClient()
         .invokeRestApi('getListData', { queryPayload })
         .then((resp) => {
           const ddDataSource = resp.data.data.map((listItem) => ({
             key: listItem.pyUserIdentifier,
-            value: listItem.pyUserName,
+            value: listItem.pyUserName
           }));
           this.options$ = ddDataSource;
         })
@@ -158,7 +177,7 @@ export class UserReferenceComponent implements OnInit {
     }
 
     const eve = {
-      value: key,
+      value: key
     };
     // PConnect wants to use eventHandler for onBlur
     this.angularPConnectData.actions.onChange(this, eve);

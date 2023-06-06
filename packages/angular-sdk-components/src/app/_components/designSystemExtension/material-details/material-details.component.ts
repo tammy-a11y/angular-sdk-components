@@ -1,10 +1,14 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Utils } from '../../../_helpers/utils';
+import { ViewComponent } from '../../infra/view/view.component';
 
 @Component({
   selector: 'app-material-details',
   templateUrl: './material-details.component.html',
   styleUrls: ['./material-details.component.scss'],
+  standalone: true,
+  imports: [CommonModule, ViewComponent]
 })
 export class MaterialDetailsComponent implements OnInit {
   constructor(private utils: Utils) {}

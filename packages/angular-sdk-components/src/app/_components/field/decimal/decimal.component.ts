@@ -1,12 +1,18 @@
 import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
+import { TextComponent } from '../text/text.component';
 
 @Component({
   selector: 'app-decimal',
   templateUrl: './decimal.component.html',
   styleUrls: ['./decimal.component.scss'],
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, TextComponent]
 })
 export class DecimalComponent implements OnInit {
   @Input() pConn$: any;
@@ -27,9 +33,13 @@ export class DecimalComponent implements OnInit {
   componentReference: string = '';
   testId: string;
 
-  fieldControl = new FormControl<number | null>(null, null); 
+  fieldControl = new FormControl<number | null>(null, null);
 
-  constructor(private angularPConnect: AngularPConnectService, private cdRef: ChangeDetectorRef, private utils: Utils) {}
+  constructor(
+    private angularPConnect: AngularPConnectService,
+    private cdRef: ChangeDetectorRef,
+    private utils: Utils
+  ) {}
 
   ngOnInit(): void {
     // First thing in initialization is registering and subscribing to the AngularPConnect service

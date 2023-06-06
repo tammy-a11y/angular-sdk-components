@@ -1,13 +1,29 @@
 import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { MatOptionModule } from '@angular/material/core';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { interval } from 'rxjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
+import { TextComponent } from '../text/text.component';
 
 @Component({
   selector: 'app-auto-complete',
   templateUrl: './auto-complete.component.html',
   styleUrls: ['./auto-complete.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatAutocompleteModule,
+    MatOptionModule,
+    TextComponent
+  ]
 })
 export class AutoCompleteComponent implements OnInit {
   @Input() pConn$: any;
@@ -34,7 +50,11 @@ export class AutoCompleteComponent implements OnInit {
 
   fieldControl = new FormControl('', null);
 
-  constructor(private angularPConnect: AngularPConnectService, private cdRef: ChangeDetectorRef, private utils: Utils) {}
+  constructor(
+    private angularPConnect: AngularPConnectService,
+    private cdRef: ChangeDetectorRef,
+    private utils: Utils
+  ) {}
 
   ngOnInit(): void {
     // First thing in initialization is registering and subscribing to the AngularPConnect service
@@ -150,7 +170,7 @@ export class AutoCompleteComponent implements OnInit {
         results?.forEach((element) => {
           const obj = {
             key: element.pyGUID || element[displayColumn.primary],
-            value: element[displayColumn.primary]?.toString(),
+            value: element[displayColumn.primary]?.toString()
           };
           optionsData.push(obj);
         });
@@ -222,7 +242,7 @@ export class AutoCompleteComponent implements OnInit {
     }
 
     const eve = {
-      value: key,
+      value: key
     };
     // PConnect wants to use eventHandler for onBlur
     this.angularPConnectData.actions.onChange(this, eve);

@@ -1,10 +1,13 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Utils } from '../../../_helpers/utils';
+import { MaterialUtilityComponent } from '../../designSystemExtension/material-utility/material-utility.component';
 
 @Component({
   selector: 'app-utility',
   templateUrl: './utility.component.html',
   styleUrls: ['./utility.component.scss'],
+  standalone: true,
+  imports: [MaterialUtilityComponent]
 })
 export class UtilityComponent implements OnInit {
   @Input() pConn$: any;

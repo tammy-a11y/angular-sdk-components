@@ -1,11 +1,14 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { SimpleTableComponent } from '../simple-table/simple-table.component';
 
 @Component({
   selector: 'app-multi-reference-readonly',
   templateUrl: './multi-reference-readonly.component.html',
   styleUrls: ['./multi-reference-readonly.component.scss'],
+  standalone: true,
+  imports: [SimpleTableComponent]
 })
 export class MultiReferenceReadonlyComponent implements OnInit {
   constructor(private angularPConnect: AngularPConnectService) {}

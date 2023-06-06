@@ -1,15 +1,58 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
+import { MatTableModule } from '@angular/material/table';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { getContext, buildFieldsForTable } from './helpers';
 import { DatapageService } from '../../../_services/datapage.service';
 import { FieldGroupUtils } from '../../../_helpers/field-group-utils';
+import { MatButtonModule } from '@angular/material/button';
+import { AutoCompleteComponent } from '../../field/auto-complete/auto-complete.component';
+import { DropdownComponent } from '../../field/dropdown/dropdown.component';
+import { RadioButtonsComponent } from '../../field/radio-buttons/radio-buttons.component';
+import { PhoneComponent } from '../../field/phone/phone.component';
+import { DecimalComponent } from '../../field/decimal/decimal.component';
+import { CurrencyComponent } from '../../field/currency/currency.component';
+import { UrlComponent } from '../../field/url/url.component';
+import { EmailComponent } from '../../field/email/email.component';
+import { PercentageComponent } from '../../field/percentage/percentage.component';
+import { TimeComponent } from '../../field/time/time.component';
+import { DateComponent } from '../../field/date/date.component';
+import { DateTimeComponent } from '../../field/date-time/date-time.component';
+import { IntegerComponent } from '../../field/integer/integer.component';
+import { CheckBoxComponent } from '../../field/check-box/check-box.component';
+import { TextContentComponent } from '../../field/text-content/text-content.component';
+import { TextAreaComponent } from '../../field/text-area/text-area.component';
+import { TextInputComponent } from '../../field/text-input/text-input.component';
 
 @Component({
   selector: 'app-simple-table-manual',
   templateUrl: './simple-table-manual.component.html',
   styleUrls: ['./simple-table-manual.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatTableModule,
+    TextInputComponent,
+    TextAreaComponent,
+    TextContentComponent,
+    CheckBoxComponent,
+    IntegerComponent,
+    DateTimeComponent,
+    DateComponent,
+    TimeComponent,
+    PercentageComponent,
+    EmailComponent,
+    UrlComponent,
+    CurrencyComponent,
+    DecimalComponent,
+    PhoneComponent,
+    RadioButtonsComponent,
+    DropdownComponent,
+    AutoCompleteComponent,
+    MatButtonModule
+  ]
 })
 export class SimpleTableManualComponent implements OnInit {
   @Input() pConn$: any;
@@ -100,7 +143,7 @@ export class SimpleTableManualComponent implements OnInit {
       presets,
       allowTableEdit,
       labelProp,
-      propertyLabel,
+      propertyLabel
     } = this.configProps$;
 
     this.label = labelProp || propertyLabel;
@@ -247,7 +290,9 @@ export class SimpleTableManualComponent implements OnInit {
 
   addRecord() {
     if (this.PCore$.getPCoreVersion()?.includes('8.7')) {
-      this.pConn$.getListActions().insert({ classID: this.contextClass }, this.referenceList.length, this.pageReference);
+      this.pConn$
+        .getListActions()
+        .insert({ classID: this.contextClass }, this.referenceList.length, this.pageReference);
     } else {
       this.pConn$.getListActions().insert({ classID: this.contextClass }, this.referenceList.length);
     }
@@ -271,15 +316,17 @@ export class SimpleTableManualComponent implements OnInit {
         const isDatapage = referenceListData.startsWith('D_');
         const pageReferenceValue = isDatapage
           ? `${referenceListData}[${index}]`
-          : `${this.pConn$.getPageReference()}${referenceListData.substring(referenceListData.lastIndexOf('.'))}[${index}]`;
+          : `${this.pConn$.getPageReference()}${referenceListData.substring(
+              referenceListData.lastIndexOf('.')
+            )}[${index}]`;
         const config = {
           meta: item,
           options: {
             context,
             pageReference: pageReferenceValue,
             referenceList: referenceListData,
-            hasForm: true,
-          },
+            hasForm: true
+          }
         };
         const view = this.PCore$.createPConnect(config);
         data.push(view);

@@ -1,11 +1,14 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
+import { CommonModule } from '@angular/common';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Utils } from '../../../_helpers/utils';
 
 @Component({
   selector: 'app-case-history',
   templateUrl: './case-history.component.html',
   styleUrls: ['./case-history.component.scss'],
+  standalone: true,
+  imports: [CommonModule, MatTableModule]
 })
 export class CaseHistoryComponent implements OnInit {
   @Input() pConn$: any;
@@ -33,13 +36,17 @@ export class CaseHistoryComponent implements OnInit {
 
     this.waitingForData = true;
 
-    const caseHistoryData = this.PCore$.getDataApiUtils().getData(dataViewName, `{"dataViewParameters":[{"CaseInstanceKey":"${caseID}"}]}`, context);
+    const caseHistoryData = this.PCore$.getDataApiUtils().getData(
+      dataViewName,
+      `{"dataViewParameters":[{"CaseInstanceKey":"${caseID}"}]}`,
+      context
+    );
 
     caseHistoryData.then((historyJSON: Object) => {
       this.fields$ = [
         { label: 'Date', type: 'DateTime', fieldName: 'pxTimeCreated' },
         { label: 'Description', type: 'TextInput', fieldName: 'pyMessageKey' },
-        { label: 'User', type: 'TextInput', fieldName: 'pyPerformer' },
+        { label: 'User', type: 'TextInput', fieldName: 'pyPerformer' }
       ];
 
       const tableDataResults = this.updateData(historyJSON['data'].data, this.fields$);

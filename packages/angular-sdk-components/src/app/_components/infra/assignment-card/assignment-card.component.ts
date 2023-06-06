@@ -1,11 +1,25 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ReferenceComponent } from '../reference/reference.component';
+import { ActionButtonsComponent } from '../action-buttons/action-buttons.component';
+import { RegionComponent } from '../region/region.component';
+import { CaseCreateStageComponent } from '../../designSystemExtension/case-create-stage/case-create-stage.component';
+import { ViewComponent } from '../view/view.component';
 
 @Component({
   selector: 'app-assignment-card',
   templateUrl: './assignment-card.component.html',
   styleUrls: ['./assignment-card.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    ViewComponent,
+    CaseCreateStageComponent,
+    RegionComponent,
+    ActionButtonsComponent
+  ]
 })
 export class AssignmentCardComponent implements OnInit {
   @Input() pConn$: any;

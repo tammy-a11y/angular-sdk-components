@@ -1,13 +1,18 @@
 import { Component, OnInit, Input, NgZone } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ErrorMessagesService } from '../../../_messages/error-messages.service';
+import { ViewContainerComponent } from '../../infra/Containers/view-container/view-container.component';
+import { NavbarComponent } from '../../infra/navbar/navbar.component';
 
 @Component({
   selector: 'app-app-shell',
   templateUrl: './app-shell.component.html',
   styleUrls: ['./app-shell.component.scss'],
+  standalone: true,
+  imports: [CommonModule, NavbarComponent, ViewContainerComponent]
 })
 export class AppShellComponent implements OnInit {
   @Input() pConn$: any;

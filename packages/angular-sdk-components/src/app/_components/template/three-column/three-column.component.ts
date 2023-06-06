@@ -1,10 +1,14 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
+import { RegionComponent } from '../../infra/region/region.component';
 
 @Component({
   selector: 'app-three-column',
   templateUrl: './three-column.component.html',
   styleUrls: ['./three-column.component.scss'],
+  standalone: true,
+  imports: [CommonModule, RegionComponent]
 })
 export class ThreeColumnComponent implements OnInit {
   @Input() pConn$: any;

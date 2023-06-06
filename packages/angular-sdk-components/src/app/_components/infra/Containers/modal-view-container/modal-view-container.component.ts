@@ -1,8 +1,11 @@
 import { Component, OnInit, Input, Output, EventEmitter, NgZone } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import * as isEqual from 'fast-deep-equal';
 import { AngularPConnectService } from '../../../../_bridge/angular-pconnect';
 import { ProgressSpinnerService } from '../../../../_messages/progress-spinner.service';
+import { CancelAlertComponent } from '../../../field/cancel-alert/cancel-alert.component';
+import { AssignmentComponent } from '../../assignment/assignment.component';
 
 /**
  * WARNING:  It is not expected that this file should be modified.  It is part of infrastructure code that works with
@@ -14,6 +17,8 @@ import { ProgressSpinnerService } from '../../../../_messages/progress-spinner.s
   selector: 'app-modal-view-container',
   templateUrl: './modal-view-container.component.html',
   styleUrls: ['./modal-view-container.component.scss'],
+  standalone: true,
+  imports: [CommonModule, AssignmentComponent, CancelAlertComponent]
 })
 export class ModalViewContainerComponent implements OnInit {
   @Input() pConn$: any;
@@ -86,7 +91,7 @@ export class ModalViewContainerComponent implements OnInit {
     const containerMgr = this.pConn$.getContainerManager();
 
     containerMgr.initializeContainers({
-      type: 'multiple',
+      type: 'multiple'
     });
 
     const { CONTAINER_TYPE, PUB_SUB_EVENTS } = this.PCore$.getConstants();
@@ -163,7 +168,7 @@ export class ModalViewContainerComponent implements OnInit {
           config['options'] = {
             context: currentItem.context,
             hasForm: true,
-            pageReference: context || this.pConn$.getPageReference(),
+            pageReference: context || this.pConn$.getPageReference()
           };
 
           if (!this.bSubscribed) {
@@ -188,7 +193,10 @@ export class ModalViewContainerComponent implements OnInit {
           //    The config has meta.config.type = "view"
           const newComp = configObject.getPConnect();
           const newCompName = newComp.getComponentName();
-          const caseInfo = newComp && newComp.getDataObject() && newComp.getDataObject().caseInfo ? newComp.getDataObject().caseInfo : null;
+          const caseInfo =
+            newComp && newComp.getDataObject() && newComp.getDataObject().caseInfo
+              ? newComp.getDataObject().caseInfo
+              : null;
           // The metadata for pyDetails changed such that the "template": "CaseView"
           //  is no longer a child of the created View but is in the created View's
           //  config. So, we DON'T want to replace this.pConn$ since the created
@@ -265,8 +273,8 @@ export class ModalViewContainerComponent implements OnInit {
           context,
           pageReference: view.config.context || pConnect.getPageReference(),
           hasForm: true,
-          containerName: pConnect?.getContainerName() || this.PCore$.getConstants().MODAL,
-        },
+          containerName: pConnect?.getContainerName() || this.PCore$.getConstants().MODAL
+        }
       };
       return this.PCore$.createPConnect(config);
     }

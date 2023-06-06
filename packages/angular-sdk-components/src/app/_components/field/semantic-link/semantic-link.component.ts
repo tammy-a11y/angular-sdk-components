@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 
@@ -6,6 +7,8 @@ import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
   selector: 'app-semantic-link',
   templateUrl: './semantic-link.component.html',
   styleUrls: ['./semantic-link.component.scss'],
+  standalone: true,
+  imports: [CommonModule]
 })
 export class SemanticLinkComponent implements OnInit {
   @Input() pConn$: any;

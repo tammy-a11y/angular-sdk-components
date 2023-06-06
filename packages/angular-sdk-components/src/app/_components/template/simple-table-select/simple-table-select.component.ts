@@ -1,11 +1,17 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { ListViewComponent } from '../list-view/list-view.component';
+import { PromotedFiltersComponent } from '../promoted-filters/promoted-filters.component';
+import { SimpleTableComponent } from '../simple-table/simple-table.component';
 
 @Component({
   selector: 'app-simple-table-select',
   templateUrl: './simple-table-select.component.html',
   styleUrls: ['./simple-table-select.component.scss'],
+  standalone: true,
+  imports: [CommonModule, SimpleTableComponent, PromotedFiltersComponent, ListViewComponent]
 })
 export class SimpleTableSelectComponent implements OnInit {
   @Input() pConn$: any;
@@ -78,7 +84,9 @@ export class SimpleTableSelectComponent implements OnInit {
       this.showSimpleTableManual = true;
     } else {
       const pageReference = this.pConn$.getPageReference();
-      let referenceProp = isMultiSelectMode ? selectionList.substring(1) : pageReference.substring(pageReference.lastIndexOf('.') + 1);
+      let referenceProp = isMultiSelectMode
+        ? selectionList.substring(1)
+        : pageReference.substring(pageReference.lastIndexOf('.') + 1);
       // Replace here to use the context name instead
       let contextPageReference = null;
       if (this.dataRelationshipContext !== null && selectionMode === 'single') {
@@ -114,10 +122,10 @@ export class SimpleTableSelectComponent implements OnInit {
       defaultFieldDef: {
         showMenu: false,
         noContextMenu: true,
-        grouping: false,
+        grouping: false
       },
       itemKey: '$key',
-      defaultRowHeight,
+      defaultRowHeight
     };
 
     this.listViewProps = {
@@ -135,7 +143,7 @@ export class SimpleTableSelectComponent implements OnInit {
       additionalTableConfig,
       compositeKeys,
       viewName: this.viewName,
-      parameters: this.parameters,
+      parameters: this.parameters
     };
 
     this.filters = this.pConn$.getRawMetadata().config.promotedFilters ?? [];

@@ -1,11 +1,16 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { RegionComponent } from '../../infra/region/region.component';
+import { ViewComponent } from '../../infra/view/view.component';
 
 @Component({
   selector: 'app-page',
   templateUrl: './page.component.html',
   styleUrls: ['./page.component.scss'],
+  standalone: true,
+  imports: [CommonModule, ViewComponent, RegionComponent]
 })
 export class PageComponent implements OnInit {
   @Input() pConn$: any;
