@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
@@ -19,9 +19,9 @@ import { ThreeColumnComponent } from '../../template/three-column/three-column.c
     DefaultFormComponent,
     NarrowWideFormComponent,
     WideNarrowFormComponent,
-    OneColumnComponent,
     TwoColumnComponent,
-    ThreeColumnComponent
+    ThreeColumnComponent,
+    forwardRef(() => OneColumnComponent)
   ]
 })
 export class CaseCreateStageComponent implements OnInit {

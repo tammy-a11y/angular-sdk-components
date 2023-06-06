@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
@@ -10,7 +10,7 @@ import { ViewContainerComponent } from '../../infra/Containers/view-container/vi
   templateUrl: './wide-narrow-page.component.html',
   styleUrls: ['./wide-narrow-page.component.scss'],
   standalone: true,
-  imports: [CommonModule, ViewContainerComponent, WideNarrowFormComponent]
+  imports: [CommonModule, WideNarrowFormComponent, forwardRef(() => ViewContainerComponent)]
 })
 export class WideNarrowPageComponent implements OnInit {
   @Input() pConn$: any;

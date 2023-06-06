@@ -1,6 +1,5 @@
 import { importProvidersFrom } from '@angular/core';
 import { AppComponent } from './app/app.component';
-import { NgxMatIntlTelInputComponent } from 'ngx-mat-intl-tel-input';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -79,8 +78,7 @@ bootstrapApplication(AppComponent, {
       MatAutocompleteModule,
       MatTooltipModule,
       MatDialogModule,
-      MatStepperModule,
-      NgxMatIntlTelInputComponent
+      MatStepperModule
     ),
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { floatLabel: 'auto' } },
     { provide: APP_BASE_HREF, useValue: '/' },

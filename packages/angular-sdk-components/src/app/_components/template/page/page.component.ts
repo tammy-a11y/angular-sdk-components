@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
@@ -10,7 +10,7 @@ import { ViewComponent } from '../../infra/view/view.component';
   templateUrl: './page.component.html',
   styleUrls: ['./page.component.scss'],
   standalone: true,
-  imports: [CommonModule, ViewComponent, RegionComponent]
+  imports: [CommonModule, RegionComponent, forwardRef(() => ViewComponent)]
 })
 export class PageComponent implements OnInit {
   @Input() pConn$: any;

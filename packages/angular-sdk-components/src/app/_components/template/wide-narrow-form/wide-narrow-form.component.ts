@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { RegionComponent } from '../../infra/region/region.component';
@@ -8,7 +8,7 @@ import { RegionComponent } from '../../infra/region/region.component';
   templateUrl: './wide-narrow-form.component.html',
   styleUrls: ['./wide-narrow-form.component.scss'],
   standalone: true,
-  imports: [CommonModule, RegionComponent]
+  imports: [CommonModule, forwardRef(() => RegionComponent)]
 })
 export class WideNarrowFormComponent implements OnInit {
   @Input() pConn$: any;

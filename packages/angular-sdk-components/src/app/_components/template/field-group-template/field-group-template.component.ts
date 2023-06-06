@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,7 +13,7 @@ import { FieldGroupListComponent } from '../field-group-list/field-group-list.co
   templateUrl: './field-group-template.component.html',
   styleUrls: ['./field-group-template.component.scss'],
   standalone: true,
-  imports: [CommonModule, FieldGroupListComponent, MatButtonModule, RegionComponent]
+  imports: [CommonModule, FieldGroupListComponent, MatButtonModule, forwardRef(() => RegionComponent)]
 })
 export class FieldGroupTemplateComponent implements OnInit {
   @Input() configProps$: any;

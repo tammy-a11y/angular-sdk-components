@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, NgZone, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -21,7 +21,7 @@ import { TodoComponent } from '../../../widget/todo/todo.component';
   styleUrls: ['./flow-container.component.scss'],
   providers: [Utils],
   standalone: true,
-  imports: [CommonModule, TodoComponent, AssignmentComponent, MatCardModule]
+  imports: [CommonModule, TodoComponent, MatCardModule, forwardRef(() => AssignmentComponent)]
 })
 export class FlowContainerComponent implements OnInit {
   @Input() pConn$: any;

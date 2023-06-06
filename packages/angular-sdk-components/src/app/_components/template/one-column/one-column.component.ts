@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { CaseCreateStageComponent } from '../../designSystemExtension/case-create-stage/case-create-stage.component';
@@ -10,7 +10,7 @@ import { RegionComponent } from '../../infra/region/region.component';
   templateUrl: './one-column.component.html',
   styleUrls: ['./one-column.component.scss'],
   standalone: true,
-  imports: [CommonModule, RegionComponent, ViewComponent, CaseCreateStageComponent]
+  imports: [CommonModule, ViewComponent, CaseCreateStageComponent, forwardRef(() => RegionComponent)]
 })
 export class OneColumnComponent implements OnInit {
   @Input() pConn$: any;

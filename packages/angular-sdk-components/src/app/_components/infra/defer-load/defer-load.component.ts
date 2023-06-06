@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
 import { ReferenceComponent } from '../../infra/reference/reference.component';
@@ -15,7 +15,7 @@ import { ViewComponent } from '../view/view.component';
   templateUrl: './defer-load.component.html',
   styleUrls: ['./defer-load.component.scss'],
   standalone: true,
-  imports: [CommonModule, ViewComponent]
+  imports: [CommonModule, forwardRef(() => ViewComponent)]
 })
 export class DeferLoadComponent implements OnInit {
   @Input() pConn$: any;

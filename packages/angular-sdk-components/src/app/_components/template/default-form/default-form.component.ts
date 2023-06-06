@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { ReferenceComponent } from '../../infra/reference/reference.component';
@@ -38,7 +38,6 @@ import { PulseComponent } from '../../designSystemExtension/pulse/pulse.componen
     CommonModule,
     PulseComponent,
     TodoComponent,
-    ViewComponent,
     UtilityComponent,
     TextInputComponent,
     TextContentComponent,
@@ -61,7 +60,8 @@ import { PulseComponent } from '../../designSystemExtension/pulse/pulse.componen
     AppAnnouncementComponent,
     UserReferenceComponent,
     FileUtilityComponent,
-    AttachmentComponent
+    AttachmentComponent,
+    forwardRef(() => ViewComponent)
   ]
 })
 export class DefaultFormComponent implements OnInit {

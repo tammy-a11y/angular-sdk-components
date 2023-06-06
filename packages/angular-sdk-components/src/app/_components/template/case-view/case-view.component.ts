@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { interval } from 'rxjs';
@@ -25,8 +25,8 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     MatMenuModule,
     CaseSummaryComponent,
     MaterialVerticalTabsComponent,
-    RegionComponent,
-    DeferLoadComponent
+    DeferLoadComponent,
+    forwardRef(() => RegionComponent)
   ]
 })
 export class CaseViewComponent implements OnInit {
