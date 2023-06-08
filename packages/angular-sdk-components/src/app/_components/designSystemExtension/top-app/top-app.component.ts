@@ -1,11 +1,15 @@
-import { Component, OnInit } from '@angular/core';
-import { NgZone } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { RootContainerComponent } from '../../infra/root-container/root-container.component';
 import { compareSdkPCoreVersions } from '../../../_helpers/versionHelpers';
 
 @Component({
   selector: 'app-top-app',
   templateUrl: './top-app.component.html',
   styleUrls: ['./top-app.component.scss'],
+  standalone: true,
+  imports: [CommonModule, MatProgressSpinnerModule, RootContainerComponent]
 })
 export class TopAppComponent implements OnInit {
   PCore$: any;

@@ -1,9 +1,12 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { FeedContainerComponent } from '../../widget/feed-container/feed-container.component';
 
 @Component({
   selector: 'app-pulse',
   templateUrl: './pulse.component.html',
   styleUrls: ['./pulse.component.scss'],
+  standalone: true,
+  imports: [FeedContainerComponent]
 })
 export class PulseComponent implements OnInit {
   @Input() pConn$: any;

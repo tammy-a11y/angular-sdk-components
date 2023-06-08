@@ -1,6 +1,21 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { ListViewComponent } from '../list-view/list-view.component';
+import { MatButtonModule } from '@angular/material/button';
+import { UrlComponent } from '../../field/url/url.component';
+import { TextAreaComponent } from '../../field/text-area/text-area.component';
+import { TimeComponent } from '../../field/time/time.component';
+import { DateComponent } from '../../field/date/date.component';
+import { DateTimeComponent } from '../../field/date-time/date-time.component';
+import { CheckBoxComponent } from '../../field/check-box/check-box.component';
+import { DecimalComponent } from '../../field/decimal/decimal.component';
+import { IntegerComponent } from '../../field/integer/integer.component';
+import { EmailComponent } from '../../field/email/email.component';
+import { PercentageComponent } from '../../field/percentage/percentage.component';
+import { CurrencyComponent } from '../../field/currency/currency.component';
+import { TextInputComponent } from '../../field/text-input/text-input.component';
 
 const SUPPORTED_TYPES_IN_PROMOTED_FILTERS = [
   'TextInput',
@@ -16,13 +31,31 @@ const SUPPORTED_TYPES_IN_PROMOTED_FILTERS = [
   'TextArea',
   'Currency',
   'URL',
-  'RichText',
+  'RichText'
 ];
 
 @Component({
   selector: 'app-promoted-filters',
   templateUrl: './promoted-filters.component.html',
   styleUrls: ['./promoted-filters.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    TextInputComponent,
+    CurrencyComponent,
+    PercentageComponent,
+    EmailComponent,
+    IntegerComponent,
+    DecimalComponent,
+    CheckBoxComponent,
+    DateTimeComponent,
+    DateComponent,
+    TimeComponent,
+    TextAreaComponent,
+    UrlComponent,
+    MatButtonModule,
+    ListViewComponent
+  ]
 })
 export class PromotedFiltersComponent implements OnInit {
   @Input() viewName;
@@ -81,7 +114,9 @@ export class PromotedFiltersComponent implements OnInit {
     });
 
     const filtersWithClassID = { ...this.filtersProperties, classID: this.pageClass };
-    this.transientItemID = this.pConn$.getContainerManager().addTransientItem({ id: this.viewName, data: filtersWithClassID });
+    this.transientItemID = this.pConn$
+      .getContainerManager()
+      .addTransientItem({ id: this.viewName, data: filtersWithClassID });
     this.processedFilters = [];
     this.filters.map((filter) => {
       const filterClone = { ...filter };
@@ -98,8 +133,8 @@ export class PromotedFiltersComponent implements OnInit {
         meta: filterClone,
         options: {
           hasForm: true,
-          contextName: this.transientItemID,
-        },
+          contextName: this.transientItemID
+        }
       });
       this.processedFilters.push(c11nEnv);
     });
@@ -111,12 +146,12 @@ export class PromotedFiltersComponent implements OnInit {
       if (value) {
         acc[field] = {
           lhs: {
-            field,
+            field
           },
           comparator: 'EQ',
           rhs: {
-            value,
-          },
+            value
+          }
         };
       }
       return acc;
@@ -139,7 +174,7 @@ export class PromotedFiltersComponent implements OnInit {
     if (this.PCore$.getFormUtils().isFormValid(this.transientItemID) && this.isValidInput(formValues)) {
       this.showTable = true;
       const Query: any = {
-        dataViewParameters: this.parameters || {},
+        dataViewParameters: this.parameters || {}
       };
 
       if (Object.keys(promotedFilters).length > 0) {

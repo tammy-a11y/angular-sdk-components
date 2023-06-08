@@ -1,12 +1,29 @@
 import { Component, OnInit, Input, NgZone } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import download from 'downloadjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
+import { ActionButtonsComponent } from '../../infra/action-buttons/action-buttons.component';
+import { MaterialSummaryListComponent } from '../../designSystemExtension/material-summary-list/material-summary-list.component';
+import { ListUtilityComponent } from '../list-utility/list-utility.component';
 
 @Component({
   selector: 'app-file-utility',
   templateUrl: './file-utility.component.html',
   styleUrls: ['./file-utility.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    ListUtilityComponent,
+    MatButtonModule,
+    MaterialSummaryListComponent,
+    ActionButtonsComponent,
+    MatFormFieldModule,
+    MatInputModule
+  ]
 })
 export class FileUtilityComponent implements OnInit {
   @Input() pConn$: any;
@@ -57,13 +74,13 @@ export class FileUtilityComponent implements OnInit {
     {
       text: 'Add files',
       id: 'addNewFiles',
-      onClick: () => this.createModal('addLocalFile'),
+      onClick: () => this.createModal('addLocalFile')
     },
     {
       text: 'Add links',
       id: 'addNewLinks',
-      onClick: () => this.createModal('addLocalLink'),
-    },
+      onClick: () => this.createModal('addLocalLink')
+    }
   ];
 
   constructor(private angularPConnect: AngularPConnectService, private utils: Utils, private ngZone: NgZone) {}
@@ -106,7 +123,7 @@ export class FileUtilityComponent implements OnInit {
     // adding a property to track in configProps, when ever the attachment file changes
     // need to trigger a redraw
     this.pConn$.registerAdditionalProps({
-      lastRefreshTime: `@P ${this.PCore$.getConstants().SUMMARY_OF_ATTACHMENTS_LAST_REFRESH_TIME}`,
+      lastRefreshTime: `@P ${this.PCore$.getConstants().SUMMARY_OF_ATTACHMENTS_LAST_REFRESH_TIME}`
     });
 
     // Should always check the bridge to see if the component should update itself (re-render)
@@ -167,7 +184,7 @@ export class FileUtilityComponent implements OnInit {
       type: 'URL',
       category: 'URL',
       url: link.url,
-      name: link.linkTitle,
+      name: link.linkTitle
     }));
 
     attachmentUtils
@@ -184,7 +201,9 @@ export class FileUtilityComponent implements OnInit {
     attsFromResp = attsFromResp.map((respAtt) => {
       const updatedAtt = {
         ...respAtt,
-        meta: `${respAtt.category} . ${this.utils.generateDateTime(respAtt.createTime, 'DateTime-Since')}, ${respAtt.createdBy}`,
+        meta: `${respAtt.category} . ${this.utils.generateDateTime(respAtt.createTime, 'DateTime-Since')}, ${
+          respAtt.createdBy
+        }`
       };
       if (updatedAtt.type === 'FILE') {
         updatedAtt.nameWithExt = updatedAtt.fileName;
@@ -270,8 +289,8 @@ export class FileUtilityComponent implements OnInit {
           id: `Cancel-${att.ID}`,
           text: 'Cancel',
           icon: 'times',
-          onClick: cancelFile,
-        },
+          onClick: cancelFile
+        }
       ];
     } else if (att.links) {
       const isFile = att.type === 'FILE';
@@ -283,8 +302,8 @@ export class FileUtilityComponent implements OnInit {
             id: `download-${ID}`,
             text: isFile ? 'Download' : 'Open',
             icon: isFile ? 'download' : 'open',
-            onClick: downloadFile,
-          },
+            onClick: downloadFile
+          }
         ],
         [
           'delete',
@@ -292,9 +311,9 @@ export class FileUtilityComponent implements OnInit {
             id: `Delete-${ID}`,
             text: 'Delete',
             icon: 'trash',
-            onClick: deleteFile,
-          },
-        ],
+            onClick: deleteFile
+          }
+        ]
       ]);
       actions = [];
       actionsMap.forEach((action, actionKey) => {
@@ -309,8 +328,8 @@ export class FileUtilityComponent implements OnInit {
           id: `Remove-${att.ID}`,
           text: 'Remove',
           icon: 'trash',
-          onClick: removeFile,
-        },
+          onClick: removeFile
+        }
       ];
     }
 
@@ -318,18 +337,18 @@ export class FileUtilityComponent implements OnInit {
       id: att.ID,
       visual: {
         icon: this.utils.getIconForAttachment(att),
-        progress: att.progress == 100 ? undefined : att.progress,
+        progress: att.progress == 100 ? undefined : att.progress
       },
       primary: {
         type: att.type,
         name: att.name,
         icon: 'trash',
-        click: removeFile,
+        click: removeFile
       },
       secondary: {
-        text: att.meta,
+        text: att.meta
       },
-      actions,
+      actions
     };
   };
 
@@ -343,8 +362,8 @@ export class FileUtilityComponent implements OnInit {
           id: `Cancel-${att.ID}`,
           text: 'Cancel',
           icon: 'times',
-          onClick: cancelFile,
-        },
+          onClick: cancelFile
+        }
       ];
     } else if (att.links) {
       const isFile = att.type === 'FILE';
@@ -356,8 +375,8 @@ export class FileUtilityComponent implements OnInit {
             id: `download-${ID}`,
             text: isFile ? 'Download' : 'Open',
             icon: isFile ? 'download' : 'open',
-            onClick: downloadFile,
-          },
+            onClick: downloadFile
+          }
         ],
         [
           'delete',
@@ -365,9 +384,9 @@ export class FileUtilityComponent implements OnInit {
             id: `Delete-${ID}`,
             text: 'Delete',
             icon: 'trash',
-            onClick: deleteFile,
-          },
-        ],
+            onClick: deleteFile
+          }
+        ]
       ]);
       actions = [];
       actionsMap.forEach((action, actionKey) => {
@@ -382,8 +401,8 @@ export class FileUtilityComponent implements OnInit {
           id: `Remove-${att.ID}`,
           text: 'Remove',
           icon: 'trash',
-          onClick: removeFile,
-        },
+          onClick: removeFile
+        }
       ];
     }
 
@@ -391,18 +410,18 @@ export class FileUtilityComponent implements OnInit {
       id: att.ID,
       visual: {
         icon: this.utils.getIconForAttachment(att),
-        progress: att.progress == 100 ? undefined : att.progress,
+        progress: att.progress == 100 ? undefined : att.progress
       },
       primary: {
         type: att.type,
         name: att.name,
         icon: 'open',
-        click: downloadFile,
+        click: downloadFile
       },
       secondary: {
-        text: att.meta,
+        text: att.meta
       },
-      actions,
+      actions
     };
   };
 
@@ -427,7 +446,7 @@ export class FileUtilityComponent implements OnInit {
       downloadFile: null,
       cancelFile: null,
       deleteFile: null,
-      removeFile: null,
+      removeFile: null
     });
 
     oLink.type = 'URL';
@@ -564,7 +583,7 @@ export class FileUtilityComponent implements OnInit {
         downloadFile: !att.progress ? () => this.downloadFile(att) : null,
         cancelFile: att.progress ? () => this.cancelFile(att.ID) : null,
         deleteFile: !att.progress ? () => this.deleteFile(att) : null,
-        removeFile: att.error ? () => this.removeNewFile(att.ID) : null,
+        removeFile: att.error ? () => this.removeNewFile(att.ID) : null
       });
     });
   }
@@ -670,7 +689,7 @@ export class FileUtilityComponent implements OnInit {
             downloadFile: !att.progress ? () => this.downloadFile(att) : null,
             cancelFile: att.progress ? () => this.cancelFile(att.ID) : null,
             deleteFile: !att.progress ? () => this.deleteFile(att) : null,
-            removeFile: att.error ? () => this.removeFile(att.ID) : null,
+            removeFile: att.error ? () => this.removeFile(att.ID) : null
           });
         });
 
@@ -680,7 +699,7 @@ export class FileUtilityComponent implements OnInit {
             downloadFile: !att.progress ? () => this.downloadFile(att) : null,
             cancelFile: att.progress ? () => this.cancelFile(att.ID) : null,
             deleteFile: !att.progress ? () => this.deleteFile(att) : null,
-            removeFile: att.error ? () => this.removeFile(att.ID) : null,
+            removeFile: att.error ? () => this.removeFile(att.ID) : null
           });
         });
       });

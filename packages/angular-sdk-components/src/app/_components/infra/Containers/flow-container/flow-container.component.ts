@@ -1,9 +1,13 @@
-import { Component, OnInit, Input, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, NgZone, forwardRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
 import { AngularPConnectService } from '../../../../_bridge/angular-pconnect';
 import { ProgressSpinnerService } from '../../../../_messages/progress-spinner.service';
 import { ReferenceComponent } from '../../reference/reference.component';
 import { Utils } from '../../../../_helpers/utils';
+import { AssignmentComponent } from '../../assignment/assignment.component';
+import { TodoComponent } from '../../../widget/todo/todo.component';
 
 /**
  * WARNING:  It is not expected that this file should be modified.  It is part of infrastructure code that works with
@@ -16,6 +20,8 @@ import { Utils } from '../../../../_helpers/utils';
   templateUrl: './flow-container.component.html',
   styleUrls: ['./flow-container.component.scss'],
   providers: [Utils],
+  standalone: true,
+  imports: [CommonModule, TodoComponent, MatCardModule, forwardRef(() => AssignmentComponent)]
 })
 export class FlowContainerComponent implements OnInit {
   @Input() pConn$: any;
@@ -51,7 +57,6 @@ export class FlowContainerComponent implements OnInit {
   checkSvg$: string;
 
   //itemKey: string = "";   // JA - this is what Nebula/Constellation uses to pass to finishAssignment, navigateToStep
-
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -105,7 +110,10 @@ export class FlowContainerComponent implements OnInit {
       this.angularPConnectData.unsubscribeFn();
     }
 
-    this.PCore$.getPubSubUtils().unsubscribe(this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL, 'cancelAssignment');
+    this.PCore$.getPubSubUtils().unsubscribe(
+      this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL,
+      'cancelAssignment'
+    );
 
     this.PCore$.getPubSubUtils().unsubscribe('cancelPressed', 'cancelPressed');
   }
@@ -182,7 +190,7 @@ export class FlowContainerComponent implements OnInit {
 
     if (!isContainerItemAvailable) {
       containerMgr.initializeContainers({
-        type: containerType,
+        type: containerType
       });
 
       /* remove commented out code when update React/WC
@@ -454,7 +462,12 @@ export class FlowContainerComponent implements OnInit {
         });
 
         if (currentOrder.length > 0) {
-          if (currentItems[key] && currentItems[key].view && type === 'single' && Object.keys(currentItems[key].view).length > 0) {
+          if (
+            currentItems[key] &&
+            currentItems[key].view &&
+            type === 'single' &&
+            Object.keys(currentItems[key].view).length > 0
+          ) {
             // when we get here, it it because the flow action data has changed
             // from the server, and need to add to pConnect and update children
 
@@ -472,7 +485,7 @@ export class FlowContainerComponent implements OnInit {
               isFlowContainer: true,
               containerName: localPConn.getContainerName(),
               containerItemName: key,
-              parentPageReference: localPConn.getPageReference(),
+              parentPageReference: localPConn.getPageReference()
             };
 
             const configObject = this.PCore$.createPConnect(config);
@@ -560,7 +573,7 @@ export class FlowContainerComponent implements OnInit {
       flowName,
       caseViewMode: 'perform',
       resourceType: 'ASSIGNMENT',
-      data: pConnect.getDataObject(contextName),
+      data: pConnect.getDataObject(contextName)
     });
   }
 
@@ -576,7 +589,7 @@ export class FlowContainerComponent implements OnInit {
       childCases.forEach(({ assignments = [], Name }) => {
         const childCaseAssignments = assignments.map((assignment) => ({
           ...assignment,
-          caseName: Name,
+          caseName: Name
         }));
         allAssignments = allAssignments.concat(childCaseAssignments);
       });

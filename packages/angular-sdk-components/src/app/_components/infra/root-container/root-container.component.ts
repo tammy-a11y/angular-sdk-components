@@ -1,8 +1,15 @@
 import { Component, OnInit, Input, NgZone } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { interval, Subscription } from 'rxjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
 import { ReferenceComponent } from '../../infra/reference/reference.component';
+import { PreviewViewContainerComponent } from '../Containers/preview-view-container/preview-view-container.component';
+import { ModalViewContainerComponent } from '../Containers/modal-view-container/modal-view-container.component';
+import { HybridViewContainerComponent } from '../Containers/hybrid-view-container/hybrid-view-container.component';
+import { ViewContainerComponent } from '../Containers/view-container/view-container.component';
+import { ViewComponent } from '../view/view.component';
 
 /**
  * WARNING:  It is not expected that this file should be modified.  It is part of infrastructure code that works with
@@ -14,6 +21,16 @@ import { ReferenceComponent } from '../../infra/reference/reference.component';
   selector: 'app-root-container',
   templateUrl: './root-container.component.html',
   styleUrls: ['./root-container.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatProgressSpinnerModule,
+    ViewComponent,
+    ViewContainerComponent,
+    HybridViewContainerComponent,
+    ModalViewContainerComponent,
+    PreviewViewContainerComponent
+  ]
 })
 export class RootContainerComponent implements OnInit {
   @Input() pConn$: any;
@@ -37,7 +54,11 @@ export class RootContainerComponent implements OnInit {
   progressSpinnerSubscription: Subscription;
   spinnerTimer: any = null;
 
-  constructor(private angularPConnect: AngularPConnectService, private psService: ProgressSpinnerService, private ngZone: NgZone) {}
+  constructor(
+    private angularPConnect: AngularPConnectService,
+    private psService: ProgressSpinnerService,
+    private ngZone: NgZone
+  ) {}
 
   ngOnInit(): void {
     let myContext = 'app';
@@ -63,10 +84,10 @@ export class RootContainerComponent implements OnInit {
       meta: {
         type: 'PreviewViewContainer',
         config: {
-          name: 'preview',
-        },
+          name: 'preview'
+        }
       },
-      options,
+      options
     });
 
     this.pvConn$ = configObjPreview.getPConnect();
@@ -75,13 +96,13 @@ export class RootContainerComponent implements OnInit {
       meta: {
         type: 'ModalViewContainer',
         config: {
-          name: 'modal',
-        },
+          name: 'modal'
+        }
       },
       options: {
         pageReference: 'pyPortal',
-        context: myContext,
-      },
+        context: myContext
+      }
     });
 
     // clear out hasViewContainer
@@ -151,8 +172,8 @@ export class RootContainerComponent implements OnInit {
           const rootObject: any = this.PCore$.createPConnect({
             meta: itemView,
             options: {
-              context: items[key].context,
-            },
+              context: items[key].context
+            }
           });
 
           setTimeout(() => {

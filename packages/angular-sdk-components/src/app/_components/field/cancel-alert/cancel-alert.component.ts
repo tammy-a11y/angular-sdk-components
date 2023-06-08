@@ -1,4 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatGridListModule } from '@angular/material/grid-list';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
 import { ErrorMessagesService } from '../../../_messages/error-messages.service';
 
@@ -6,6 +9,8 @@ import { ErrorMessagesService } from '../../../_messages/error-messages.service'
   selector: 'app-cancel-alert',
   templateUrl: './cancel-alert.component.html',
   styleUrls: ['./cancel-alert.component.scss'],
+  standalone: true,
+  imports: [CommonModule, MatGridListModule, MatButtonModule]
 })
 export class CancelAlertComponent implements OnInit {
   @Input() pConn$: any;
@@ -67,7 +72,7 @@ export class CancelAlertComponent implements OnInit {
   buttonClick(sAction) {
     const dispatchInfo = {
       context: this.itemKey,
-      semanticURL: '',
+      semanticURL: ''
     };
 
     const actionsAPI = this.pConn$.getActionsApi();

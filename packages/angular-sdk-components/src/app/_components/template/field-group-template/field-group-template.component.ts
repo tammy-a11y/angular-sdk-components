@@ -1,13 +1,19 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, forwardRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { FieldGroupUtils } from '../../../_helpers/field-group-utils';
 import { Utils } from '../../../_helpers/utils';
+import { RegionComponent } from '../../infra/region/region.component';
+import { FieldGroupListComponent } from '../field-group-list/field-group-list.component';
 
 @Component({
   selector: 'app-field-group-template',
   templateUrl: './field-group-template.component.html',
   styleUrls: ['./field-group-template.component.scss'],
+  standalone: true,
+  imports: [CommonModule, FieldGroupListComponent, MatButtonModule, forwardRef(() => RegionComponent)]
 })
 export class FieldGroupTemplateComponent implements OnInit {
   @Input() configProps$: any;
@@ -29,7 +35,11 @@ export class FieldGroupTemplateComponent implements OnInit {
   allowAddEdit: boolean;
   fieldHeader: any;
 
-  constructor(private angularPConnect: AngularPConnectService, private utils: Utils, private fieldGroupUtils: FieldGroupUtils) {}
+  constructor(
+    private angularPConnect: AngularPConnectService,
+    private utils: Utils,
+    private fieldGroupUtils: FieldGroupUtils
+  ) {}
 
   ngOnInit(): void {
     // First thing in initialization is registering and subscribing to the AngularPConnect service
@@ -97,8 +107,11 @@ export class FieldGroupTemplateComponent implements OnInit {
         this.referenceList?.map((item, index) => {
           children.push({
             id: index,
-            name: this.fieldHeader === 'propertyRef' ? this.getDynamicHeader(item, index) : this.getStaticHeader(this.heading, index),
-            children: this.fieldGroupUtils.buildView(this.pConn$, index, lookForChildInConfig),
+            name:
+              this.fieldHeader === 'propertyRef'
+                ? this.getDynamicHeader(item, index)
+                : this.getStaticHeader(this.heading, index),
+            children: this.fieldGroupUtils.buildView(this.pConn$, index, lookForChildInConfig)
           });
         });
         this.children = children;
@@ -120,7 +133,9 @@ export class FieldGroupTemplateComponent implements OnInit {
 
   addFieldGroupItem() {
     if (this.PCore$?.getPCoreVersion()?.includes('8.7')) {
-      this.pConn$.getListActions().insert({ classID: this.contextClass }, this.referenceList.length, this.pageReference);
+      this.pConn$
+        .getListActions()
+        .insert({ classID: this.contextClass }, this.referenceList.length, this.pageReference);
     } else {
       this.pConn$.getListActions().insert({ classID: this.contextClass }, this.referenceList.length);
     }

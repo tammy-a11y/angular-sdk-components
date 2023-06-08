@@ -13,6 +13,7 @@ import { FormGroup } from '@angular/forms';
   selector: 'app-hybrid-view-container',
   templateUrl: './hybrid-view-container.component.html',
   styleUrls: ['./hybrid-view-container.component.scss'],
+  standalone: true
 })
 export class HybridViewContainerComponent implements OnInit {
   @Input() pConn$: any;

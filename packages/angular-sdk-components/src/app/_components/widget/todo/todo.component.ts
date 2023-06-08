@@ -1,4 +1,6 @@
 import { Component, OnInit, Input, NgZone } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
 import { Utils } from '../../../_helpers/utils';
 
@@ -7,6 +9,8 @@ import { Utils } from '../../../_helpers/utils';
   templateUrl: './todo.component.html',
   styleUrls: ['./todo.component.scss'],
   providers: [Utils],
+  standalone: true,
+  imports: [CommonModule, MatButtonModule]
 })
 export class TodoComponent implements OnInit {
   @Input() pConn$: any;
@@ -89,7 +93,7 @@ export class TodoComponent implements OnInit {
       .then((responseData) => {
         const dataObject = {};
         dataObject[key] = {
-          pxResults: responseData.data.data,
+          pxResults: responseData.data.data
         };
 
         this.pConn$.updateState(dataObject);

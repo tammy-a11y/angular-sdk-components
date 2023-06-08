@@ -1,16 +1,33 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, forwardRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { DefaultFormComponent } from '../../template/default-form/default-form.component';
+import { NarrowWideFormComponent } from '../../template/narrow-wide-form/narrow-wide-form.component';
+import { WideNarrowFormComponent } from '../../template/wide-narrow-form/wide-narrow-form.component';
+import { OneColumnComponent } from '../../template/one-column/one-column.component';
+import { TwoColumnComponent } from '../../template/two-column/two-column.component';
+import { ThreeColumnComponent } from '../../template/three-column/three-column.component';
 
 @Component({
   selector: 'app-case-create-stage',
   templateUrl: './case-create-stage.component.html',
   styleUrls: ['./case-create-stage.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    DefaultFormComponent,
+    NarrowWideFormComponent,
+    WideNarrowFormComponent,
+    TwoColumnComponent,
+    ThreeColumnComponent,
+    forwardRef(() => OneColumnComponent)
+  ]
 })
 export class CaseCreateStageComponent implements OnInit {
   @Input() pConn$: any;
   @Input() formGroup$: FormGroup;
-  
+
   arChildren$: Array<any>;
 
   // For interaction with AngularPConnect

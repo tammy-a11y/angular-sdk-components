@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { interval } from 'rxjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
@@ -7,6 +8,8 @@ import { Utils } from '../../../_helpers/utils';
   selector: 'app-stages',
   templateUrl: './stages.component.html',
   styleUrls: ['./stages.component.scss'],
+  standalone: true,
+  imports: [CommonModule]
 })
 export class StagesComponent implements OnInit {
   @Input() pConn$: any;
@@ -19,7 +22,6 @@ export class StagesComponent implements OnInit {
   arStageResults$: Array<any>;
   lastStage$: any;
   checkSvgIcon$: string;
-
 
   constructor(private angularPConnect: AngularPConnectService, private utils: Utils) {}
 

@@ -1,4 +1,9 @@
 import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import * as isEqual from 'fast-deep-equal';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import FeedApi from './feed-api.js';
@@ -9,6 +14,8 @@ import { Utils } from '../../../_helpers/utils';
   templateUrl: './feed-container.component.html',
   styleUrls: ['./feed-container.component.scss'],
   providers: [Utils],
+  standalone: true,
+  imports: [CommonModule, MatFormFieldModule, MatInputModule, MatGridListModule, MatButtonModule]
 })
 export class FeedContainerComponent implements OnInit {
   @Input() pConn$: any;
@@ -48,8 +55,11 @@ export class FeedContainerComponent implements OnInit {
   likeMessage: any;
   postMessage: any;
 
-
-  constructor(private angularPConnect: AngularPConnectService, private cdRef: ChangeDetectorRef, private utils: Utils) {}
+  constructor(
+    private angularPConnect: AngularPConnectService,
+    private cdRef: ChangeDetectorRef,
+    private utils: Utils
+  ) {}
 
   ngOnInit(): void {
     if (!this.PCore$) {
@@ -547,7 +557,7 @@ export class FeedContainerComponent implements OnInit {
         isReply: null,
         contextName: this.pConn$.getContextName(),
         likedBy: bLikedByMe,
-        messageID,
+        messageID
       };
     } else {
       pulseMessage = {
@@ -555,7 +565,7 @@ export class FeedContainerComponent implements OnInit {
         isReply: true,
         contextName: this.pConn$.getContextName(),
         likedBy: bLikedByMe,
-        messageID,
+        messageID
       };
     }
 

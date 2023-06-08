@@ -1,10 +1,14 @@
 import { Component, OnInit, Input, Renderer2, ChangeDetectorRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
 import { Utils } from '../../../_helpers/utils';
 
 @Component({
   selector: 'app-operator',
   templateUrl: './operator.component.html',
   styleUrls: ['./operator.component.scss'],
+  standalone: true,
+  imports: [CommonModule, MatButtonModule]
 })
 export class OperatorComponent implements OnInit {
   @Input() date$: string;
@@ -49,28 +53,28 @@ export class OperatorComponent implements OnInit {
           {
             id: 'pyPosition',
             name: 'Position',
-            value: res.data.pyOperatorInfo.pyPosition != '' ? res.data.pyOperatorInfo.pyPosition : '---',
+            value: res.data.pyOperatorInfo.pyPosition != '' ? res.data.pyOperatorInfo.pyPosition : '---'
           },
           {
             id: 'pyOrganization',
             name: 'Organization',
-            value: res.data.pyOperatorInfo.pyOrganization != '' ? res.data.pyOperatorInfo.pyOrganization : '---',
+            value: res.data.pyOperatorInfo.pyOrganization != '' ? res.data.pyOperatorInfo.pyOrganization : '---'
           },
           {
             id: 'ReportToUserName',
             name: 'Reports to',
-            value: res.data.pyOperatorInfo.pyReportToUserName != '' ? res.data.pyOperatorInfo.pyReportToUserName : '---',
+            value: res.data.pyOperatorInfo.pyReportToUserName != '' ? res.data.pyOperatorInfo.pyReportToUserName : '---'
           },
           {
             id: 'pyTelephone',
             name: 'Telephone',
-            value: res.data.pyOperatorInfo.pyTelephone != '' ? res.data.pyOperatorInfo.pyTelephone : '---',
+            value: res.data.pyOperatorInfo.pyTelephone != '' ? res.data.pyOperatorInfo.pyTelephone : '---'
           },
           {
             id: 'pyEmailAddress',
             name: 'Email address',
-            value: res.data.pyOperatorInfo.pyEmailAddress != '' ? res.data.pyOperatorInfo.pyEmailAddress : '---',
-          },
+            value: res.data.pyOperatorInfo.pyEmailAddress != '' ? res.data.pyOperatorInfo.pyEmailAddress : '---'
+          }
         ];
 
         this.bShowPopover$ = true;

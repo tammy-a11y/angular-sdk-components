@@ -1,12 +1,18 @@
 import { Component, OnInit, Input, NgZone } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import download from 'downloadjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
+import { MaterialSummaryListComponent } from '../../designSystemExtension/material-summary-list/material-summary-list.component';
 
 @Component({
   selector: 'app-attachment',
   templateUrl: './attachment.component.html',
   styleUrls: ['./attachment.component.scss'],
+  standalone: true,
+  imports: [CommonModule, MatProgressSpinnerModule, MatButtonModule, MaterialSummaryListComponent]
 })
 export class AttachmentComponent implements OnInit {
   @Input() pConn$: any;
@@ -98,7 +104,9 @@ export class AttachmentComponent implements OnInit {
 
     /* this is a temporary fix because required is supposed to be passed as a boolean and NOT as a string */
     let { required, disabled } = configProps;
-    [required, disabled] = [required, disabled].map((prop) => prop === true || (typeof prop === 'string' && prop === 'true'));
+    [required, disabled] = [required, disabled].map(
+      (prop) => prop === true || (typeof prop === 'string' && prop === 'true')
+    );
 
     this.att_categoryName = '';
     if (value && value.pyCategoryName) {
@@ -119,7 +127,7 @@ export class AttachmentComponent implements OnInit {
             type: 'File',
             attachmentFieldName: this.att_valueRef,
             category: this.att_categoryName,
-            ID: this.att_id,
+            ID: this.att_id
           };
         }
 
@@ -152,7 +160,7 @@ export class AttachmentComponent implements OnInit {
               downloadFile: null,
               cancelFile: null,
               deleteFile: null,
-              removeFile: null,
+              removeFile: null
             })
           );
 
@@ -188,7 +196,7 @@ export class AttachmentComponent implements OnInit {
         this.pConn$.attachmentsInfo = {
           type: 'File',
           attachmentFieldName: this.att_valueRef,
-          delete: true,
+          delete: true
         };
       }
       if (fileIndex > -1) {
@@ -196,26 +204,38 @@ export class AttachmentComponent implements OnInit {
       }
     } else {
       const attachmentsList = [];
-      const currentAttachmentList = this.getCurrentAttachmentsList(this.pConn$.getContextName()).filter((f) => f.label !== this.att_valueRef);
+      const currentAttachmentList = this.getCurrentAttachmentsList(this.pConn$.getContextName()).filter(
+        (f) => f.label !== this.att_valueRef
+      );
       if (this.value$ && this.value$.pxResults && +this.value$.pyCount > 0) {
         const deletedFile = {
           type: 'File',
           label: this.att_valueRef,
           delete: true,
           responseProps: {
-            pzInsKey: this.arFileList$[fileIndex].id,
-          },
+            pzInsKey: this.arFileList$[fileIndex].id
+          }
         };
         // updating the redux store to help form-handler in passing the data to delete the file from server
-        this.PCore$.getStateUtils().updateState(this.pConn$.getContextName(), 'attachmentsList', [...currentAttachmentList, deletedFile], {
-          pageReference: 'context_data',
-          isArrayDeepMerge: false,
-        });
+        this.PCore$.getStateUtils().updateState(
+          this.pConn$.getContextName(),
+          'attachmentsList',
+          [...currentAttachmentList, deletedFile],
+          {
+            pageReference: 'context_data',
+            isArrayDeepMerge: false
+          }
+        );
       } else {
-        this.PCore$.getStateUtils().updateState(this.pConn$.getContextName(), 'attachmentsList', [...currentAttachmentList, ...attachmentsList], {
-          pageReference: 'context_data',
-          isArrayDeepMerge: false,
-        });
+        this.PCore$.getStateUtils().updateState(
+          this.pConn$.getContextName(),
+          'attachmentsList',
+          [...currentAttachmentList, ...attachmentsList],
+          {
+            pageReference: 'context_data',
+            isArrayDeepMerge: false
+          }
+        );
       }
       if (fileIndex > -1) {
         this.arFileList$.splice(fileIndex, 1);
@@ -251,7 +271,7 @@ export class AttachmentComponent implements OnInit {
               type: 'File',
               attachmentFieldName: this.att_valueRef,
               category: this.att_categoryName,
-              ID: fileRes.ID,
+              ID: fileRes.ID
             };
             this.pConn$.attachmentsInfo = reqObj;
           } else {
@@ -260,11 +280,11 @@ export class AttachmentComponent implements OnInit {
               label: this.att_valueRef,
               category: this.att_categoryName,
               handle: fileRes.ID,
-              ID: fileRes.clientFileID,
+              ID: fileRes.clientFileID
             };
             this.PCore$.getStateUtils().updateState(this.pConn$.getContextName(), 'attachmentsList', [reqObj], {
               pageReference: 'context_data',
-              isArrayDeepMerge: false,
+              isArrayDeepMerge: false
             });
           }
 
@@ -275,7 +295,7 @@ export class AttachmentComponent implements OnInit {
             type: this.PCore$.getConstants().MESSAGES.MESSAGES_TYPE_ERROR,
             property: fieldName,
             pageReference: this.pConn$.getPageReference(),
-            context,
+            context
           });
 
           this.ngZone.run(() => {
@@ -287,7 +307,7 @@ export class AttachmentComponent implements OnInit {
                 downloadFile: null,
                 cancelFile: null,
                 deleteFile: null,
-                removeFile: null,
+                removeFile: null
               });
             });
 
@@ -313,8 +333,8 @@ export class AttachmentComponent implements OnInit {
           id: `Cancel-${att.ID}`,
           text: 'Cancel',
           icon: 'times',
-          onClick: cancelFile,
-        },
+          onClick: cancelFile
+        }
       ];
     } else if (att.links) {
       const isFile = att.type === 'FILE';
@@ -326,8 +346,8 @@ export class AttachmentComponent implements OnInit {
             id: `download-${ID}`,
             text: isFile ? 'Download' : 'Open',
             icon: isFile ? 'download' : 'open',
-            onClick: downloadFile,
-          },
+            onClick: downloadFile
+          }
         ],
         [
           'delete',
@@ -335,9 +355,9 @@ export class AttachmentComponent implements OnInit {
             id: `Delete-${ID}`,
             text: 'Delete',
             icon: 'trash',
-            onClick: deleteFile,
-          },
-        ],
+            onClick: deleteFile
+          }
+        ]
       ]);
       actions = [];
       actionsMap.forEach((action, actionKey) => {
@@ -352,8 +372,8 @@ export class AttachmentComponent implements OnInit {
           id: `Remove-${att.ID}`,
           text: 'Remove',
           icon: 'trash',
-          onClick: removeFile,
-        },
+          onClick: removeFile
+        }
       ];
     }
 
@@ -361,18 +381,18 @@ export class AttachmentComponent implements OnInit {
       id: att.ID,
       visual: {
         icon: this.utils.getIconForAttachment(att),
-        progress: att.progress == 100 ? undefined : att.progress,
+        progress: att.progress == 100 ? undefined : att.progress
       },
       primary: {
         type: att.type,
         name: att.name,
         icon: 'trash',
-        click: removeFile,
+        click: removeFile
       },
       secondary: {
-        text: att.meta,
+        text: att.meta
       },
-      actions,
+      actions
     };
   };
 
@@ -410,11 +430,11 @@ export class AttachmentComponent implements OnInit {
       props: {
         meta: `${respObj.pyCategoryName}, ${respObj.pxCreateOperator}`,
         name: respObj.pyAttachName,
-        icon: this.utils.getIconFromFileType(respObj.pyMimeFileExtension),
+        icon: this.utils.getIconFromFileType(respObj.pyMimeFileExtension)
       },
       responseProps: {
-        ...respObj,
-      },
+        ...respObj
+      }
     };
   }
 }

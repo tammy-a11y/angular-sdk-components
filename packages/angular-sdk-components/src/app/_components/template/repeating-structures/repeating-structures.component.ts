@@ -1,7 +1,11 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import { CommonModule } from '@angular/common';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
 import { Utils } from '../../../_helpers/utils';
 
@@ -9,6 +13,16 @@ import { Utils } from '../../../_helpers/utils';
   selector: 'app-repeating-structures',
   templateUrl: './repeating-structures.component.html',
   styleUrls: ['./repeating-structures.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatTableModule,
+    MatSortModule,
+    MatPaginatorModule
+  ]
 })
 export class RepeatingStructuresComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -131,7 +145,7 @@ export class RepeatingStructuresComponent implements OnInit {
       grouped: false,
       minWidth: 50,
       cellRenderer: this.getType(field) === 'text' ? null : field.type,
-      filter: true,
+      filter: true
     }));
   }
 

@@ -1,10 +1,18 @@
 import { Component, OnInit, NgZone } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Subscription } from 'rxjs';
 
 import { UpdateWorklistService } from '../../../_messages/update-worklist.service';
 import { AuthService } from '../../../_services/auth.service';
 import { ServerConfigService } from '../../../_services/server-config.service';
 import { compareSdkPCoreVersions } from '../../../_helpers/versionHelpers';
+import { MainContentComponent } from '../main-content/main-content.component';
+import { SideBarComponent } from '../side-bar/side-bar.component';
 
 declare global {
   interface Window {
@@ -16,6 +24,17 @@ declare global {
   selector: 'app-navigation',
   templateUrl: './navigation.component.html',
   styleUrls: ['./navigation.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatProgressSpinnerModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatButtonModule,
+    MatMenuModule,
+    SideBarComponent,
+    MainContentComponent
+  ]
 })
 export class NavigationComponent implements OnInit {
   PCore$: any;
@@ -46,7 +65,10 @@ export class NavigationComponent implements OnInit {
     this.progressSpinnerSubscription.unsubscribe();
     this.resetPConnectSubscription.unsubscribe();
 
-    this.PCore$.getPubSubUtils().unsubscribe(this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL, 'cancelAssignment');
+    this.PCore$.getPubSubUtils().unsubscribe(
+      this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL,
+      'cancelAssignment'
+    );
 
     this.PCore$.getPubSubUtils().unsubscribe('assignmentFinished', 'assignmentFinished');
 
@@ -155,7 +177,10 @@ export class NavigationComponent implements OnInit {
       //
       // so don't have multiple subscriptions, unsubscribe first
       //
-      this.PCore$.getPubSubUtils().unsubscribe(this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL, 'cancelAssignment');
+      this.PCore$.getPubSubUtils().unsubscribe(
+        this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL,
+        'cancelAssignment'
+      );
 
       this.PCore$.getPubSubUtils().unsubscribe('assignmentFinished', 'assignmentFinished');
 

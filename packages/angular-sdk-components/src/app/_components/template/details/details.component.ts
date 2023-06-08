@@ -1,10 +1,13 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { MaterialDetailsComponent } from '../../designSystemExtension/material-details/material-details.component';
 
 @Component({
   selector: 'app-details',
   templateUrl: './details.component.html',
   styleUrls: ['./details.component.scss'],
+  standalone: true,
+  imports: [MaterialDetailsComponent]
 })
 export class DetailsComponent implements OnInit {
   constructor(private angularPConnect: AngularPConnectService) {}
@@ -69,25 +72,25 @@ export class DetailsComponent implements OnInit {
           const options = {
             context: thePConn.getContextName(),
             pageReference: thePConn.getPageReference(),
-            referenceList: thePConn.getReferenceList(),
+            referenceList: thePConn.getReferenceList()
           };
           const viewContConfig = {
             meta: {
               type: theCompType,
-              config: configProps,
+              config: configProps
             },
-            options,
+            options
           };
           const theViewCont = this.PCore$.createPConnect(viewContConfig);
           const data = {
             type: theCompType,
-            pConn: theViewCont?.getPConnect(),
+            pConn: theViewCont?.getPConnect()
           };
           this.arFields$.push(data);
         } else {
           const data = {
             type: theCompType,
-            config: thePConn.getConfigProps(),
+            config: thePConn.getConfigProps()
           };
           this.arFields$.push(data);
         }

@@ -1,11 +1,14 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { TwoColumnComponent } from '../two-column/two-column.component';
 
 @Component({
   selector: 'app-two-column-page',
   templateUrl: './two-column-page.component.html',
   styleUrls: ['./two-column-page.component.scss'],
+  standalone: true,
+  imports: [TwoColumnComponent]
 })
 export class TwoColumnPageComponent implements OnInit {
   @Input() pConn$: any;

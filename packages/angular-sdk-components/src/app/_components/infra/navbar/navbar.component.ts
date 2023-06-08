@@ -1,4 +1,7 @@
 import { Component, OnInit, Input, ChangeDetectorRef, NgZone } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatListModule } from '@angular/material/list';
 import { interval } from 'rxjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
@@ -10,6 +13,8 @@ import { Utils } from '../../../_helpers/utils';
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss'],
   providers: [Utils],
+  standalone: true,
+  imports: [CommonModule, MatListModule, MatMenuModule]
 })
 export class NavbarComponent implements OnInit {
   @Input() pConn$: any;
@@ -152,7 +157,7 @@ export class NavbarComponent implements OnInit {
   navPanelCreateCaseType(sCaseType: string, sFlowType: string) {
     const actionInfo = {
       containerName: 'primary',
-      flowType: sFlowType ? sFlowType : 'pyStartCase',
+      flowType: sFlowType ? sFlowType : 'pyStartCase'
     };
 
     this.psService.sendMessage(true);

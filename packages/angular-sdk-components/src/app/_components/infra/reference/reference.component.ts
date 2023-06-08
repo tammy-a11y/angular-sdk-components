@@ -10,6 +10,7 @@ import { Component, OnInit, Input } from '@angular/core';
   selector: 'app-reference',
   templateUrl: './reference.component.html',
   styleUrls: ['./reference.component.scss'],
+  standalone: true
 })
 export class ReferenceComponent implements OnInit {
   @Input() pConn$: any;
@@ -42,7 +43,9 @@ export class ReferenceComponent implements OnInit {
     if (inPConn.getComponentName() !== 'reference') {
       // debugger;
 
-      console.error(`Reference component: createFullReferencedViewFromRef inPConn is NOT a reference! ${inPConn.getComponentName()}`);
+      console.error(
+        `Reference component: createFullReferencedViewFromRef inPConn is NOT a reference! ${inPConn.getComponentName()}`
+      );
     }
 
     const theResolvedConfigProps = inPConn.resolveConfigProps(inPConn.getConfigProps());
@@ -71,16 +74,18 @@ export class ReferenceComponent implements OnInit {
       ...viewMetadata,
       config: {
         ...viewMetadata.config,
-        ...referenceConfig,
-      },
+        ...referenceConfig
+      }
     };
 
     if (ReferenceComponent.bLogging) {
-      console.log(`Reference: about to call createComponent with pageReference: context: ${theResolvedConfigProps['context']}`);
+      console.log(
+        `Reference: about to call createComponent with pageReference: context: ${theResolvedConfigProps['context']}`
+      );
     }
 
     const viewComponent = inPConn.createComponent(viewObject, null, null, {
-      pageReference: theResolvedConfigProps['context'],
+      pageReference: theResolvedConfigProps['context']
     });
 
     // updating the referencedComponent should trigger a render
@@ -89,7 +94,7 @@ export class ReferenceComponent implements OnInit {
     newCompPConnect.setInheritedConfig({
       ...referenceConfig,
       readOnly: theResolvedConfigProps['readOnly'] ? theResolvedConfigProps['readOnly'] : false,
-      displayMode: theResolvedConfigProps['displayMode'] ? theResolvedConfigProps['displayMode'] : null,
+      displayMode: theResolvedConfigProps['displayMode'] ? theResolvedConfigProps['displayMode'] : null
     });
 
     if (ReferenceComponent.bLogging) {

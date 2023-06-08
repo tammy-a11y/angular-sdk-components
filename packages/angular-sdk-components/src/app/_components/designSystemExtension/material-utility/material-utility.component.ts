@@ -6,6 +6,7 @@ import { Utils } from '../../../_helpers/utils';
   templateUrl: './material-utility.component.html',
   styleUrls: ['./material-utility.component.scss'],
   providers: [Utils],
+  standalone: true
 })
 export class MaterialUtilityComponent implements OnInit {
   @Input() headerText$: string;

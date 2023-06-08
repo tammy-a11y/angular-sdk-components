@@ -1,10 +1,13 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { MaterialDetailsComponent } from '../../designSystemExtension/material-details/material-details.component';
 
 @Component({
   selector: 'app-details-one-column',
   templateUrl: './details-one-column.component.html',
   styleUrls: ['./details-one-column.component.scss'],
+  standalone: true,
+  imports: [MaterialDetailsComponent]
 })
 export class DetailsOneColumnComponent implements OnInit {
   constructor(private angularPConnect: AngularPConnectService) {}

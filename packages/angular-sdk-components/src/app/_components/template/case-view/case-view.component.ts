@@ -1,14 +1,33 @@
-import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, forwardRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { interval } from 'rxjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
+import { DeferLoadComponent } from '../../infra/defer-load/defer-load.component';
+import { RegionComponent } from '../../infra/region/region.component';
+import { MaterialVerticalTabsComponent } from '../../designSystemExtension/material-vertical-tabs/material-vertical-tabs.component';
+import { CaseSummaryComponent } from '../case-summary/case-summary.component';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 @Component({
   selector: 'app-case-view',
   templateUrl: './case-view.component.html',
   styleUrls: ['./case-view.component.scss'],
   providers: [Utils],
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatMenuModule,
+    CaseSummaryComponent,
+    MaterialVerticalTabsComponent,
+    DeferLoadComponent,
+    forwardRef(() => RegionComponent)
+  ]
 })
 export class CaseViewComponent implements OnInit {
   @Input() pConn$: any;
@@ -39,7 +58,11 @@ export class CaseViewComponent implements OnInit {
   caseSummaryPConn$: any;
   currentCaseID: string = '';
 
-  constructor(private cdRef: ChangeDetectorRef, private angularPConnect: AngularPConnectService, private utils: Utils) {}
+  constructor(
+    private cdRef: ChangeDetectorRef,
+    private angularPConnect: AngularPConnectService,
+    private utils: Utils
+  ) {}
 
   ngOnInit(): void {
     if (!this.PCore$) {
@@ -146,7 +169,7 @@ export class CaseViewComponent implements OnInit {
       this.mainTabs
         .getPConnect()
         .getChildren()
-        .forEach((child, i) => {
+        ?.forEach((child, i) => {
           const config = child.getPConnect().resolveConfigProps(child.getPConnect().getRawMetadata()).config;
           let { label, inheritedProps, visibility } = config;
           //For some tabs, "label" property is not avaialable in theTabCompConfig, so will get them from inheritedProps
