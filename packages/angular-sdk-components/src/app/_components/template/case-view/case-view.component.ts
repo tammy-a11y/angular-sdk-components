@@ -169,7 +169,7 @@ export class CaseViewComponent implements OnInit {
       this.mainTabs
         .getPConnect()
         .getChildren()
-        .forEach((child, i) => {
+        ?.forEach((child, i) => {
           const config = child.getPConnect().resolveConfigProps(child.getPConnect().getRawMetadata()).config;
           let { label, inheritedProps, visibility } = config;
           //For some tabs, "label" property is not avaialable in theTabCompConfig, so will get them from inheritedProps

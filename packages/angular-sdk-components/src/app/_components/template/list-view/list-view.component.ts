@@ -14,7 +14,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag } from '@angular/cdk/drag-drop';
+import { DragDropModule, CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag } from '@angular/cdk/drag-drop';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
 import { Utils } from '../../../_helpers/utils';
 import { ActionButtonsComponent } from '../../infra/action-buttons/action-buttons.component';
@@ -42,6 +42,7 @@ export class Group {
     MatInputModule,
     MatTableModule,
     MatSortModule,
+    DragDropModule,
     CdkDropList,
     CdkDrag,
     MatButtonModule,

@@ -9,7 +9,9 @@ dayjs.extend(customParseFormat);
 dayjs.extend(localizedFormat);
 dayjs.extend(relativeTime);
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class Utils {
   lastControlID: number = 0;
 
@@ -26,8 +28,8 @@ export class Utils {
     }
 
     return `${sdkConfigServer.sdkContentServerUrl}constellation/`;
-  }  
-  
+  }
+
   consoleKidDump(pConn: any, level: number = 1, kidNum: number = 1) {
     let sDash = '';
     for (var i = 0; i < level; i++) {
