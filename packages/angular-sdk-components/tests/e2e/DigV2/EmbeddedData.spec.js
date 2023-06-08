@@ -1,14 +1,14 @@
-const { test, expect } = require("@playwright/test");
-const config = require("../../config");
-const common = require("../../common");
+const { test, expect } = require('@playwright/test');
+const config = require('../../config');
+const common = require('../../common');
 
 test.beforeEach(async ({ page }) => {
   await page.setViewportSize({ width: 1920, height: 1080 });
-  await page.goto("http://localhost:3500/portal");
+  await page.goto('http://localhost:3500/portal', { waitUntil: 'networkidle' });
 });
 
-test.describe("E2E test", () => {
-  test("should login, create case and run different test cases for Embedded Data", async ({ page }) => {
+test.describe('E2E test', () => {
+  test('should login, create case and run different test cases for Embedded Data', async ({ page }) => {
     await common.Login(config.config.apps.digv2.user.username, config.config.apps.digv2.user.password, page);
 
     /** Testing announcement banner presence */
@@ -20,7 +20,7 @@ test.describe("E2E test", () => {
     await expect(worklist).toBeVisible();
 
     /** Hovering over navbar */
-    const navbar = page.locator("app-navbar");
+    const navbar = page.locator('app-navbar');
     await navbar.locator('div[class="psdk-appshell-nav"]').hover();
 
     /** opening all case types */
@@ -28,7 +28,9 @@ test.describe("E2E test", () => {
     await createCase.click();
 
     /** Creating a Complex Fields case-type */
-    const complexFieldsCaseBtn = await page.locator('mat-list-item[id="case-list-item"] > span:has-text("Complex Fields")');
+    const complexFieldsCaseBtn = await page.locator(
+      'mat-list-item[id="case-list-item"] > span:has-text("Complex Fields")'
+    );
     await complexFieldsCaseBtn.click();
 
     /** Selecting Embedded Data from the Category dropdown */
@@ -60,28 +62,28 @@ test.describe("E2E test", () => {
     await page.locator('button:has-text("+ Add")').click();
 
     /** Entering values in the first Row */
-    await page.locator('input[data-test-id="202003240938510823869"]').type("Main St");
-    await page.locator('input[data-test-id="202003240938510831291"]').type("Cambridge");
-    await page.locator('input[data-test-id="202003240938510831411"]').type("MA");
-    await page.locator('input[data-test-id="202003240938510832734"]').type("02142");
+    await page.locator('input[data-test-id="202003240938510823869"]').type('Main St');
+    await page.locator('input[data-test-id="202003240938510831291"]').type('Cambridge');
+    await page.locator('input[data-test-id="202003240938510831411"]').type('MA');
+    await page.locator('input[data-test-id="202003240938510832734"]').type('02142');
     let phone = page.locator('ngx-mat-intl-tel-input[data-test-id="1f8261d17452a959e013666c5df45e07"]');
-    let countrySelector = phone.locator("button.country-selector");
+    let countrySelector = phone.locator('button.country-selector');
     await countrySelector.click();
-    await page.locator("div.flag.US >> nth=0").click();
-    await phone.locator('input[type="tel"]').type("(201) 555-0123");
+    await page.locator('div.flag.US >> nth=0').click();
+    await phone.locator('input[type="tel"]').type('(201) 555-0123');
 
     await page.locator('button:has-text("+ Add")').click();
 
     /** Entering values in the second Row */
-    await page.locator('input[data-test-id="202003240938510823869"] >> nth=1').type("Global St");
-    await page.locator('input[data-test-id="202003240938510831291"] >> nth=1').type("California");
-    await page.locator('input[data-test-id="202003240938510831411"] >> nth=1').type("AK");
-    await page.locator('input[data-test-id="202003240938510832734"] >> nth=1').type("03142");
+    await page.locator('input[data-test-id="202003240938510823869"] >> nth=1').type('Global St');
+    await page.locator('input[data-test-id="202003240938510831291"] >> nth=1').type('California');
+    await page.locator('input[data-test-id="202003240938510831411"] >> nth=1').type('AK');
+    await page.locator('input[data-test-id="202003240938510832734"] >> nth=1').type('03142');
     phone = page.locator('ngx-mat-intl-tel-input[data-test-id="1f8261d17452a959e013666c5df45e07"] >> nth=1');
-    countrySelector = phone.locator("button.country-selector");
+    countrySelector = phone.locator('button.country-selector');
     await countrySelector.click();
-    await page.locator("div.flag.US >> nth=0").click();
-    await phone.locator('input[type="tel"]').type("(201) 444-0213");
+    await page.locator('div.flag.US >> nth=0').click();
+    await phone.locator('input[type="tel"]').type('(201) 444-0213');
 
     await page.locator('button:has-text("Next")').click();
 
@@ -123,30 +125,30 @@ test.describe("E2E test", () => {
     await page.locator('mat-option > span:has-text("Editable")').click();
 
     /** Entering values in the first Row */
-    await page.locator('input[data-test-id="202003240938510823869"]').type("Main St");
-    await page.locator('input[data-test-id="202003240938510831291"]').type("Cambridge");
-    await page.locator('input[data-test-id="202003240938510831411"]').type("MA");
-    await page.locator('input[data-test-id="202003240938510832734"]').type("02142");
+    await page.locator('input[data-test-id="202003240938510823869"]').type('Main St');
+    await page.locator('input[data-test-id="202003240938510831291"]').type('Cambridge');
+    await page.locator('input[data-test-id="202003240938510831411"]').type('MA');
+    await page.locator('input[data-test-id="202003240938510832734"]').type('02142');
 
     phone = page.locator('ngx-mat-intl-tel-input[data-test-id="1f8261d17452a959e013666c5df45e07"]');
-    countrySelector = phone.locator("button.country-selector");
+    countrySelector = phone.locator('button.country-selector');
     await countrySelector.click();
-    await page.locator("div.flag.US >> nth=0").click();
-    await phone.locator('input[type="tel"]').type("(201) 555-0123");
+    await page.locator('div.flag.US >> nth=0').click();
+    await phone.locator('input[type="tel"]').type('(201) 555-0123');
 
     await page.locator('button:has-text("+ Add")').click();
 
     /** Entering values in the second Row */
-    await page.locator('input[data-test-id="202003240938510823869"] >> nth=1').type("Global St");
-    await page.locator('input[data-test-id="202003240938510831291"] >> nth=1').type("California");
-    await page.locator('input[data-test-id="202003240938510831411"] >> nth=1').type("AK");
-    await page.locator('input[data-test-id="202003240938510832734"] >> nth=1').type("03142");
+    await page.locator('input[data-test-id="202003240938510823869"] >> nth=1').type('Global St');
+    await page.locator('input[data-test-id="202003240938510831291"] >> nth=1').type('California');
+    await page.locator('input[data-test-id="202003240938510831411"] >> nth=1').type('AK');
+    await page.locator('input[data-test-id="202003240938510832734"] >> nth=1').type('03142');
 
     phone = page.locator('ngx-mat-intl-tel-input[data-test-id="1f8261d17452a959e013666c5df45e07"] >> nth=1');
-    countrySelector = phone.locator("button.country-selector");
+    countrySelector = phone.locator('button.country-selector');
     await countrySelector.click();
-    await page.locator("div.flag.US >> nth=0").click();
-    await phone.locator('input[type="tel"]').type("(201) 444-0213");
+    await page.locator('div.flag.US >> nth=0').click();
+    await phone.locator('input[type="tel"]').type('(201) 444-0213');
 
     await page.locator('button:has-text("Next")').click();
 

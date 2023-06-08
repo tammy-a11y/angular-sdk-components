@@ -1,17 +1,17 @@
 /* eslint-disable no-template-curly-in-string */
 /* eslint-disable no-undef */
 
-const { test, expect } = require("@playwright/test");
-const config = require("../../config");
-const common = require("../../common");
+const { test, expect } = require('@playwright/test');
+const config = require('../../config');
+const common = require('../../common');
 
 test.beforeEach(async ({ page }) => {
   await page.setViewportSize({ width: 1920, height: 1080 });
-  await page.goto("http://localhost:3500/portal");
+  await page.goto('http://localhost:3500/portal', { waitUntil: 'networkidle' });
 });
 
-test.describe("E2E test", () => {
-  test("should login, create case and run different test cases for Case Reference", async ({ page }) => {
+test.describe('E2E test', () => {
+  test('should login, create case and run different test cases for Case Reference', async ({ page }) => {
     await common.Login(config.config.apps.digv2.user.username, config.config.apps.digv2.user.password, page);
 
     /** Testing announcement banner presence */
@@ -23,7 +23,7 @@ test.describe("E2E test", () => {
     await expect(worklist).toBeVisible();
 
     /** Hovering over navbar */
-    const navbar = page.locator("app-navbar");
+    const navbar = page.locator('app-navbar');
     await navbar.locator('div[class="psdk-appshell-nav"]').hover();
 
     // /** Creating a Query case-type which will be referred by Complex Fields case type */
@@ -36,9 +36,9 @@ test.describe("E2E test", () => {
     let modal = page.locator('div[id="dialog"]');
 
     /** Value to be typed in the Name input */
-    const name = "John Doe";
+    const name = 'John Doe';
 
-    await modal.locator("input").type(name);
+    await modal.locator('input').type(name);
     await modal.locator('button:has-text("submit")').click();
 
     // /** Storing case-id of the newly created Query case-type(s), will be used later */
@@ -56,7 +56,7 @@ test.describe("E2E test", () => {
 
     modal = page.locator('div[id="dialog"]');
 
-    await modal.locator("input").type(name);
+    await modal.locator('input').type(name);
     await modal.locator('button:has-text("submit")').click();
 
     caseID.push(await page.locator('div[id="caseId"]').textContent());
@@ -68,7 +68,9 @@ test.describe("E2E test", () => {
     await createCase.click();
 
     /** Creating a Complex Fields case-type */
-    const complexFieldsCaseBtn = await page.locator('mat-list-item[id="case-list-item"] > span:has-text("Complex Fields")');
+    const complexFieldsCaseBtn = await page.locator(
+      'mat-list-item[id="case-list-item"] > span:has-text("Complex Fields")'
+    );
     await complexFieldsCaseBtn.click();
 
     /** Selecting CaseReference from the Category dropdown */
@@ -146,7 +148,7 @@ test.describe("E2E test", () => {
     await page.locator('mat-option > span:has-text("ListOfRecords")').click();
 
     const selectedRow2 = await page.locator(`tr:has-text("${caseID[1]}")`);
-    await selectedRow2.locator("mat-checkbox").click();
+    await selectedRow2.locator('mat-checkbox').click();
 
     await page.locator('button:has-text("Next")').click();
 
