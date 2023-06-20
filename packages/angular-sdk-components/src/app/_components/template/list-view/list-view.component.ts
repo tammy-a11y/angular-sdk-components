@@ -523,7 +523,7 @@ export class ListViewComponent implements OnInit {
       }
     }
     if (!bInPopUp) {
-      this.bShowFilterPopover$ = false;
+      // this.bShowFilterPopover$ = false;
 
       window.removeEventListener('mouseup', this._clickAway.bind(this));
     }
