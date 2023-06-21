@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, NgZone } from '@angular/core';
+import { Component, OnInit, Input, NgZone, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
@@ -12,7 +12,7 @@ import { NavbarComponent } from '../../infra/navbar/navbar.component';
   templateUrl: './app-shell.component.html',
   styleUrls: ['./app-shell.component.scss'],
   standalone: true,
-  imports: [CommonModule, MatSnackBarModule, NavbarComponent, ViewContainerComponent]
+  imports: [CommonModule, MatSnackBarModule, NavbarComponent, forwardRef(() => ViewContainerComponent)]
 })
 export class AppShellComponent implements OnInit {
   @Input() pConn$: any;

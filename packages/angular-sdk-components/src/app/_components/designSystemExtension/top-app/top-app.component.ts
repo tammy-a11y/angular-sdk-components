@@ -4,6 +4,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RootContainerComponent } from '../../infra/root-container/root-container.component';
 import { compareSdkPCoreVersions } from '../../../_helpers/versionHelpers';
 
+import { getSdkComponentMap } from '../../../_bridge/helpers/sdk_component_map';
+import localSdkComponentMap from 'packages/angular-sdk-components/sdk-local-component-map';
+
 @Component({
   selector: 'app-top-app',
   templateUrl: './top-app.component.html',
@@ -31,19 +34,29 @@ export class TopAppComponent implements OnInit {
       // Check that we're seeing the PCore version we expect
       compareSdkPCoreVersions();
 
-      // Change to reflect new use of arg in the callback:
-      const { props /*, domContainerID = null */ } = renderObj;
+      // Initialize the SdkComponentMap (local and pega-provided)
+      getSdkComponentMap(localSdkComponentMap).then((theComponentMap: any) => {
+        console.log(`SdkComponentMap initialized`, theComponentMap);
 
-      this.ngZone.run(() => {
-        this.props$ = props;
-        this.pConn$ = this.props$.getPConnect();
-        this.sComponentName$ = this.pConn$.getComponentName();
-        this.PCore$ = window.PCore;
-        this.arChildren$ = this.pConn$.getChildren();
-        this.bPCoreReady$ = true;
+        // Don't call initialRender until SdkComponentMap is fully initialized
+        this.initialRender(renderObj);
       });
-
-      sessionStorage.setItem('pCoreUsage', 'AngularSDK');
     });
+  }
+
+  initialRender(renderObj) {
+    // Change to reflect new use of arg in the callback:
+    const { props /*, domContainerID = null */ } = renderObj;
+
+    this.ngZone.run(() => {
+      this.props$ = props;
+      this.pConn$ = this.props$.getPConnect();
+      this.sComponentName$ = this.pConn$.getComponentName();
+      this.PCore$ = window.PCore;
+      this.arChildren$ = this.pConn$.getChildren();
+      this.bPCoreReady$ = true;
+    });
+
+    sessionStorage.setItem('pCoreUsage', 'AngularSDK');
   }
 }

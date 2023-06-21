@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { Utils } from '../../../_helpers/utils';
@@ -10,7 +10,7 @@ import { AssignmentCardComponent } from '../assignment-card/assignment-card.comp
   styleUrls: ['./multi-step.component.scss'],
   providers: [Utils],
   standalone: true,
-  imports: [CommonModule, AssignmentCardComponent]
+  imports: [CommonModule, forwardRef(() => AssignmentCardComponent)]
 })
 export class MultiStepComponent implements OnInit {
   @Input() pConn$: any;

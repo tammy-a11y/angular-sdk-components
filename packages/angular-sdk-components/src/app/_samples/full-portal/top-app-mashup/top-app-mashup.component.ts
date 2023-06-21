@@ -8,6 +8,9 @@ import { AuthService } from '../../../_services/auth.service';
 import { compareSdkPCoreVersions } from '../../../_helpers/versionHelpers';
 import { RootContainerComponent } from '../../../_components/infra/root-container/root-container.component';
 
+import { getSdkComponentMap } from '../../../_bridge/helpers/sdk_component_map';
+import localSdkComponentMap from '../../../../../sdk-local-component-map';
+
 declare global {
   interface Window {
     PCore: {
@@ -109,43 +112,12 @@ export class TopAppMashupComponent implements OnInit {
       // Check that we're seeing the PCore version we expect
       compareSdkPCoreVersions();
 
-      /* In react initialRender happens here */
+      // Initialize the SdkComponentMap (local and pega-provided)
+      getSdkComponentMap(localSdkComponentMap).then((theComponentMap: any) => {
+        console.log(`SdkComponentMap initialized`, theComponentMap);
 
-      // Need to register the callback function for PCore.registerComponentCreator
-      // This callback is invoked if/when you call a PConnect createComponent
-      window.PCore.registerComponentCreator((c11nEnv, additionalProps = {}) => {
-        // experiment with returning a PConnect that has deferenced the
-        // referenced View if the c11n is a 'reference' component
-        const compType = c11nEnv.getPConnect().getComponentName();
-        // console.log( `top-app-mashup: startPortal - registerComponentCreator c11nEnv type: ${compType}`);
-
-        return c11nEnv;
-
-        // REACT implementaion:
-        // const PConnectComp = createPConnectComponent();
-        // return (
-        //     <PConnectComp {
-        //       ...{
-        //         ...c11nEnv,
-        //         ...c11nEnv.getPConnect().getConfigProps(),
-        //         ...c11nEnv.getPConnect().getActions(),
-        //         additionalProps
-        //       }}
-        //     />
-        //   );
-      });
-
-      // Change to reflect new use of arg in the callback:
-      const { props } = renderObj;
-
-      // makes sure Angular tracks these changes
-      this.ngZone.run(() => {
-        this.props$ = props;
-        this.pConn$ = this.props$.getPConnect();
-        this.sComponentName$ = this.pConn$.getComponentName();
-        this.PCore$ = window.PCore;
-        this.arChildren$ = this.pConn$.getChildren();
-        this.bPCoreReady$ = true;
+        // Don't call initialRender until SdkComponentMap is fully initialized
+        this.initialRender(renderObj);
       });
     });
 
@@ -169,6 +141,47 @@ export class TopAppMashupComponent implements OnInit {
         this.availablePortals = portals;
       });
     }
+  }
+
+  initialRender(renderObj) {
+    /* In react initialRender happens here */
+
+    // Need to register the callback function for PCore.registerComponentCreator
+    // This callback is invoked if/when you call a PConnect createComponent
+    window.PCore.registerComponentCreator((c11nEnv, additionalProps = {}) => {
+      // experiment with returning a PConnect that has deferenced the
+      // referenced View if the c11n is a 'reference' component
+      const compType = c11nEnv.getPConnect().getComponentName();
+      // console.log( `top-app-mashup: startPortal - registerComponentCreator c11nEnv type: ${compType}`);
+
+      return c11nEnv;
+
+      // REACT implementaion:
+      // const PConnectComp = createPConnectComponent();
+      // return (
+      //     <PConnectComp {
+      //       ...{
+      //         ...c11nEnv,
+      //         ...c11nEnv.getPConnect().getConfigProps(),
+      //         ...c11nEnv.getPConnect().getActions(),
+      //         additionalProps
+      //       }}
+      //     />
+      //   );
+    });
+
+    // Change to reflect new use of arg in the callback:
+    const { props } = renderObj;
+
+    // makes sure Angular tracks these changes
+    this.ngZone.run(() => {
+      this.props$ = props;
+      this.pConn$ = this.props$.getPConnect();
+      this.sComponentName$ = this.pConn$.getComponentName();
+      this.PCore$ = window.PCore;
+      this.arChildren$ = this.pConn$.getChildren();
+      this.bPCoreReady$ = true;
+    });
   }
 
   showHideProgress(bShow: boolean) {
