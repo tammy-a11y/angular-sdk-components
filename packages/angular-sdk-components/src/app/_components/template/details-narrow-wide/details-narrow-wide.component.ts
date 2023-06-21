@@ -3,23 +3,20 @@ import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { MaterialDetailsComponent } from '../../designSystemExtension/material-details/material-details.component';
 
 @Component({
-  selector: 'app-details-three-column',
-  templateUrl: './details-three-column.component.html',
-  styleUrls: ['./details-three-column.component.scss'],
+  selector: 'app-details-narrow-wide',
+  templateUrl: './details-narrow-wide.component.html',
+  styleUrls: ['./details-narrow-wide.component.scss'],
   standalone: true,
   imports: [MaterialDetailsComponent]
 })
-export class DetailsThreeColumnComponent implements OnInit {
+export class DetailsNarrowWideComponent implements OnInit {
   constructor(private angularPConnect: AngularPConnectService) {}
 
   @Input() pConn$: any;
 
   arFields$: Array<any> = [];
   arFields2$: Array<any> = [];
-  arFields3$: Array<any> = [];
-
   propsToUse: any = {};
-
   // Used with AngularPConnect
   angularPConnectData: any = {};
 
@@ -63,10 +60,8 @@ export class DetailsThreeColumnComponent implements OnInit {
       let pKidData = pKid.resolveConfigProps(pKid.getRawMetadata());
       if (kids.indexOf(kid) == 0) {
         this.arFields$ = pKidData.children;
-      } else if (kids.indexOf(kid) == 1) {
-        this.arFields2$ = pKidData.children;
       } else {
-        this.arFields3$ = pKidData.children;
+        this.arFields2$ = pKidData.children;
       }
     }
   }

@@ -21,6 +21,8 @@ import { ListViewComponent } from '../../template/list-view/list-view.component'
 import { DetailsThreeColumnComponent } from '../../template/details-three-column/details-three-column.component';
 import { DetailsTwoColumnComponent } from '../../template/details-two-column/details-two-column.component';
 import { DetailsOneColumnComponent } from '../../template/details-one-column/details-one-column.component';
+import { DetailsNarrowWideComponent } from '../../template/details-narrow-wide/details-narrow-wide.component';
+import { DetailsWideNarrowComponent } from '../../template/details-wide-narrow/details-wide-narrow.component';
 import { DetailsComponent } from '../../template/details/details.component';
 import { CaseSummaryComponent } from '../../template/case-summary/case-summary.component';
 import { ThreeColumnPageComponent } from '../../template/three-column-page/three-column-page.component';
@@ -62,6 +64,8 @@ import { DefaultFormComponent } from '../../template/default-form/default-form.c
     DetailsOneColumnComponent,
     DetailsTwoColumnComponent,
     DetailsThreeColumnComponent,
+    DetailsNarrowWideComponent,
+    DetailsWideNarrowComponent,
     ListViewComponent,
     SimpleTableComponent,
     OneColumnTabComponent,
