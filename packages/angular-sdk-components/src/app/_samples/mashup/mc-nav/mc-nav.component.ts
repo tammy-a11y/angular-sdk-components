@@ -17,6 +17,9 @@ import { Utils } from '../../../_helpers/utils';
 import { compareSdkPCoreVersions } from '../../../_helpers/versionHelpers';
 import { MainScreenComponent } from '../main-screen/main-screen.component';
 
+import { getSdkComponentMap } from '../../../_bridge/helpers/sdk_component_map';
+import localSdkComponentMap from 'packages/angular-sdk-components/sdk-local-component-map';
+
 declare global {
   interface Window {
     myLoadMashup: Function;
@@ -153,46 +156,56 @@ export class MCNavComponent implements OnInit {
       // Check that we're seeing the PCore version we expect
       compareSdkPCoreVersions();
 
-      // Need to register the callback function for PCore.registerComponentCreator
-      //  This callback is invoked if/when you call a PConnect createComponent
-      this.PCore$.registerComponentCreator((c11nEnv, additionalProps = {}) => {
-        // debugger;
+      // Initialize the SdkComponentMap (local and pega-provided)
+      getSdkComponentMap(localSdkComponentMap).then((theComponentMap: any) => {
+        console.log(`SdkComponentMap initialized`, theComponentMap);
 
-        // experiment with returning a PConnect that has deferenced the
-        //  referenced View if the c11n is a 'reference' component
-        const compType = c11nEnv.getPConnect().getComponentName();
-        // console.log( `mc-nav - registerComponentCreator c11nEnv type: ${compType}`);
-
-        return c11nEnv;
-
-        // REACT implementaion:
-        // const PConnectComp = createPConnectComponent();
-        // return (
-        //     <PConnectComp {
-        //       ...{
-        //         ...c11nEnv,
-        //         ...c11nEnv.getPConnect().getConfigProps(),
-        //         ...c11nEnv.getPConnect().getActions(),
-        //         additionalProps
-        //       }}
-        //     />
-        //   );
+        // Don't call initialRender until SdkComponentMap is fully initialized
+        this.initialRender(renderObj);
       });
-
-      // Change to reflect new use of arg in the callback:
-      const { props } = renderObj;
-
-      this.pConn$ = props.getPConnect();
-
-      this.bHasPConnect$ = true;
-      this.bPConnectLoaded$ = true;
-
-      this.showHideProgress(false);
-
-      sessionStorage.setItem('pCoreUsage', 'AngularSDKMashup');
     });
 
     window.myLoadMashup('app-root', false); // this is defined in bootstrap shell that's been loaded already
+  }
+
+  initialRender(renderObj) {
+    // Need to register the callback function for PCore.registerComponentCreator
+    //  This callback is invoked if/when you call a PConnect createComponent
+    this.PCore$.registerComponentCreator((c11nEnv, additionalProps = {}) => {
+      // debugger;
+
+      // experiment with returning a PConnect that has deferenced the
+      //  referenced View if the c11n is a 'reference' component
+      const compType = c11nEnv.getPConnect().getComponentName();
+      // console.log( `mc-nav - registerComponentCreator c11nEnv type: ${compType}`);
+
+      return c11nEnv;
+
+      // REACT implementaion:
+      // const PConnectComp = createPConnectComponent();
+      // return (
+      //     <PConnectComp {
+      //       ...{
+      //         ...c11nEnv,
+      //         ...c11nEnv.getPConnect().getConfigProps(),
+      //         ...c11nEnv.getPConnect().getActions(),
+      //         additionalProps
+      //       }}
+      //     />
+      //   );
+    });
+
+    // Change to reflect new use of arg in the callback:
+    const { props } = renderObj;
+
+    this.pConn$ = props.getPConnect();
+
+    this.bHasPConnect$ = true;
+    this.bPConnectLoaded$ = true;
+
+    this.showHideProgress(false);
+
+    sessionStorage.setItem('pCoreUsage', 'AngularSDKMashup');
   }
 
   showHideProgress(bShow: boolean) {

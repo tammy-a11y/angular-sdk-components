@@ -14,6 +14,9 @@ import { compareSdkPCoreVersions } from '../../../_helpers/versionHelpers';
 import { MainContentComponent } from '../main-content/main-content.component';
 import { SideBarComponent } from '../side-bar/side-bar.component';
 
+import { getSdkComponentMap } from '../../../_bridge/helpers/sdk_component_map';
+import localSdkComponentMap from 'packages/angular-sdk-components/sdk-local-component-map';
+
 declare global {
   interface Window {
     myLoadMashup: Function;
@@ -128,93 +131,103 @@ export class NavigationComponent implements OnInit {
 
   startMashup() {
     window.PCore.onPCoreReady((renderObj) => {
-      // Check that we're seeing the PCore version we expect
-      compareSdkPCoreVersions();
+      // Initialize the SdkComponentMap (local and pega-provided)
+      getSdkComponentMap(localSdkComponentMap).then((theComponentMap: any) => {
+        console.log(`SdkComponentMap initialized`, theComponentMap);
 
-      if (!this.PCore$) {
-        this.PCore$ = window.PCore;
-      }
-
-      // Need to register the callback function for PCore.registerComponentCreator
-      //  This callback is invoked if/when you call a PConnect createComponent
-      window.PCore.registerComponentCreator((c11nEnv, additionalProps = {}) => {
-        // debugger;
-
-        // experiment with returning a PConnect that has deferenced the
-        //  referenced View if the c11n is a 'reference' component
-        const compType = c11nEnv.getPConnect().getComponentName();
-        console.log(`navigation - registerComponentCreator c11nEnv type: ${compType}`);
-
-        return c11nEnv;
-
-        // REACT implementaion:
-        // const PConnectComp = createPConnectComponent();
-        // return (
-        //     <PConnectComp {
-        //       ...{
-        //         ...c11nEnv,
-        //         ...c11nEnv.getPConnect().getConfigProps(),
-        //         ...c11nEnv.getPConnect().getActions(),
-        //         additionalProps
-        //       }}
-        //     />
-        //   );
+        // Don't call initialRender until SdkComponentMap is fully initialized
+        this.initialRender(renderObj);
       });
-
-      // Change to reflect new use of arg in the callback:
-      const { props } = renderObj;
-
-      // makes sure Angular tracks these changes
-      this.ngZone.run(() => {
-        this.pConn$ = props.getPConnect();
-
-        this.bHasPConnect$ = true;
-        this.bPConnectLoaded$ = true;
-
-        sessionStorage.setItem('pCoreUsage', 'AngularSDKMashup');
-      });
-
-      //
-      // so don't have multiple subscriptions, unsubscribe first
-      //
-      this.PCore$.getPubSubUtils().unsubscribe(
-        this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL,
-        'cancelAssignment'
-      );
-
-      this.PCore$.getPubSubUtils().unsubscribe('assignmentFinished', 'assignmentFinished');
-
-      this.PCore$.getPubSubUtils().unsubscribe('showWork', 'showWork');
-
-      //
-      // now subscribe
-      //
-      this.PCore$.getPubSubUtils().subscribe(
-        this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL,
-        () => {
-          this.cancelAssignment();
-        },
-        'cancelAssignment'
-      );
-
-      this.PCore$.getPubSubUtils().subscribe(
-        'assignmentFinished',
-        () => {
-          this.assignmentFinished();
-        },
-        'assignmentFinished'
-      );
-
-      this.PCore$.getPubSubUtils().subscribe(
-        'showWork',
-        () => {
-          this.showWork();
-        },
-        'showWork'
-      );
     });
 
     window.myLoadMashup('app-root', false); // this is defined in bootstrap shell that's been loaded already
+  }
+
+  initialRender(renderObj) {
+    // Check that we're seeing the PCore version we expect
+    compareSdkPCoreVersions();
+
+    if (!this.PCore$) {
+      this.PCore$ = window.PCore;
+    }
+
+    // Need to register the callback function for PCore.registerComponentCreator
+    //  This callback is invoked if/when you call a PConnect createComponent
+    window.PCore.registerComponentCreator((c11nEnv, additionalProps = {}) => {
+      // debugger;
+
+      // experiment with returning a PConnect that has deferenced the
+      //  referenced View if the c11n is a 'reference' component
+      const compType = c11nEnv.getPConnect().getComponentName();
+      console.log(`navigation - registerComponentCreator c11nEnv type: ${compType}`);
+
+      return c11nEnv;
+
+      // REACT implementaion:
+      // const PConnectComp = createPConnectComponent();
+      // return (
+      //     <PConnectComp {
+      //       ...{
+      //         ...c11nEnv,
+      //         ...c11nEnv.getPConnect().getConfigProps(),
+      //         ...c11nEnv.getPConnect().getActions(),
+      //         additionalProps
+      //       }}
+      //     />
+      //   );
+    });
+
+    // Change to reflect new use of arg in the callback:
+    const { props } = renderObj;
+
+    // makes sure Angular tracks these changes
+    this.ngZone.run(() => {
+      this.pConn$ = props.getPConnect();
+
+      this.bHasPConnect$ = true;
+      this.bPConnectLoaded$ = true;
+
+      sessionStorage.setItem('pCoreUsage', 'AngularSDKMashup');
+    });
+
+    //
+    // so don't have multiple subscriptions, unsubscribe first
+    //
+    this.PCore$.getPubSubUtils().unsubscribe(
+      this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL,
+      'cancelAssignment'
+    );
+
+    this.PCore$.getPubSubUtils().unsubscribe('assignmentFinished', 'assignmentFinished');
+
+    this.PCore$.getPubSubUtils().unsubscribe('showWork', 'showWork');
+
+    //
+    // now subscribe
+    //
+    this.PCore$.getPubSubUtils().subscribe(
+      this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL,
+      () => {
+        this.cancelAssignment();
+      },
+      'cancelAssignment'
+    );
+
+    this.PCore$.getPubSubUtils().subscribe(
+      'assignmentFinished',
+      () => {
+        this.assignmentFinished();
+      },
+      'assignmentFinished'
+    );
+
+    this.PCore$.getPubSubUtils().subscribe(
+      'showWork',
+      () => {
+        this.showWork();
+      },
+      'showWork'
+    );
   }
 
   logOff() {
