@@ -1,14 +1,14 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Utils } from '../../../_helpers/utils';
-import { ViewComponent } from '../../infra/view/view.component';
+import { MaterialDetailsFieldsComponent } from '../material-details-fields/material-details-fields.component';
 
 @Component({
   selector: 'app-material-details',
   templateUrl: './material-details.component.html',
   styleUrls: ['./material-details.component.scss'],
   standalone: true,
-  imports: [CommonModule, forwardRef(() => ViewComponent)]
+  imports: [CommonModule, MaterialDetailsFieldsComponent]
 })
 export class MaterialDetailsComponent implements OnInit {
   constructor(private utils: Utils) {}
@@ -16,6 +16,8 @@ export class MaterialDetailsComponent implements OnInit {
   @Input() arFields$: Array<any>;
   @Input() arFields2$: Array<any>;
   @Input() arFields3$: Array<any>;
+  @Input() arHighlightedFields: Array<any>;
+  @Input() layout: any;
 
   ngOnInit(): void {}
 

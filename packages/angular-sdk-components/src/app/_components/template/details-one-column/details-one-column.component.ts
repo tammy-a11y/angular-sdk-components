@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { FormGroup } from '@angular/forms';
 import { MaterialDetailsComponent } from '../../designSystemExtension/material-details/material-details.component';
 
 @Component({
@@ -13,6 +14,9 @@ export class DetailsOneColumnComponent implements OnInit {
   constructor(private angularPConnect: AngularPConnectService) {}
 
   @Input() pConn$: any;
+  @Input() formGroup$: FormGroup;
+  showHighlightedData: boolean;
+  highlightedDataArr: any;
 
   arFields$: Array<any> = [];
 
@@ -49,6 +53,26 @@ export class DetailsOneColumnComponent implements OnInit {
   }
 
   updateSelf() {
+    const rawMetaData = this.pConn$.resolveConfigProps(this.pConn$.getRawMetadata().config);  
+    this.showHighlightedData = rawMetaData?.showHighlightedData;
+
+    if( this.showHighlightedData ){
+      const highlightedData = rawMetaData?.highlightedData;
+      this.highlightedDataArr = highlightedData.map(field => {
+        field.config.displayMode = 'STACKED_LARGE_VAL';
+
+        if (field.config.value === '@P .pyStatusWork') {
+          field.type = 'TextInput';
+          field.config.displayAsStatus = true;
+        }
+
+        return field;
+      });
+    }
+
+    this.pConn$.setInheritedProp('displayMode', 'LABELS_LEFT');
+    this.pConn$.setInheritedProp('readOnly', true);
+
     let kids = this.pConn$.getChildren();
     for (let kid of kids) {
       let pKid = kid.getPConnect();

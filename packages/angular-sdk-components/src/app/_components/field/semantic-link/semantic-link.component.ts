@@ -2,13 +2,14 @@ import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { FieldValueListComponent } from '../../template/field-value-list/field-value-list.component';
 
 @Component({
   selector: 'app-semantic-link',
   templateUrl: './semantic-link.component.html',
   styleUrls: ['./semantic-link.component.scss'],
   standalone: true,
-  imports: [CommonModule]
+  imports: [CommonModule, FieldValueListComponent]
 })
 export class SemanticLinkComponent implements OnInit {
   @Input() pConn$: any;
@@ -19,7 +20,7 @@ export class SemanticLinkComponent implements OnInit {
 
   label$: string = '';
   value$: string = '';
-  displayMode: string;
+  displayMode$: string = '';
 
   constructor(private angularPConnect: AngularPConnectService) {}
 
@@ -49,7 +50,7 @@ export class SemanticLinkComponent implements OnInit {
   updateSelf() {
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
     this.value$ = this.configProps$['text'] || '---';
-    this.displayMode = this.configProps$['displayMode'];
+    this.displayMode$ = this.configProps$['displayMode'];
     this.label$ = this.configProps$['label'];
   }
 }

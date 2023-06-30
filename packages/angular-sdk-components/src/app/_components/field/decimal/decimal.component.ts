@@ -6,13 +6,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { TextComponent } from '../text/text.component';
+import { FieldValueListComponent } from '../../template/field-value-list/field-value-list.component';
 
 @Component({
   selector: 'app-decimal',
   templateUrl: './decimal.component.html',
   styleUrls: ['./decimal.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, TextComponent]
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, TextComponent, FieldValueListComponent]
 })
 export class DecimalComponent implements OnInit {
   @Input() pConn$: any;
@@ -28,6 +29,7 @@ export class DecimalComponent implements OnInit {
   bReadonly$: boolean = false;
   bDisabled$: boolean = false;
   bVisible$: boolean = true;
+  displayMode$: string = '';
   controlName$: string;
   bHasForm$: boolean = true;
   componentReference: string = '';
@@ -97,6 +99,7 @@ export class DecimalComponent implements OnInit {
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
     this.testId = this.configProps$['testId'];
     this.label$ = this.configProps$['label'];
+    this.displayMode$ = this.configProps$['displayMode'];
     let nValue = this.configProps$['value'];
     if (nValue) {
       if (typeof nValue == 'string') {

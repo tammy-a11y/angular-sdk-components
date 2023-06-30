@@ -8,6 +8,7 @@ import { interval } from 'rxjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { TextComponent } from '../text/text.component';
+import { FieldValueListComponent } from '../../template/field-value-list/field-value-list.component';
 
 @Component({
   selector: 'app-radio-buttons',
@@ -15,7 +16,7 @@ import { TextComponent } from '../text/text.component';
   styleUrls: ['./radio-buttons.component.scss'],
   providers: [Utils],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatRadioModule, TextComponent]
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatRadioModule, TextComponent, FieldValueListComponent]
 })
 export class RadioButtonsComponent implements OnInit {
   @Input() pConn$: any;
@@ -31,6 +32,7 @@ export class RadioButtonsComponent implements OnInit {
   bReadonly$: boolean = false;
   bDisabled$: boolean = false;
   bVisible$: boolean = true;
+  displayMode$: string = '';
   controlName$: string;
   bHasForm$: boolean = true;
   options$: Array<any>;
@@ -104,6 +106,7 @@ export class RadioButtonsComponent implements OnInit {
 
     this.testId = this.configProps$['testId'];
     this.label$ = this.configProps$['label'];
+    this.displayMode$ = this.configProps$['displayMode'];
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
