@@ -18,6 +18,7 @@ export class TextContentComponent implements OnInit {
 
   content$: string = '';
   displayAs$: string;
+  displayMode$: string = '';
 
   constructor(private angularPConnect: AngularPConnectService) {}
 
@@ -48,6 +49,7 @@ export class TextContentComponent implements OnInit {
     if (this.configProps$['displayAs'] != undefined) {
       this.displayAs$ = this.configProps$['displayAs'];
     }
+    this.displayMode$ = this.configProps$['displayMode'];
 
     // Any update to content or displayAs will re-render this component.
     //  All rendering logic is in the .html file.

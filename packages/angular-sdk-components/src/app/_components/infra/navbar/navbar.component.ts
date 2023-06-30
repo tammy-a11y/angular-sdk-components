@@ -30,9 +30,9 @@ export class NavbarComponent implements OnInit {
   navExpandCollapse$: string;
   bShowCaseTypes$: boolean = false;
 
-  portalName$: string = 'User Portal';
   portalApp$: string = '';
   portalLogoImage$: string;
+  showAppName$: boolean = false;
 
   portalOperator$: string;
   portalOperatorInitials$: string;
@@ -131,8 +131,9 @@ export class NavbarComponent implements OnInit {
       this.portalLogoImage$ = this.utils.getSDKStaticContentUrl().concat('assets/pzpega-logo-mark.svg');
       this.portalOperator$ = this.PCore$.getEnvironmentInfo().getOperatorName();
       this.portalOperatorInitials$ = this.utils.getInitials(this.portalOperator$);
+      this.showAppName$ = this.configProps['showAppName'];
 
-      this.portalApp$ = this.configProps['appName'];
+      this.portalApp$ = this.PCore$.getEnvironmentInfo().getApplicationLabel();
     });
   }
 

@@ -5,13 +5,14 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { TextComponent } from '../text/text.component';
+import { FieldValueListComponent } from '../../template/field-value-list/field-value-list.component';
 
 @Component({
   selector: 'app-check-box',
   templateUrl: './check-box.component.html',
   styleUrls: ['./check-box.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatCheckboxModule, TextComponent]
+  imports: [CommonModule, ReactiveFormsModule, MatCheckboxModule, TextComponent, FieldValueListComponent]
 })
 export class CheckBoxComponent implements OnInit {
   @Input() pConn$: any;
@@ -32,6 +33,7 @@ export class CheckBoxComponent implements OnInit {
   bReadonly$: boolean = false;
   bDisabled$: boolean = false;
   bVisible$: boolean = true;
+  displayMode$: string = '';
   controlName$: string;
   bHasForm$: boolean = true;
   componentReference: string = '';
@@ -102,6 +104,7 @@ export class CheckBoxComponent implements OnInit {
     }
     this.testId = this.configProps$['testId'];
     this.label$ = this.configProps$['label'];
+    this.displayMode$ = this.configProps$['displayMode'];
 
     this.caption$ = this.configProps$['caption'];
 

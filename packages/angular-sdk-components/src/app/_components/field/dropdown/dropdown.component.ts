@@ -8,13 +8,14 @@ import { interval } from 'rxjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { TextComponent } from '../text/text.component';
+import { FieldValueListComponent } from '../../template/field-value-list/field-value-list.component';
 
 @Component({
   selector: 'app-dropdown',
   templateUrl: './dropdown.component.html',
   styleUrls: ['./dropdown.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatSelectModule, MatOptionModule, TextComponent]
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatSelectModule, MatOptionModule, TextComponent, FieldValueListComponent]
 })
 export class DropdownComponent implements OnInit {
   @Input() pConn$: any;
@@ -30,6 +31,7 @@ export class DropdownComponent implements OnInit {
   bReadonly$: boolean = false;
   bDisabled$: boolean = false;
   bVisible$: boolean = true;
+  displayMode$: string = '';
   controlName$: string;
   bHasForm$: boolean = true;
   options$: Array<any>;
@@ -102,6 +104,7 @@ export class DropdownComponent implements OnInit {
     }
 
     this.testId = this.configProps$['testId'];
+    this.displayMode$ = this.configProps$['displayMode'];
     this.label$ = this.configProps$['label'];
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError

@@ -2,13 +2,14 @@ import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
+import { FieldValueListComponent } from '../../template/field-value-list/field-value-list.component';
 
 @Component({
   selector: 'app-text',
   templateUrl: './text.component.html',
   styleUrls: ['./text.component.scss'],
   standalone: true,
-  imports: [CommonModule]
+  imports: [CommonModule, FieldValueListComponent]
 })
 export class TextComponent implements OnInit {
   @Input() pConn$: any;
@@ -24,6 +25,7 @@ export class TextComponent implements OnInit {
   bReadonly$: boolean = false;
   bDisabled$: boolean = false;
   bVisible$: boolean = true;
+  displayMode$: string = '';
   controlName$: string;
   componentReference: string = '';
   formattedValue$: string;
@@ -68,6 +70,7 @@ export class TextComponent implements OnInit {
     }
 
     this.label$ = this.configProps$['label'];
+    this.displayMode$ = this.configProps$['displayMode'];
 
     // TDB - get formats
     switch (this.formatAs$) {

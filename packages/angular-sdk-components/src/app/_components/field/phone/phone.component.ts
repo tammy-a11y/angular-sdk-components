@@ -8,12 +8,13 @@ import { Utils } from '../../../_helpers/utils';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { handleEvent } from '../../../_helpers/event-util';
 import { TextComponent } from '../text/text.component';
+import { FieldValueListComponent } from '../../template/field-value-list/field-value-list.component';
 @Component({
   selector: 'app-phone',
   templateUrl: './phone.component.html',
   styleUrls: ['./phone.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, NgxMatIntlTelInputComponent, TextComponent]
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, NgxMatIntlTelInputComponent, TextComponent, FieldValueListComponent]
 })
 export class PhoneComponent implements OnInit {
   @Input() pConn$: any;
@@ -29,6 +30,7 @@ export class PhoneComponent implements OnInit {
   bReadonly$: boolean = false;
   bDisabled$: boolean = false;
   bVisible$: boolean = true;
+  displayMode$: string = '';
   controlName$: string;
   bHasForm$: boolean = true;
   componentReference: string = '';
@@ -102,6 +104,7 @@ export class PhoneComponent implements OnInit {
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
 
     this.label$ = this.configProps$['label'];
+    this.displayMode$ = this.configProps$['displayMode'];
     this.testId = this.configProps$['testId'];
     if (this.configProps$['value'] != undefined) {
       this.value$ = this.configProps$['value'];

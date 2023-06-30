@@ -23,7 +23,9 @@ export class FieldGroupTemplateComponent implements OnInit {
   PCore$: any;
 
   angularPConnectData: any = {};
-  label: string;
+  inheritedProps$: Object;
+  showLabel$: boolean = true;
+  label$: string;
   readonlyMode: boolean;
   contextClass: any;
   referenceList: any;
@@ -86,7 +88,15 @@ export class FieldGroupTemplateComponent implements OnInit {
   }
 
   updateSelf() {
-    this.label = this.configProps$['label'];
+    this.inheritedProps$ = this.pConn$.getInheritedProps();
+    this.label$ = this.configProps$['label'];
+    this.showLabel$ = this.configProps$['showLabel'];
+    // label & showLabel within inheritedProps takes precedence over configProps
+    this.label$ = this.inheritedProps$['label'] || this.label$;
+    this.showLabel$ = this.inheritedProps$['showLabel'] || this.showLabel$;
+
+    this.allowAddEdit = this.configProps$['allowTableEdit'];
+    
     const renderMode = this.configProps$['renderMode'];
     const displayMode = this.configProps$['displayMode'];
     this.readonlyMode = renderMode === 'ReadOnly' || displayMode === 'LABELS_LEFT';
@@ -97,25 +107,28 @@ export class FieldGroupTemplateComponent implements OnInit {
     const resolvedList = this.fieldGroupUtils.getReferenceList(this.pConn$);
     this.pageReference = `${this.pConn$.getPageReference()}${resolvedList}`;
     this.pConn$.setReferenceList(resolvedList);
+    if(this.readonlyMode){
+      this.pConn$.setInheritedProp('displayMode', 'LABELS_LEFT');
+    }
     this.referenceList = this.configProps$['referenceList'];
     if (this.prevRefLength != this.referenceList.length) {
       if (!this.readonlyMode) {
         if (this.referenceList?.length === 0 && this.allowAddEdit !== false) {
           this.addFieldGroupItem();
         }
-        let children: any = [];
-        this.referenceList?.map((item, index) => {
-          children.push({
-            id: index,
-            name:
-              this.fieldHeader === 'propertyRef'
-                ? this.getDynamicHeader(item, index)
-                : this.getStaticHeader(this.heading, index),
-            children: this.fieldGroupUtils.buildView(this.pConn$, index, lookForChildInConfig)
-          });
-        });
-        this.children = children;
       }
+      let children: any = [];
+      this.referenceList?.map((item, index) => {
+        children.push({
+          id: index,
+          name:
+            this.fieldHeader === 'propertyRef'
+              ? this.getDynamicHeader(item, index)
+              : this.getStaticHeader(this.heading, index),
+          children: this.fieldGroupUtils.buildView(this.pConn$, index, lookForChildInConfig)
+        });
+      });
+      this.children = children;
     }
     this.prevRefLength = this.referenceList.length;
   }
