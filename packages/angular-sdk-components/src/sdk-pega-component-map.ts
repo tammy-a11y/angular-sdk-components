@@ -34,6 +34,7 @@ import { ReferenceComponent } from './app/_components/infra/reference/reference.
 import { RegionComponent } from './app/_components/infra/region/region.component';
 import { RootContainerComponent } from './app/_components/infra/root-container/root-container.component';
 import { StagesComponent } from './app/_components/infra/stages/stages.component';
+import { SubTabsComponent } from './app/_components/template/sub-tabs/sub-tabs.component';
 import { ViewComponent } from './app/_components/infra/view/view.component';
 import { AppShellComponent } from './app/_components/template/app-shell/app-shell.component';
 import { CaseSummaryComponent } from './app/_components/template/case-summary/case-summary.component';
@@ -42,6 +43,7 @@ import { DataReferenceComponent } from './app/_components/template/data-referenc
 import { DefaultFormComponent } from './app/_components/template/default-form/default-form.component';
 import { DetailsThreeColumnComponent } from './app/_components/template/details-three-column/details-three-column.component';
 import { DetailsTwoColumnComponent } from './app/_components/template/details-two-column/details-two-column.component';
+import { DetailsSubTabsComponent } from './app/_components/template/details-sub-tabs/details-sub-tabs.component';
 import { DetailsComponent } from './app/_components/template/details/details.component';
 import { FieldGroupTemplateComponent } from './app/_components/template/field-group-template/field-group-template.component';
 import { ListPageComponent } from './app/_components/template/list-page/list-page.component';
@@ -109,7 +111,7 @@ const pegaSdkComponentMap = {
   DefaultForm: DefaultFormComponent,
   DeferLoad: DeferLoadComponent,
   Details: DetailsComponent,
-  //   'DetailsSubTabs': DetailsSubTabs,
+  DetailsSubTabs: DetailsSubTabsComponent,
   DetailsThreeColumn: DetailsThreeColumnComponent,
   DetailsTwoColumn: DetailsTwoColumnComponent,
   Dropdown: DropdownComponent,
@@ -156,6 +158,7 @@ const pegaSdkComponentMap = {
   //   'SubTabs': SubTabs,
   SummaryItem: MaterialSummaryItemComponent,
   SummaryList: MaterialSummaryListComponent,
+  SubTabs: SubTabsComponent,
   TextArea: TextAreaComponent,
   TextContent: TextContentComponent,
   TextInput: TextInputComponent,

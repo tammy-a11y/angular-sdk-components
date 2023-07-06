@@ -18,6 +18,7 @@
     <app-details-one-column *ngSwitchCase="'DetailsOneColumn'" [pConn$]="pConn$"></app-details-one-column>
     <app-details-two-column *ngSwitchCase="'DetailsTwoColumn'" [pConn$]="pConn$"></app-details-two-column>
     <app-details-three-column *ngSwitchCase="'DetailsThreeColumn'" [pConn$]="pConn$"></app-details-three-column>
+    <app-details-sub-tabs *ngSwitchCase="'DetailsSubTabs'" [pConn$]="pConn$"></app-details-sub-tabs>
     <app-details-narrow-wide *ngSwitchCase="'NarrowWideDetails'" [pConn$]="pConn$"></app-details-narrow-wide>
     <app-details-wide-narrow *ngSwitchCase="'WideNarrowDetails'" [pConn$]="pConn$"></app-details-wide-narrow>
     <app-list-view *ngSwitchCase="'ListView'" [pConn$]="pConn$" [bInForm$]="true"></app-list-view>
@@ -27,6 +28,7 @@
     <app-list-page *ngSwitchCase="'ListPage'" [pConn$]="pConn$"></app-list-page>
     <app-data-reference *ngSwitchCase="'DataReference'" [formGroup$]="formGroup$" [pConn$]="pConn$"></app-data-reference>
     <app-confirmation *ngSwitchCase="'Confirmation'" [pConn$]="pConn$"></app-confirmation>
+    <app-sub-tabs *ngSwitchCase="'SubTabs'" [pConn$]="pConn$"></app-sub-tabs>
     <div *ngSwitchDefault>
       <!-- show something to let us know we got an unknown templateName$ -->
       <h4 *ngIf="templateName$ !== ''">View template not recognized: [{{ templateName$ }}]</h4>
