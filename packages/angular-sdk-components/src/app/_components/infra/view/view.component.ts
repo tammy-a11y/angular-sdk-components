@@ -23,6 +23,7 @@ import { DetailsTwoColumnComponent } from '../../template/details-two-column/det
 import { DetailsOneColumnComponent } from '../../template/details-one-column/details-one-column.component';
 import { DetailsNarrowWideComponent } from '../../template/details-narrow-wide/details-narrow-wide.component';
 import { DetailsWideNarrowComponent } from '../../template/details-wide-narrow/details-wide-narrow.component';
+import { DetailsSubTabsComponent } from '../../template/details-sub-tabs/details-sub-tabs.component';
 import { DetailsComponent } from '../../template/details/details.component';
 import { CaseSummaryComponent } from '../../template/case-summary/case-summary.component';
 import { ThreeColumnPageComponent } from '../../template/three-column-page/three-column-page.component';
@@ -36,6 +37,7 @@ import { WideNarrowFormComponent } from '../../template/wide-narrow-form/wide-na
 import { NarrowWideFormComponent } from '../../template/narrow-wide-form/narrow-wide-form.component';
 import { DefaultFormComponent } from '../../template/default-form/default-form.component';
 import { ConfirmationComponent } from '../../template/confirmation/confirmation.component';
+import { SubTabsComponent } from '../../template/sub-tabs/sub-tabs.component';
 
 /**
  * WARNING:  It is not expected that this file should be modified.  It is part of infrastructure code that works with
@@ -67,6 +69,7 @@ import { ConfirmationComponent } from '../../template/confirmation/confirmation.
     DetailsThreeColumnComponent,
     DetailsNarrowWideComponent,
     DetailsWideNarrowComponent,
+    DetailsSubTabsComponent,
     ListViewComponent,
     SimpleTableComponent,
     OneColumnTabComponent,
@@ -80,6 +83,7 @@ import { ConfirmationComponent } from '../../template/confirmation/confirmation.
     FeedContainerComponent,
     AppShellComponent,
     ConfirmationComponent,
+    SubTabsComponent,
     forwardRef(() => RegionComponent)
   ]
 })
