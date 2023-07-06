@@ -3,7 +3,7 @@
     <div *ngIf="currentTabId == i">
       <app-component-mapper
         *ngIf="tab.content?.getPConnect()"
-        [type]="tab.content?.getPConnect().getComponentName()"
+        [name]="tab.content?.getPConnect().getComponentName()"
         [props]="{
           pConn$: tab.content?.getPConnect(),
           formGroup$: formGroup$
