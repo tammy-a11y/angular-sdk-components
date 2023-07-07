@@ -24,6 +24,7 @@
     <app-list-view *ngSwitchCase="'ListView'" [pConn$]="pConn$" [bInForm$]="true"></app-list-view>
     <app-simple-table *ngSwitchCase="'SimpleTable'" [pConn$]="pConn$" [formGroup$]="formGroup$"></app-simple-table>
     <app-one-column-tab *ngSwitchCase="'OneColumnTab'" [pConn$]="pConn$" [formGroup$]="formGroup$"></app-one-column-tab>
+    <app-two-column-tab *ngSwitchCase="'TwoColumnTab'" [pConn$]="pConn$" [formGroup$]="formGroup$"></app-two-column-tab>
     <app-case-view *ngSwitchCase="'CaseView'" [pConn$]="pConn$" [displayOnlyFA$]="displayOnlyFA$"></app-case-view>
     <app-list-page *ngSwitchCase="'ListPage'" [pConn$]="pConn$"></app-list-page>
     <app-data-reference *ngSwitchCase="'DataReference'" [formGroup$]="formGroup$" [pConn$]="pConn$"></app-data-reference>

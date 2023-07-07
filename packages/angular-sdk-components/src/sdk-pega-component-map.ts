@@ -61,6 +61,7 @@ import { SimpleTableComponent } from './app/_components/template/simple-table/si
 import { SingleReferenceReadonlyComponent } from './app/_components/template/single-reference-readonly/single-reference-readonly.component';
 import { TwoColumnPageComponent } from './app/_components/template/two-column-page/two-column-page.component';
 import { TwoColumnComponent } from './app/_components/template/two-column/two-column.component';
+import { TwoColumnTabComponent } from './app/_components/template/two-column-tab/two-column-tab.component';
 import { WideNarrowFormComponent } from './app/_components/template/wide-narrow-form/wide-narrow-form.component';
 import { WideNarrowPageComponent } from './app/_components/template/wide-narrow-page/wide-narrow-page.component';
 import { AppAnnouncementComponent } from './app/_components/widget/app-announcement/app-announcement.component';
@@ -168,7 +169,7 @@ const pegaSdkComponentMap = {
   Todo: TodoComponent,
   TwoColumn: TwoColumnComponent,
   TwoColumnPage: TwoColumnPageComponent,
-  //   'TwoColumnTab': TwoColumnTab,
+  TwoColumnTab: TwoColumnTabComponent,
   URL: UrlComponent,
   UserReference: UserReferenceComponent,
   VerticalTabs: MaterialVerticalTabsComponent,

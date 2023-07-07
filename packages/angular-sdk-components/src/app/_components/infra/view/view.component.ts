@@ -30,6 +30,7 @@ import { ThreeColumnPageComponent } from '../../template/three-column-page/three
 import { ThreeColumnComponent } from '../../template/three-column/three-column.component';
 import { TwoColumnPageComponent } from '../../template/two-column-page/two-column-page.component';
 import { TwoColumnComponent } from '../../template/two-column/two-column.component';
+import { TwoColumnTabComponent } from '../../template/two-column-tab/two-column-tab.component';
 import { OneColumnPageComponent } from '../../template/one-column-page/one-column-page.component';
 import { OneColumnComponent } from '../../template/one-column/one-column.component';
 import { WideNarrowPageComponent } from '../../template/wide-narrow-page/wide-narrow-page.component';
@@ -60,6 +61,7 @@ import { SubTabsComponent } from '../../template/sub-tabs/sub-tabs.component';
     OneColumnPageComponent,
     TwoColumnComponent,
     TwoColumnPageComponent,
+    TwoColumnTabComponent,
     ThreeColumnComponent,
     ThreeColumnPageComponent,
     CaseSummaryComponent,
