@@ -16,7 +16,7 @@
     </mat-toolbar>
 
     <div class="psdk-case-view-buttons">
-      <button mat-raised-button color="secondary" (click)="_editClick()">Edit</button>
+      <button *ngIf="editAction" mat-raised-button color="secondary" (click)="_editClick()">Edit</button>
       <button mat-raised-button color="secondary" [matMenuTriggerFor]="actionMenu">Actions...</button>
       <mat-menu #actionMenu="matMenu" overlapTrigger="false">
         <ng-container *ngFor="let action of arAvailableActions$">

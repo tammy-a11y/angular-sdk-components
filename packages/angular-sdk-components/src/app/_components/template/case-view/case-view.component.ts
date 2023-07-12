@@ -57,6 +57,7 @@ export class CaseViewComponent implements OnInit {
 
   caseSummaryPConn$: any;
   currentCaseID: string = '';
+  editAction: boolean;
 
   constructor(
     private cdRef: ChangeDetectorRef,
@@ -151,6 +152,7 @@ export class CaseViewComponent implements OnInit {
     let caseInfo = this.pConn$.getDataObject().caseInfo;
     this.currentCaseID = caseInfo.ID;
     this.arAvailableActions$ = caseInfo?.availableActions ? caseInfo.availableActions : [];
+    this.editAction = this.arAvailableActions$.find(action => action.ID === 'pyUpdateCaseDetails');
     this.arAvailabeProcesses$ = caseInfo?.availableProcesses ? caseInfo.availableProcesses : [];
 
     this.svgCase$ = this.utils.getImageSrc(this.configProps$['icon'], this.utils.getSDKStaticContentUrl());
