@@ -105,6 +105,14 @@ export class TopAppMashupComponent implements OnInit {
     /* Login if needed */
     const sAppName = location.pathname.substring(location.pathname.indexOf('/') + 1);
     this.aService.loginIfNecessary(sAppName, false);
+
+    /* Check if portal is specified as a query parameter */
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const portalValue = urlParams.get("portal");
+    if(portalValue){
+      sessionStorage.setItem("asdk_portalName", portalValue);
+    }
   }
 
   startPortal() {
@@ -123,9 +131,14 @@ export class TopAppMashupComponent implements OnInit {
 
     const { appPortal: thePortal, excludePortals } = this.scservice.getSdkConfigServer();
     const defaultPortal = window.PCore?.getEnvironmentInfo?.().getDefaultPortal?.();
+    const queryPortal = sessionStorage.getItem("asdk_portalName");
 
     // Note: myLoadPortal and myLoadDefaultPortal are set when bootstrapWithAuthHeader is invoked
-    if (thePortal) {
+    if(queryPortal){
+      console.log(`Loading appPortal specified as a query parameter: ${queryPortal}`);
+      window.myLoadPortal('app-root', queryPortal, []);
+    }
+    else if (thePortal) {
       console.log(`Loading specified appPortal: ${thePortal}`);
       window.myLoadPortal('app-root', thePortal, []); // this is defined in bootstrap shell that's been loaded already
     } else if (window.myLoadDefaultPortal && defaultPortal && !excludePortals.includes(defaultPortal)) {
@@ -135,7 +148,7 @@ export class TopAppMashupComponent implements OnInit {
       console.log('Loading portal selection screen');
       this.portalSelectionScreen = true;
       this.defaultPortalName = defaultPortal;
-      // Getting current user's access group's available portals list other than exluded portals (relies on Traditional DX APIs)
+      // Getting current user's access group's available portals list other than excluded portals (relies on Traditional DX APIs)
       this.scservice.getAvailablePortals().then((portals: Array<string>) => {
         this.availablePortals = portals;
       });

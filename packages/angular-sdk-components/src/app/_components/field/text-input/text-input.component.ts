@@ -30,6 +30,7 @@ export class TextInputComponent implements OnInit {
   bReadonly$: boolean = false;
   bDisabled$: boolean = false;
   bVisible$: boolean = true;
+  nMaxLength$: number;
   displayMode$: string = '';
   controlName$: string;
   testId: string = '';
@@ -100,6 +101,8 @@ export class TextInputComponent implements OnInit {
     if (this.configProps$['value'] != undefined) {
       this.value$ = this.configProps$['value'];
     }
+
+    this.nMaxLength$ = this.pConn$.getFieldMetadata(this.pConn$.getRawConfigProps()?.value)?.maxLength || -1;
 
     this.testId = this.configProps$['testId'];
 
