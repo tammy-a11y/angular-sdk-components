@@ -584,6 +584,7 @@ export class AuthService {
   };
 
   logout = () => {
+    sessionStorage.removeItem("asdk_portalName");
     return new Promise<void>((resolve) => {
       const fnClearAndResolve = () => {
         this.clearAuthMgr();
