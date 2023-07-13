@@ -163,7 +163,6 @@ export class RootContainerComponent implements OnInit {
               context: items[key].context
             }
           });
-
           setTimeout(() => {
             // makes sure Angular tracks these changes
             this.ngZone.run(() => {

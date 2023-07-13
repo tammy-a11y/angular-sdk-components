@@ -2,7 +2,6 @@ import { Component, OnInit, Input, ChangeDetectorRef, NgZone } from '@angular/co
 import { CommonModule } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatListModule } from '@angular/material/list';
-import { interval } from 'rxjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
 import { AuthService } from '../../../_services/auth.service';
@@ -47,7 +46,7 @@ export class NavbarComponent implements OnInit {
 
   constructor(
     private angularPConnect: AngularPConnectService,
-    private chRef: ChangeDetectorRef,
+    private cdRef: ChangeDetectorRef,
     private psService: ProgressSpinnerService,
     private aService: AuthService,
     private ngZone: NgZone,
@@ -114,10 +113,7 @@ export class NavbarComponent implements OnInit {
       this.navPages$ = JSON.parse(JSON.stringify(this.pages$));
 
       for (let page in this.navPages$) {
-        this.navPages$[page]['iconName'] = this.utils.getImageSrc(
-          this.navPages$[page]['pxPageViewIcon'],
-          this.utils.getSDKStaticContentUrl()
-        );
+        this.navPages$[page]['iconName'] = this.utils.getImageSrc(this.navPages$[page]['pxPageViewIcon'], this.utils.getSDKStaticContentUrl());
       }
 
       this.actionsAPI = this.pConn$.getActionsApi();
@@ -151,25 +147,18 @@ export class NavbarComponent implements OnInit {
       this.navExpandCollapse$ = this.utils.getImageSrc('plus', this.utils.getSDKStaticContentUrl());
       this.bShowCaseTypes$ = false;
     }
-
-    this.chRef.detectChanges();
+    this.cdRef.detectChanges();
   }
 
   navPanelCreateCaseType(sCaseType: string, sFlowType: string) {
+    this.psService.sendMessage(true);
+    this.navPanelCreateButtonClick();
+
     const actionInfo = {
       containerName: 'primary',
       flowType: sFlowType ? sFlowType : 'pyStartCase'
     };
-
-    this.psService.sendMessage(true);
-
     this.createWork(sCaseType, actionInfo);
-
-    let timer = interval(100).subscribe(() => {
-      this.navPanelCreateButtonClick();
-
-      timer.unsubscribe();
-    });
   }
 
   navPanelLogoutClick() {

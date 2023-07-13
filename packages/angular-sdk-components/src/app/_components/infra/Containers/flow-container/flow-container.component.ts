@@ -7,9 +7,9 @@ import { ProgressSpinnerService } from '../../../../_messages/progress-spinner.s
 import { ReferenceComponent } from '../../reference/reference.component';
 import { Utils } from '../../../../_helpers/utils';
 import { AssignmentComponent } from '../../assignment/assignment.component';
-import { TodoComponent } from '../../../widget/todo/todo.component';
 import { getToDoAssignments, showBanner } from '../flow-container/helpers';
 import { ViewComponent } from '../../../infra/view/view.component';
+import { ComponentMapperComponent } from '../../../../_bridge/component-mapper/component-mapper.component';
 
 /**
  * WARNING:  It is not expected that this file should be modified.  It is part of infrastructure code that works with
@@ -23,7 +23,7 @@ import { ViewComponent } from '../../../infra/view/view.component';
   styleUrls: ['./flow-container.component.scss'],
   providers: [Utils],
   standalone: true,
-  imports: [CommonModule, TodoComponent, MatCardModule, ViewComponent, forwardRef(() => AssignmentComponent)]
+  imports: [CommonModule, ComponentMapperComponent, MatCardModule, ViewComponent, forwardRef(() => AssignmentComponent)]
 })
 export class FlowContainerComponent implements OnInit {
   @Input() pConn$: any;
@@ -59,7 +59,7 @@ export class FlowContainerComponent implements OnInit {
   checkSvg$: string;
   TODO: any;
   bShowConfirm = false;
-  bShowBanner: boolean;
+  bShowBanner: boolean = false;
   confirm_pconn: any;
   //itemKey: string = "";   // JA - this is what Nebula/Constellation uses to pass to finishAssignment, navigateToStep
 
@@ -116,10 +116,7 @@ export class FlowContainerComponent implements OnInit {
       this.angularPConnectData.unsubscribeFn();
     }
 
-    this.PCore$.getPubSubUtils().unsubscribe(
-      this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL,
-      'cancelAssignment'
-    );
+    this.PCore$.getPubSubUtils().unsubscribe(this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL, 'cancelAssignment');
 
     this.PCore$.getPubSubUtils().unsubscribe('cancelPressed', 'cancelPressed');
   }
@@ -314,7 +311,7 @@ export class FlowContainerComponent implements OnInit {
 
     const caseActions = this.pConn$.getValue(CASE_CONSTS.CASE_INFO_ACTIONS);
     const activeActionID = this.pConn$.getValue(CASE_CONSTS.ACTIVE_ACTION_ID);
-    const activeAction = caseActions.find((action) => action.ID === activeActionID);
+    const activeAction = caseActions?.find((action) => action.ID === activeActionID);
     if (activeAction) {
       activeActionLabel = activeAction.name;
     }
@@ -469,12 +466,7 @@ export class FlowContainerComponent implements OnInit {
         });
 
         if (currentOrder.length > 0) {
-          if (
-            currentItems[key] &&
-            currentItems[key].view &&
-            type === 'single' &&
-            Object.keys(currentItems[key].view).length > 0
-          ) {
+          if (currentItems[key] && currentItems[key].view && type === 'single' && Object.keys(currentItems[key].view).length > 0) {
             // when we get here, it it because the flow action data has changed
             // from the server, and need to add to pConnect and update children
 
