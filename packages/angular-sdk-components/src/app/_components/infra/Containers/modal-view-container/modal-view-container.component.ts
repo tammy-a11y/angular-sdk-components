@@ -1,11 +1,11 @@
-import { Component, OnInit, Input, Output, EventEmitter, NgZone } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, NgZone, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import * as isEqual from 'fast-deep-equal';
 import { AngularPConnectService } from '../../../../_bridge/angular-pconnect';
 import { ProgressSpinnerService } from '../../../../_messages/progress-spinner.service';
 import { CancelAlertComponent } from '../../../field/cancel-alert/cancel-alert.component';
-import { AssignmentComponent } from '../../assignment/assignment.component';
+import { ComponentMapperComponent } from 'packages/angular-sdk-components/src/app/_bridge/component-mapper/component-mapper.component';
 
 /**
  * WARNING:  It is not expected that this file should be modified.  It is part of infrastructure code that works with
@@ -18,7 +18,7 @@ import { AssignmentComponent } from '../../assignment/assignment.component';
   templateUrl: './modal-view-container.component.html',
   styleUrls: ['./modal-view-container.component.scss'],
   standalone: true,
-  imports: [CommonModule, AssignmentComponent, CancelAlertComponent]
+  imports: [CommonModule, CancelAlertComponent, forwardRef(() => ComponentMapperComponent)]
 })
 export class ModalViewContainerComponent implements OnInit {
   @Input() pConn$: any;
@@ -99,7 +99,25 @@ export class ModalViewContainerComponent implements OnInit {
     this.angularPConnect.shouldComponentUpdate(this);
   }
 
-  ngOnChanges(): void {}
+  ngOnChanges() {
+    this.checkAndUpdate();
+  }
+
+  // Callback passed when subscribing to store change
+  onStateChange() {
+    this.checkAndUpdate();
+  }
+
+  checkAndUpdate() {
+    // Should always check the bridge to see if the component should
+    // update itself (re-render)
+    const bUpdateSelf = this.angularPConnect.shouldComponentUpdate(this);
+
+    // ONLY call updateSelf when the component should update
+    if (bUpdateSelf) {
+      this.updateSelf();
+    }
+  }
 
   ngOnDestroy(): void {
     if (this.angularPConnectData.unsubscribeFn) {
@@ -115,24 +133,9 @@ export class ModalViewContainerComponent implements OnInit {
     this.bSubscribed = false;
   }
 
-  // Callback passed when subscribing to store change
-  onStateChange() {
-    // Should always check the bridge to see if the component should
-    // update itself (re-render)
-    let bUpdateSelf = this.angularPConnect.shouldComponentUpdate(this);
-
-    // ONLY call updateSelf when the component should update
-    if (bUpdateSelf) {
-      this.updateSelf();
-    } else if (this.bShowModal$) {
-      // right now onlu get one updated when initial diaplay.  So, once modal is up
-      // let fall through and do a check with "compareCaseInfoIsDifferent" until fixed
-      //this.updateSelf();
-    }
-  }
-
   // updateSelf
   updateSelf(): void {
+    console.log('Inside updateSelf');
     // routingInfo was added as component prop in populateAdditionalProps
     let routingInfo = this.angularPConnect.getComponentProp(this, 'routingInfo');
     this.routingInfoRef['current'] = routingInfo;
@@ -214,30 +217,28 @@ export class ModalViewContainerComponent implements OnInit {
           if (newComp && caseInfo && this.compareCaseInfoIsDifferent(caseInfo)) {
             this.psService.sendMessage(false);
 
-            this.ngZone.run(() => {
-              this.createdViewPConn$ = newComp;
-              const newConfigProps = newComp.getConfigProps();
-              this.templateName$ = 'template' in newConfigProps ? newConfigProps['template'] : '';
+            this.createdViewPConn$ = newComp;
+            const newConfigProps = newComp.getConfigProps();
+            this.templateName$ = 'template' in newConfigProps ? newConfigProps['template'] : '';
 
-              const { actionName, isMinimizable } = latestItem;
-              const caseInfo = newComp.getCaseInfo();
-              const caseName = caseInfo.getName();
-              const ID = caseInfo.getID();
+            const { actionName, isMinimizable } = latestItem;
+            const caseInfo = newComp.getCaseInfo();
+            const caseName = caseInfo.getName();
+            const ID = caseInfo.getID();
 
-              this.title$ = actionName || `New ${caseName} (${ID})`;
-              // // update children with new view's children
-              this.arChildren$ = newComp.getChildren();
-              this.bShowModal$ = true;
+            this.title$ = actionName || `New ${caseName} (${ID})`;
+            // // update children with new view's children
+            this.arChildren$ = newComp.getChildren();
+            this.bShowModal$ = true;
 
-              // for when non modal
-              this.modalVisibleChange.emit(this.bShowModal$);
+            // for when non modal
+            this.modalVisibleChange.emit(this.bShowModal$);
 
-              // save off itemKey to be used for finishAssignment, etc.
-              this.itemKey$ = key;
+            // save off itemKey to be used for finishAssignment, etc.
+            this.itemKey$ = key;
 
-              // cause a change for assignment
-              this.updateToken$ = new Date().getTime();
-            });
+            // cause a change for assignment
+            this.updateToken$ = new Date().getTime();
           }
         }
       } else {
