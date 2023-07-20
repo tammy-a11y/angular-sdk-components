@@ -30,10 +30,16 @@ export class DatapageService {
     return response.pxResults;
   }
 
-  getDataPageData(dataPageName, context) {
+  getDataPageData(dataPageName, parameters, context) {
+    let dataViewParams;
+    if(parameters){
+      dataViewParams = {
+        'dataViewParameters': parameters
+      };
+    }
     return new Promise((resolve, reject) => {
       window.PCore.getDataApiUtils()
-        .getData(dataPageName, null, context)
+        .getData(dataPageName, dataViewParams, context)
         .then((response) => {
           resolve(response.data.data);
         })
