@@ -9,6 +9,7 @@ import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { TextComponent } from '../text/text.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { handleEvent } from '../../../_helpers/event-util';
 
 @Component({
   selector: 'app-dropdown',
@@ -31,7 +32,7 @@ export class DropdownComponent implements OnInit {
 
   // Used with AngularPConnect
   angularPConnectData: any = {};
-  configProps$: Object;
+  configProps$: any;
 
   label$: string = '';
   value$: string = '';
@@ -45,7 +46,8 @@ export class DropdownComponent implements OnInit {
   options$: Array<any>;
   componentReference: string = '';
   testId: string = '';
-
+  helperText: string;
+  hideLabel: any;
   fieldControl = new FormControl('', null);
 
   constructor(private angularPConnect: AngularPConnectService, private cdRef: ChangeDetectorRef, private utils: Utils) {}
@@ -110,7 +112,8 @@ export class DropdownComponent implements OnInit {
     this.testId = this.configProps$['testId'];
     this.displayMode$ = this.configProps$['displayMode'];
     this.label$ = this.configProps$['label'];
-
+    this.helperText = this.configProps$['helperText'];
+    this.hideLabel = this.configProps$['hideLabel']
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
       if (this.configProps$['required'] != null) {
@@ -169,7 +172,12 @@ export class DropdownComponent implements OnInit {
     if (event?.value === 'Select') {
       event.value = '';
     }
-    this.angularPConnectData.actions.onChange(this, event);
+    const actionsApi = this.pConn$?.getActionsApi();
+    const propName = this.pConn$?.getStateProps().value;
+    handleEvent(actionsApi, 'changeNblur', propName, event.value);
+    if (this.configProps$?.onRecordChange) {
+      this.configProps$.onRecordChange(event)
+    }
   }
 
   fieldOnClick(event: any) {}

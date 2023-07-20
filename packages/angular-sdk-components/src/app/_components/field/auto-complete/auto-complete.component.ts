@@ -10,6 +10,8 @@ import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { TextComponent } from '../text/text.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { DatapageService } from '../../../_services/datapage.service';
+import { handleEvent } from '../../../_helpers/event-util';
 
 @Component({
   selector: 'app-auto-complete',
@@ -34,7 +36,7 @@ export class AutoCompleteComponent implements OnInit {
   // Used with AngularPConnect
   angularPConnectData: any = {};
   PCore$: any;
-  configProps$: Object;
+  configProps$: any;
 
   label$: string = '';
   value$: string = '';
@@ -50,10 +52,12 @@ export class AutoCompleteComponent implements OnInit {
   testId: string;
   listType: string;
   columns = [];
-
+  helperText: string;
   fieldControl = new FormControl('', null);
+  parameters: {};
+  hideLabel: any;
 
-  constructor(private angularPConnect: AngularPConnectService, private cdRef: ChangeDetectorRef, private utils: Utils) {}
+  constructor(private angularPConnect: AngularPConnectService, private cdRef: ChangeDetectorRef, private utils: Utils, private dataPageService: DatapageService,) { }
 
   ngOnInit(): void {
     // First thing in initialization is registering and subscribing to the AngularPConnect service
@@ -123,8 +127,40 @@ export class AutoCompleteComponent implements OnInit {
     this.displayMode$ = this.configProps$['displayMode'];
     this.listType = this.configProps$['listType'];
     const displayMode = this.configProps$['displayMode'];
-    const datasource = this.configProps$['datasource'];
-    const columns = this.configProps$['columns'];
+    let datasource = this.configProps$['datasource'];
+    let columns = this.configProps$['columns'];
+    this.hideLabel = this.configProps$['hideLabel']
+    const { deferDatasource, datasourceMetadata } = this.configProps$;
+    this.helperText = this.configProps$['helperText'];
+    this.parameters = this.configProps$?.parameters;
+    const context = this.pConn$.getContextName();
+    // convert associated to datapage listtype and transform props
+    // Process deferDatasource when datapage name is present. WHhen tableType is promptList / localList
+    if (deferDatasource && datasourceMetadata?.datasource?.name) {
+      this.listType = 'datapage';
+      datasource = datasourceMetadata.datasource.name;
+      this.parameters = this.flattenParameters(datasourceMetadata?.datasource?.parameters);
+      const displayProp =
+        datasourceMetadata.datasource.propertyForDisplayText.startsWith('@P')
+          ? datasourceMetadata.datasource.propertyForDisplayText.substring(3)
+          : datasourceMetadata.datasource.propertyForDisplayText;
+      const valueProp = datasourceMetadata.datasource.propertyForValue.startsWith('@P')
+        ? datasourceMetadata.datasource.propertyForValue.substring(3)
+        : datasourceMetadata.datasource.propertyForValue;
+      columns = [
+        {
+          key: 'true',
+          setProperty: 'Associated property',
+          value: valueProp
+        },
+        {
+          display: 'true',
+          primary: 'true',
+          useForSearch: true,
+          value: displayProp
+        }
+      ];
+    }
     if (columns) {
       this.columns = this.preProcessColumns(columns);
     }
@@ -161,20 +197,18 @@ export class AutoCompleteComponent implements OnInit {
     }
 
     if (!displayMode && this.listType !== 'associated') {
-      const workListData = this.PCore$.getDataApiUtils().getData(datasource, {});
-
-      workListData.then((workListJSON: Object) => {
+      this.dataPageService.getDataPageData(datasource, this.parameters, context).then((results: any) => {
         const optionsData: Array<any> = [];
-        const results = workListJSON['data'].data;
         const displayColumn = this.getDisplayFieldsMetaData(this.columns);
         results?.forEach((element) => {
           const obj = {
-            key: element.pyGUID || element[displayColumn.primary],
+            key: element[displayColumn.key] || element.pyGUID,
             value: element[displayColumn.primary]?.toString()
           };
           optionsData.push(obj);
         });
         this.options$ = optionsData;
+
       });
     }
 
@@ -188,6 +222,17 @@ export class AutoCompleteComponent implements OnInit {
       });
     }
   }
+
+  flattenParameters(params = {}) {
+    const flatParams = {};
+    Object.keys(params).forEach((key) => {
+      const { name, value: theVal } = params[key];
+      flatParams[name] = theVal;
+    });
+
+    return flatParams;
+  }
+
 
   getDisplayFieldsMetaData(columnList) {
     const displayColumns = columnList.filter((col) => col.display === 'true');
@@ -232,7 +277,7 @@ export class AutoCompleteComponent implements OnInit {
     this.angularPConnectData.actions.onChange(this, event);
   }
 
-  fieldOnClick(event: any) {}
+  fieldOnClick(event: any) { }
 
   fieldOnBlur(event: any) {
     let key = '';
@@ -241,11 +286,14 @@ export class AutoCompleteComponent implements OnInit {
       key = index > -1 ? (key = this.options$[index].key) : event.target.value;
     }
 
-    const eve = {
-      value: key
-    };
-    // PConnect wants to use eventHandler for onBlur
-    this.angularPConnectData.actions.onChange(this, eve);
+    const value = key;
+    const actionsApi = this.pConn$?.getActionsApi();
+    const propName = this.pConn$?.getStateProps().value;
+    handleEvent(actionsApi, 'changeNblur', propName, value);
+    if (this.configProps$?.onRecordChange) {
+      event.target.value = value;
+      this.configProps$.onRecordChange(event)
+    }
   }
 
   getErrorMessage() {
