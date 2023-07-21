@@ -1,5 +1,5 @@
 <div *ngIf="displayMode$; else noDisplayMode">
-  <component-mapper name="FieldValueList" [props]="{ label$, value$, displayMode$ }"></component-mapper>
+  <component-mapper name="FieldValueList" [props]="{ label$, value$, displayMode$, hideLabel }"></component-mapper>
 </div>
 <ng-template #noDisplayMode>
   <div *ngIf="!bReadonly$ && bHasForm$; else noEdit">
@@ -17,6 +17,7 @@
           </mat-option>
         </mat-select>
         <mat-label>{{ label$ }}</mat-label>
+        <mat-hint>{{helperText}}</mat-hint>
         <mat-error *ngIf="fieldControl.invalid">{{ getErrorMessage() }}</mat-error>
       </mat-form-field>
     </div>

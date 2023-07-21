@@ -13,6 +13,7 @@ export class FieldValueListComponent implements OnInit{
   @Input() label$: any;
   @Input() value$: any;
   @Input() displayMode$: any;
+  @Input() hideLabel: boolean;
   PCore$: any;
 
   angularPConnectData: any = {};
