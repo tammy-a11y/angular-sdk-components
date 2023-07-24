@@ -2,6 +2,11 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "paths": {
+      "ang-sdk-comps": [
+        "dist/ang-sdk-comps"
+      ]
+    },
     "baseUrl": "./",
     "outDir": "./packages/angular-sdk-components/lib",
     "forceConsistentCasingInFileNames": true,
@@ -13,6 +18,7 @@
     "experimentalDecorators": true,
     "moduleResolution": "node",
     "importHelpers": true,
+    "allowSyntheticDefaultImports": true,
     "target": "ES2022",
     "module": "ES2022",
     "useDefineForClassFields": false,

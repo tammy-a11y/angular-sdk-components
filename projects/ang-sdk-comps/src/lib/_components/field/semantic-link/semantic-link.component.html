@@ -1,0 +1,14 @@
+<div *ngIf="displayMode$; else noDisplayMode">
+  <app-field-value-list
+    [label$]="label$"
+    [value$]="value$"
+    [displayMode$]="displayMode$"
+  ></app-field-value-list>
+</div>
+
+<ng-template #noDisplayMode>
+  <div *ngIf="label$ !== undefined" class="psdk-grid-filter">
+    <div class="psdk-grid-label">{{ label$ }}</div>
+    <div class="psdk-value">{{ value$ || "---" }}</div>
+  </div>
+</ng-template>
