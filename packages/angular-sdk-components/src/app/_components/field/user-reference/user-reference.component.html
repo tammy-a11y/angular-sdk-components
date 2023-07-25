@@ -4,7 +4,7 @@
     <component-mapper name="Operator" [props]="{ name$: userName$, label$, id$: userID$ }"></component-mapper>
   </div>
   <div [formGroup]="formGroup$" *ngIf="type === 'dropdown'">
-    <mat-form-field class="psdk-full-width">
+    <mat-form-field class="psdk-full-width" subscriptSizing="dynamic" [hintLabel]="helperText">
       <mat-select
         [value]="value$"
         [required]="bRequired$"
@@ -23,7 +23,7 @@
     </mat-form-field>
   </div>
   <div [formGroup]="formGroup$" *ngIf="type === 'searchbox'">
-    <mat-form-field class="psdk-full-width">
+    <mat-form-field class="psdk-full-width" subscriptSizing="dynamic" [hintLabel]="helperText">
       <mat-label>{{ label$ }}</mat-label>
       <input
         matInput
