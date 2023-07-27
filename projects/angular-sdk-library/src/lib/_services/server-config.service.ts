@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Utils } from '../_helpers/utils';
-import { endpoints } from '../_services/endpoints';
+import { endpoints } from './endpoints';
 
 declare const window: any; 
 

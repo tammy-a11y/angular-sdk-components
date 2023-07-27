@@ -1,10 +1,10 @@
 /*
- * Public API Surface of ang-sdk-comps
+ * Public API Surface of angular-sdk-library
  */
 
-export * from './lib/ang-sdk-comps.service';
-export * from './lib/ang-sdk-comps.component';
-export * from './lib/ang-sdk-comps.module';
+export * from './lib/angular-sdk-library.service';
+export * from './lib/angular-sdk-library.component';
+export * from './lib/angular-sdk-library.module';
 
 // /* eslint-disable export/export */
 export * from './lib/_bridge/component-mapper/component-mapper.component';

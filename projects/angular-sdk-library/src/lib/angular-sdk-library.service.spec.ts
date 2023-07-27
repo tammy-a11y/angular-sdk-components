@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { AngSdkCompsService } from './ang-sdk-comps.service';
+import { AngSdkCompsService } from './angular-sdk-library.service';
 
 describe('AngSdkCompsService', () => {
   let service: AngSdkCompsService;

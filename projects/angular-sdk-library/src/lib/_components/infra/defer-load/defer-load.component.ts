@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, ChangeDetectorRef, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
-import { ReferenceComponent } from '../../infra/reference/reference.component';
+import { ReferenceComponent } from '../reference/reference.component';
 import { ViewComponent } from '../view/view.component';
 
 /**

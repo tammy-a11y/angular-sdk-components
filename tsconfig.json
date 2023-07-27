@@ -3,8 +3,8 @@
   "compileOnSave": false,
   "compilerOptions": {
     "paths": {
-      "ang-sdk-comps": [
-        "dist/ang-sdk-comps"
+      "angular-sdk-library": [
+        "dist/angular-sdk-library"
       ]
     },
     "baseUrl": "./",

@@ -4,7 +4,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { interval, Subscription } from 'rxjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
-import { ReferenceComponent } from '../../infra/reference/reference.component';
+import { ReferenceComponent } from '../reference/reference.component';
 import { PreviewViewContainerComponent } from '../Containers/preview-view-container/preview-view-container.component';
 import { ModalViewContainerComponent } from '../Containers/modal-view-container/modal-view-container.component';
 import { HybridViewContainerComponent } from '../Containers/hybrid-view-container/hybrid-view-container.component';

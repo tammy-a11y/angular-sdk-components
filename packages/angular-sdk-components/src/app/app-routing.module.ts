@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { TopAppComponent } from 'ang-sdk-comps';
-import { TopAppMashupComponent } from 'ang-sdk-comps';
-import { NavigationComponent } from 'ang-sdk-comps';
-import { MCNavComponent } from 'ang-sdk-comps';
-import { endpoints } from 'ang-sdk-comps';
+import { TopAppComponent } from '../../../../projects/angular-sdk-library/src/lib/_components/designSystemExtension/top-app/top-app.component';
+import { TopAppMashupComponent } from '../../../../projects/angular-sdk-library/src/lib/_samples/full-portal/top-app-mashup/top-app-mashup.component';
+import { NavigationComponent } from '../../../../projects/angular-sdk-library/src/lib/_samples/simple-portal/navigation/navigation.component';
+import { MCNavComponent } from '../../../../projects/angular-sdk-library/src/lib/_samples/mashup/mc-nav/mc-nav.component';
+import { endpoints } from '../../../../projects/angular-sdk-library/src/lib/_services/endpoints';
 
 // Adding path to remove "Cannot match routes" error at launch
 //  Tried this at one point... Need to add /app in path now...

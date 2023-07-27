@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'lib-ang-sdk-comps',
+  selector: 'lib-angular-sdk-library',
   template: `
     <p>
-      ang-sdk-comps works!
+      angular-sdk-library works!
     </p>
   `,
   styles: [

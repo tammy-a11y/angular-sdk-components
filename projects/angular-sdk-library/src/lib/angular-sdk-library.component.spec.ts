@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AngSdkCompsComponent } from './ang-sdk-comps.component';
+import { AngSdkCompsComponent } from './angular-sdk-library.component';
 
 describe('AngSdkCompsComponent', () => {
   let component: AngSdkCompsComponent;

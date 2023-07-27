@@ -8,8 +8,8 @@ import { ReferenceComponent } from '../../reference/reference.component';
 import { Utils } from '../../../../_helpers/utils';
 import { AssignmentComponent } from '../../assignment/assignment.component';
 import { TodoComponent } from '../../../widget/todo/todo.component';
-import { getToDoAssignments, showBanner } from '../flow-container/helpers';
-import { ViewComponent } from '../../../infra/view/view.component';
+import { getToDoAssignments, showBanner } from './helpers';
+import { ViewComponent } from '../../view/view.component';
 
 /**
  * WARNING:  It is not expected that this file should be modified.  It is part of infrastructure code that works with
