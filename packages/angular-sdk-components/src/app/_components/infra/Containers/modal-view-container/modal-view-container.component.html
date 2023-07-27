@@ -3,7 +3,7 @@
     <h3 *ngIf="title$ != ''">{{ title$ }}</h3>
     <component-mapper
       name="Assignment"
-      [props]="{ pConn$: createdViewPConn$, formGroup$, arChildren$, itemKey$, isCreateStage$: true, updateToken$ }"
+      [props]="{ pConn$: createdViewPConn$, formGroup$, arChildren$, itemKey$, isCreateStage$: true, updateToken$, isInModal$: true }"
     ></component-mapper>
   </div>
 </div>

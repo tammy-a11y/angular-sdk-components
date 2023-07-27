@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 import { Component, OnInit, Input, SimpleChange, NgZone, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
@@ -23,6 +24,7 @@ export class AssignmentComponent implements OnInit {
   @Input() itemKey$: string;
   @Input() isCreateStage$: boolean;
   @Input() updateToken$: number;
+  @Input() isInModal$: boolean = false;
 
   // For interaction with AngularPConnect
   angularPConnectData: any = {};
@@ -347,8 +349,13 @@ export class AssignmentComponent implements OnInit {
         case 'cancelAssignment':
           this.bReInit = true;
           this.erService.sendMessage('dismiss', '');
+          const isAssignmentInCreateStage = this.pConn$.getCaseInfo().isAssignmentInCreateStage();
+          const isLocalAction =
+            this.pConn$.getCaseInfo().isLocalAction() ||
+            (PCore.getConstants().CASE_INFO.IS_LOCAL_ACTION &&
+              this.pConn$.getValue(PCore.getConstants().CASE_INFO.IS_LOCAL_ACTION));
           // check if create stage (modal)
-          if (this.isCreateStage$) {
+          if (isAssignmentInCreateStage && this.isInModal$ && !isLocalAction) {
             const cancelPromise = this.cancelCreateStageAssignment(this.itemKey$);
             cancelPromise
               .then(() => {

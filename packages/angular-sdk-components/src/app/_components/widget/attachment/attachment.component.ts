@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, NgZone, forwardRef } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -16,6 +17,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
 })
 export class AttachmentComponent implements OnInit {
   @Input() pConn$: any;
+  @Input() formGroup$: FormGroup;
 
   // For interaction with AngularPConnect
   angularPConnectData: any = {};
