@@ -10,11 +10,11 @@
     "import/resolver": {
       "typescript": {},
       "node": {
-        "extensions": [".js", ".jsx"]
+        "extensions": [".js", ".jsx", ".ts"]
       }
     }
   },
-  "ignorePatterns": ["node_modules", "packages/*/lib", "!.storybook", ".storybook/public"],
+  "ignorePatterns": ["node_modules", "!.storybook", ".storybook/public"],
   "rules": {
 
     // Prettier recommends running separately from a linter.
@@ -95,7 +95,7 @@
     "sonarjs/prefer-single-boolean-return": "off",
     "@typescript-eslint/no-shadow": "off",
     "array-callback-return": "off",
-    "camelcase": "error",
+    "camelcase":"error",
     "default-case": "off",
     "func-names": "error",
     "no-case-declarations": "error",

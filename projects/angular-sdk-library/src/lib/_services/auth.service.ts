@@ -541,7 +541,6 @@ export class AuthService {
     }
 
     // If this is the login redirect with auth code
-    // eslint-disable-next-line @typescript-eslint/prefer-includes
     if (window.location.href.indexOf('?code') !== -1) {
       // initialize authMgr
       this.initOAuth(false);

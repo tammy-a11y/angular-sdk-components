@@ -1,3 +1,5 @@
+/* eslint-disable import/export */
+
 /*
  * Public API Surface of angular-sdk-library
  */
@@ -6,7 +8,7 @@ export * from './lib/angular-sdk-library.service';
 export * from './lib/angular-sdk-library.component';
 export * from './lib/angular-sdk-library.module';
 
-// /* eslint-disable export/export */
+
 export * from './lib/_bridge/component-mapper/component-mapper.component';
 export * from './lib/_bridge/helpers/sdk_component_map';
 export * from './lib/_components/field/auto-complete/auto-complete.component';
