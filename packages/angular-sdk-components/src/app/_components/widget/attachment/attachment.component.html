@@ -2,9 +2,9 @@
   <span class="psdk-label-wrapper-readonly">
     <label class="psdk-label-readonly">{{ label$ }}</label>
   </span>
-  <div class="psdk-modal-file-selector" *ngIf="bShowSelector$">
+  <div class="psdk-modal-file-selector" id="attachment-container" *ngIf="bShowSelector$">
     <mat-spinner *ngIf="bLoading$" class="progress-spinner" diameter="40"></mat-spinner>
-    <input hidden type="file" #uploader id="upload-input" (change)="uploadMyFiles($event)" />
+    <input hidden type="file" [required]="bRequired$" #uploader [id]="att_valueRef" (change)="uploadMyFiles($event)" />
 
     <button mat-stroked-button color="primary" [disabled]="bDisabled$" (click)="uploader.click()">Upload file</button>
   </div>
