@@ -112,7 +112,7 @@ test.describe('E2E test', () => {
 
     await Promise.all([
       page.waitForResponse(
-        `${endpoints.serverConfig.appAlias ? `/app/${endpoints.serverConfig.appAlias}` : ''}/api/application/v2/attachments/upload`
+        `${endpoints.serverConfig.infinityRestServerUrl}${endpoints.serverConfig.appAlias ? `/app/${endpoints.serverConfig.appAlias}` : ''}/api/application/v2/attachments/upload`
       )
     ]);
 
@@ -120,7 +120,7 @@ test.describe('E2E test', () => {
 
     await Promise.all([
       page.waitForResponse(
-        `${endpoints.serverConfig.appAlias ? `/app/${endpoints.serverConfig.appAlias}` : ''}/api/application/v2/cases/${currentCaseID}/attachments`
+        `${endpoints.serverConfig.infinityRestServerUrl}${endpoints.serverConfig.appAlias ? `/app/${endpoints.serverConfig.appAlias}` : ''}/api/application/v2/cases/${currentCaseID}/attachments`
       )
     ]);
 

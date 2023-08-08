@@ -43,6 +43,8 @@ export class AttachmentComponent implements OnInit {
   myFiles: any;
   fileTemp: any = {};
   caseID: any;
+  status: any;
+  validatemessage: any = '';
 
   constructor(private angularPConnect: AngularPConnectService, private utils: Utils, private ngZone: NgZone) {}
 
@@ -66,27 +68,22 @@ export class AttachmentComponent implements OnInit {
   checkAndUpdate() {
     // Should always check the bridge to see if the component should
     // update itself (re-render)
-    // const bUpdateSelf = this.angularPConnect.shouldComponentUpdate(this);
+    const bUpdateSelf = this.angularPConnect.shouldComponentUpdate(this);
 
     // ONLY call updateSelf when the component should update
-    // if (bUpdateSelf) {
-    //   this.updateSelf();
-    // }
+    if (bUpdateSelf) {
+      this.updateSelf();
+    }
   }
 
   ngOnDestroy(): void {
     // this.att_id = '';
 
-    console.log(this.bShowSelector$);
-    console.log(this.bShowJustDelete$)
-    console.log(this.bLoading$);
-    console.log(this.arFileList$);
-
     if (this.angularPConnectData.unsubscribeFn) {
       this.angularPConnectData.unsubscribeFn();
     }
 
-    // this.PCore$.getPubSubUtils().unsubscribe(this.PCore$.getConstants().PUB_SUB_EVENTS.CASE_EVENTS.ASSIGNMENT_SUBMISSION, this.caseID);
+    this.PCore$.getPubSubUtils().unsubscribe(this.PCore$.getConstants().PUB_SUB_EVENTS.CASE_EVENTS.ASSIGNMENT_SUBMISSION, this.caseID);
   }
 
   // Callback passed when subscribing to store change
@@ -96,6 +93,7 @@ export class AttachmentComponent implements OnInit {
 
   updateSelf() {
     let configProps: any = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    let stateProps: any = this.pConn$.getStateProps();
 
     const { value, validatemessage, label, helperText } = configProps;
 
@@ -117,6 +115,8 @@ export class AttachmentComponent implements OnInit {
 
     this.label$ = label;
     this.value$ = value;
+    this.status = stateProps.status;
+    this.validatemessage = stateProps.validateMessage;
 
     /* this is a temporary fix because required is supposed to be passed as a boolean and NOT as a string */
     let { required, disabled } = configProps;
@@ -204,13 +204,13 @@ export class AttachmentComponent implements OnInit {
     }
     this.PCore$.getPubSubUtils().subscribe(
       this.PCore$.getConstants().PUB_SUB_EVENTS.CASE_EVENTS.ASSIGNMENT_SUBMISSION,
-      this.resetAttachmentStoredState,
+      this.resetAttachmentStoredState.bind(this),
       this.caseID
     );
   }
 
   resetAttachmentStoredState(){
-    this.PCore$.getStateUtils().updateState(this.pConn$.getContextName(), this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''), undefined, {
+    this.PCore$?.getStateUtils().updateState(this.pConn$.getContextName(), this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''), undefined, {
       pageReference: 'context_data',
       isArrayDeepMerge: false
     });
@@ -394,10 +394,7 @@ export class AttachmentComponent implements OnInit {
         .catch((error) => {
           // just catching the rethrown error at uploadAttachment
           // to handle Unhandled rejections
-          alert("Attachment upload failed");
 
-          
-          
           this.bShowJustDelete$ = true;
           this.bLoading$ = false
             this.bShowSelector$ = false;
