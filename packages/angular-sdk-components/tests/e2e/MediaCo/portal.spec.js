@@ -107,17 +107,20 @@ test.describe('E2E test', () => {
 
     const currentCaseID = await page.locator('div[id="current-caseID"]').textContent();
     const filePath = path.join(__dirname, '../../../src/assets/cableinfo.png');
-    await page.setInputFiles('#upload-input', filePath);
+    const attachInputId = await page.locator('div[id="attachment-container"] >> input').getAttribute('id');
+    await page.setInputFiles(`#${attachInputId}`, filePath);
 
     await Promise.all([
-      page.waitForResponse(`${endpoints.serverConfig.infinityRestServerUrl}/api/application/v2/attachments/upload`)
+      page.waitForResponse(
+        `${endpoints.serverConfig.infinityRestServerUrl}${endpoints.serverConfig.appAlias ? `/app/${endpoints.serverConfig.appAlias}` : ''}/api/application/v2/attachments/upload`
+      )
     ]);
 
     await page.locator('button:has-text("submit")').click();
 
     await Promise.all([
       page.waitForResponse(
-        `${endpoints.serverConfig.infinityRestServerUrl}/api/application/v2/cases/${currentCaseID}/attachments`
+        `${endpoints.serverConfig.infinityRestServerUrl}${endpoints.serverConfig.appAlias ? `/app/${endpoints.serverConfig.appAlias}` : ''}/api/application/v2/cases/${currentCaseID}/attachments`
       )
     ]);
 
@@ -149,9 +152,7 @@ test.describe('E2E test', () => {
     await page.locator('text=Thank you! The next step in this case has been routed appropriately.').click();
   }, 10000);
 
-  test('should modify(if required) the actual services/packages to be installed and resolve the case', async ({
-    page
-  }) => {
+  test('should modify(if required) the actual services/packages to be installed and resolve the case', async ({ page }) => {
     await common.Login(config.config.apps.mediaCo.tech.username, config.config.apps.mediaCo.tech.password, page);
 
     const announcementBanner = page.locator('h2:has-text("Announcements")');

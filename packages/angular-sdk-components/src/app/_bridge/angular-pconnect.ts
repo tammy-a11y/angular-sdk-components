@@ -357,12 +357,12 @@ export class AngularPConnectService {
     //console.log("current props: " + currentPropsAsStr);
 
     if (bRet) {
-      //console.log(`**** change for: ${inComp.constructor.name}`);
-      //console.log("current props: " + currentPropsAsStr);
+      // console.log(`**** change for: ${inComp.constructor.name}`);
+      // console.log("current props: " + currentPropsAsStr);
       // console.log("incoming props: " + incomingPropsAsStr);
-      //console.log(`    ${inComp.constructor.name}: shouldComponentUpdate returning: ${bRet}, compId: ${compID}` );
-      //console.log( `    Updating with componentProps for ${inComp.constructor.name}: ${JSON.stringify(this.componentPropsArr[compID])}`);
-      //console.log( `          and validateMessage: ${inComp.validateMessage}`);
+      // console.log(`    ${inComp.constructor.name}: shouldComponentUpdate returning: ${bRet}, compId: ${compID}` );
+      // console.log( `    Updating with componentProps for ${inComp.constructor.name}: ${JSON.stringify(this.componentPropsArr[compID])}`);
+      // console.log( `          and validateMessage: ${inComp.validateMessage}`);
     }
     // else if (inComp.constructor.name.indexOf("View") >= 0 || inComp.constructor.name.indexOf("Root") >= 0) {
     //   console.log("no change");
