@@ -25,6 +25,7 @@ export class AssignmentComponent implements OnInit {
   @Input() isCreateStage$: boolean;
   @Input() updateToken$: number;
   @Input() isInModal$: boolean = false;
+  @Input() banners;
 
   // For interaction with AngularPConnect
   angularPConnectData: any = {};
@@ -216,8 +217,8 @@ export class AssignmentComponent implements OnInit {
 
       //this.containerName$ = oWorkMeta["name"];
 
-      if (oWorkData.caseInfo && oWorkData.caseInfo.assignments != null) {
-        this.containerName$ = oWorkData.caseInfo.assignments[0].name;
+      if (oWorkData.caseInfo && oWorkData.caseInfo.assignments !== null) {
+        this.containerName$ = oWorkData.caseInfo.assignments?.[0].name;
 
         // get caseInfo
         let oCaseInfo = oData.caseInfo;
