@@ -117,8 +117,7 @@ export class CaseViewComponent implements OnInit {
       if(this.bHasNewAttachments){
         this.PCore$.getPubSubUtils().publish(
           this.PCore$.getEvents().getCaseEvent().CASE_ATTACHMENTS_UPDATED_FROM_CASEVIEW,
-          this.updateSelf.bind(this),
-          "caseAttachmentsUpdateFromCaseview"
+          true
         );
       }
     }
