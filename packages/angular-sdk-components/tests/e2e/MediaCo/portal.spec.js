@@ -110,6 +110,8 @@ test.describe('E2E test', () => {
     const attachInputId = await page.locator('div[id="attachment-container"] >> input').getAttribute('id');
     await page.setInputFiles(`#${attachInputId}`, filePath);
 
+    const PCoreVersion = await page.evaluate(() => window.PCore.getPCoreVersion());
+
     await Promise.all([
       page.waitForResponse(
         `${endpoints.serverConfig.infinityRestServerUrl}${endpoints.serverConfig.appAlias ? `/app/${endpoints.serverConfig.appAlias}` : ''}/api/application/v2/attachments/upload`
@@ -119,9 +121,7 @@ test.describe('E2E test', () => {
     await page.locator('button:has-text("submit")').click();
 
     await Promise.all([
-      page.waitForResponse(
-        `${endpoints.serverConfig.infinityRestServerUrl}${endpoints.serverConfig.appAlias ? `/app/${endpoints.serverConfig.appAlias}` : ''}/api/application/v2/cases/${currentCaseID}/attachments`
-      )
+      page.waitForResponse(`${endpoints.serverConfig.infinityRestServerUrl}${endpoints.serverConfig.appAlias ? `/app/${endpoints.serverConfig.appAlias}` : ""}/api/application/v2/cases/${currentCaseID}/attachments${PCoreVersion.includes('8.23') ? '?includeThumbnail=false' : ''}`),
     ]);
 
     const attachmentCount = await page.locator('div[id="attachments-count"]').textContent();
