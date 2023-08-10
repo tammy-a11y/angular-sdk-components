@@ -2,6 +2,7 @@ import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReferenceComponent } from '../../infra/reference/reference.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 
 /**
  * WARNING:  It is not expected that this file should be modified.  It is part of infrastructure code that works with
@@ -38,14 +39,32 @@ export class DeferLoadComponent implements OnInit {
   CASE: any;
   PAGE: any;
   DATA: any;
-  constructor() {}
+  constructor(private angularPConnect: AngularPConnectService) {}
 
   ngOnInit(): void {
     if (!this.PCore$) {
       this.PCore$ = window.PCore;
     }
+    this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
+
     this.getData();
     this.loadActiveTab();
+  }
+
+  ngOnDestroy(): void {
+    if (this.angularPConnectData.unsubscribeFn) {
+      this.angularPConnectData.unsubscribeFn();
+    }
+  }
+
+  onStateChange() {
+    // Should always check the bridge to see if the component should
+    // update itself (re-render)
+    const theRequestedAssignment = this.pConn$.getValue(this.PCore$.getConstants().CASE_INFO.ASSIGNMENT_LABEL);
+    if (theRequestedAssignment !== this.currentLoadedAssignment) {
+      this.currentLoadedAssignment = theRequestedAssignment;
+      this.loadActiveTab();
+    }
   }
 
   getData() {
