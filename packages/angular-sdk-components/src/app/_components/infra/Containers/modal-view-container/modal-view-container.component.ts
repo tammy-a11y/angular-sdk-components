@@ -5,6 +5,7 @@ import * as isEqual from 'fast-deep-equal';
 import { AngularPConnectService } from '../../../../_bridge/angular-pconnect';
 import { ProgressSpinnerService } from '../../../../_messages/progress-spinner.service';
 import { ComponentMapperComponent } from '../../../../_bridge/component-mapper/component-mapper.component';
+import { getBanners } from 'packages/angular-sdk-components/src/app/_helpers/case-utils';
 
 /**
  * WARNING:  It is not expected that this file should be modified.  It is part of infrastructure code that works with
@@ -32,6 +33,8 @@ export class ModalViewContainerComponent implements OnInit {
 
   arChildren$: Array<any>;
   configProps$: Object;
+  stateProps$: Object;
+  banners: any;
   templateName$: string;
   buildName$: string;
   context$: string;
@@ -144,6 +147,8 @@ export class ModalViewContainerComponent implements OnInit {
       loadingInfo = this.pConn$.getLoadingStatus();
     } catch (ex) {}
     let configProps = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    this.stateProps$ = this.pConn$.getStateProps();
+    this.banners = this.getBanners();
 
     if (!loadingInfo) {
       // turn off spinner
@@ -343,5 +348,9 @@ export class ModalViewContainerComponent implements OnInit {
     }
 
     return bRet;
+  }
+
+  getBanners() {
+    return getBanners({target: this.itemKey$, ...this.stateProps$})
   }
 }

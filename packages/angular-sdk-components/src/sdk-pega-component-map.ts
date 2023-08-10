@@ -1,4 +1,5 @@
 import { forwardRef } from '@angular/core';
+import { AlertBannerComponent } from './app/_components/designSystemExtension/alert-banner/alert-banner.component';
 import { AutoCompleteComponent } from './app/_components/field/auto-complete/auto-complete.component';
 import { CancelAlertComponent } from './app/_components/field/cancel-alert/cancel-alert.component';
 import { CheckBoxComponent } from './app/_components/field/check-box/check-box.component';
@@ -96,6 +97,7 @@ import { PulseComponent } from './app/_components/designSystemExtension/pulse/pu
 
 const pegaSdkComponentMap = {
   ActionButtons: ActionButtonsComponent,
+  AlertBanner: AlertBannerComponent,
   //   'ActionButtonsForFileUtil': ActionButtonsForFileUtil,
   AppAnnouncement: AppAnnouncementComponent,
   AppShell: AppShellComponent,
