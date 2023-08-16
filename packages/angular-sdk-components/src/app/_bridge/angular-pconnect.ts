@@ -310,7 +310,7 @@ export class AngularPConnectService {
 
     if (incomingProps['httpMessages']) {
       inComp.angularPConnectData.httpMessages = incomingProps['httpMessages'];
-      delete incomingProps['httpMessages'];
+      incomingProps['httpMessages'] = undefined;
     }
 
     let incomingPropsAsStr: string = JSON.stringify(incomingProps);
