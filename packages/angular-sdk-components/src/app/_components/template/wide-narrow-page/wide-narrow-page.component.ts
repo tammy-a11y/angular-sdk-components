@@ -14,6 +14,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
 export class WideNarrowPageComponent implements OnInit {
   @Input() pConn$: any;
   @Input() formGroup$: FormGroup;
+  @Input() displayOnlyFA$;
 
   thePConnType: string = '';
 

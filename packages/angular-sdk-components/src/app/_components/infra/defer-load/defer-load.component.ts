@@ -39,7 +39,12 @@ export class DeferLoadComponent implements OnInit {
   CASE: any;
   PAGE: any;
   DATA: any;
-  constructor(private angularPConnect: AngularPConnectService) {}
+  constructor(private angularPConnect: AngularPConnectService) {
+    if (!this.PCore$) {
+      this.PCore$ = window.PCore;
+    }
+    this.constants = this.PCore$.getConstants();
+  }
 
   ngOnInit(): void {
     if (!this.PCore$) {
@@ -47,7 +52,11 @@ export class DeferLoadComponent implements OnInit {
     }
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
 
-    this.getData();
+    const { CASE, PAGE, DATA } = this.constants.RESOURCE_TYPES;
+    this.CASE = CASE;
+    this.PAGE = PAGE;
+    this.DATA = DATA;
+    
     this.loadActiveTab();
   }
 
@@ -67,17 +76,8 @@ export class DeferLoadComponent implements OnInit {
     }
   }
 
-  getData() {
-    const theRequestedAssignment = this.pConn$.getValue(this.PCore$.getConstants().CASE_INFO.ASSIGNMENT_LABEL);
-    if (theRequestedAssignment !== this.currentLoadedAssignment) {
-      // console.log(`DeferLoad: currentLoadedAssignment about to change from ${currentLoadedAssignment} to ${theRequestedAssignment}`);
-      this.currentLoadedAssignment = theRequestedAssignment;
-    }
-    this.constants = this.PCore$.getConstants();
-    const { CASE, PAGE, DATA } = this.constants.RESOURCE_TYPES;
-    this.CASE = CASE;
-    this.PAGE = PAGE;
-    this.DATA = DATA;
+  ngOnChanges() {
+
     this.loadViewCaseID = this.pConn$.getValue(this.constants.PZINSKEY) || this.pConn$.getValue(this.constants.CASE_INFO.CASE_INFO_ID);
     let containerItemData;
     const targetName = this.pConn$.getTarget();
@@ -85,18 +85,13 @@ export class DeferLoadComponent implements OnInit {
       this.containerName = this.PCore$.getContainerUtils().getActiveContainerItemName(targetName);
       containerItemData = this.PCore$.getContainerUtils().getContainerItemData(targetName, this.containerName);
     }
-    const { resourceType = CASE } = containerItemData || { resourceType: this.loadViewCaseID ? CASE : PAGE };
+    const { resourceType = this.CASE } = containerItemData || { resourceType: this.loadViewCaseID ? this.CASE : this.PAGE };
     this.resourceType = resourceType;
     this.isContainerPreview = /preview_[0-9]*/g.test(this.pConn$.getContextName());
+
     const theConfigProps = this.pConn$.getConfigProps();
     this.deferLoadId = theConfigProps.deferLoadId;
     this.name = this.name || theConfigProps.name;
-  }
-
-  ngOnChanges() {
-    if (!this.PCore$) {
-      this.PCore$ = window.PCore;
-    }
 
     this.loadActiveTab();
   }
