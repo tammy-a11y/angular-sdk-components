@@ -7,10 +7,11 @@
       <mat-form-field class="psdk-full-width" subscriptSizing="dynamic" [hintLabel]="helperText">
         <mat-label>{{ label$ }}</mat-label>
         <input
+          type="text"
           matInput
+          appThousandSeparator
           [placeholder]=""
-          type="number"
-          step="any"
+          step="0.01"
           [value]="value$"
           [required]="bRequired$"
           [formControlName]="controlName$"
