@@ -1,12 +1,14 @@
-import { Component, OnInit, Input, SimpleChange, NgZone } from '@angular/core';
+/* eslint-disable no-case-declarations */
+import { Component, OnInit, Input, SimpleChange, NgZone, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ErrorMessagesService } from '../../../_messages/error-messages.service';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
-import { ReferenceComponent } from '../reference/reference.component';
-import { AssignmentCardComponent } from '../assignment-card/assignment-card.component';
-import { MultiStepComponent } from '../multi-step/multi-step.component';
+import { ReferenceComponent } from '../../infra/reference/reference.component';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+
+declare const PCore: any;
 
 declare const window: any;
 
@@ -15,7 +17,7 @@ declare const window: any;
   templateUrl: './assignment.component.html',
   styleUrls: ['./assignment.component.scss'],
   standalone: true,
-  imports: [CommonModule, MultiStepComponent, AssignmentCardComponent]
+  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class AssignmentComponent implements OnInit {
   @Input() pConn$: any;
@@ -24,6 +26,8 @@ export class AssignmentComponent implements OnInit {
   @Input() itemKey$: string;
   @Input() isCreateStage$: boolean;
   @Input() updateToken$: number;
+  @Input() isInModal$: boolean = false;
+  @Input() banners;
 
   // For interaction with AngularPConnect
   angularPConnectData: any = {};
@@ -51,6 +55,7 @@ export class AssignmentComponent implements OnInit {
   init: boolean;
   finishAssignment: any;
   navigateToStep: any;
+  saveAssignment: any;
   cancelAssignment: any;
   cancelCreateStageAssignment: any;
   showPage: any;
@@ -190,6 +195,7 @@ export class AssignmentComponent implements OnInit {
     // store off bound functions to above pointers
     this.finishAssignment = actionsAPI.finishAssignment.bind(actionsAPI);
     this.navigateToStep = actionsAPI.navigateToStep.bind(actionsAPI);
+    this.saveAssignment = actionsAPI.saveAssignment.bind(actionsAPI);
     this.cancelAssignment = actionsAPI.cancelAssignment.bind(actionsAPI);
     this.showPage = actionsAPI.showPage.bind(actionsAPI);
 
@@ -213,8 +219,8 @@ export class AssignmentComponent implements OnInit {
 
       //this.containerName$ = oWorkMeta["name"];
 
-      if (oWorkData.caseInfo && oWorkData.caseInfo.assignments != null) {
-        this.containerName$ = oWorkData.caseInfo.assignments[0].name;
+      if (oWorkData.caseInfo && oWorkData.caseInfo.assignments !== null) {
+        this.containerName$ = oWorkData.caseInfo.assignments?.[0].name;
 
         // get caseInfo
         let oCaseInfo = oData.caseInfo;
@@ -241,11 +247,7 @@ export class AssignmentComponent implements OnInit {
             // what comes back now in configObject is the children of the flowContainer
             this.arNavigationSteps$ = JSON.parse(JSON.stringify(oCaseInfo.navigation.steps));
             this.arCurrentStepIndicies$ = new Array();
-            this.arCurrentStepIndicies$ = this.findCurrentIndicies(
-              this.arNavigationSteps$,
-              this.arCurrentStepIndicies$,
-              0
-            );
+            this.arCurrentStepIndicies$ = this.findCurrentIndicies(this.arNavigationSteps$, this.arCurrentStepIndicies$, 0);
           });
         } else {
           this.bHasNavigation$ = false;
@@ -276,6 +278,13 @@ export class AssignmentComponent implements OnInit {
     });
 
     return arIndicies;
+  }
+
+  onSaveActionSuccess(data) {
+    this.actionsAPI.cancelAssignment(this.itemKey$).then(() => {
+      this.psService.sendMessage(false);
+      this.PCore$.getPubSubUtils().publish(this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL);
+    });
   }
 
   onActionButtonClick(oData: any) {
@@ -322,11 +331,34 @@ export class AssignmentComponent implements OnInit {
           }
           break;
 
+        case 'saveAssignment': {
+          const caseID = this.pConn$.getCaseInfo().getKey();
+          const assignmentID = this.pConn$.getCaseInfo().getAssignmentID();
+          const savePromise = this.saveAssignment(this.itemKey$);
+
+          savePromise
+            .then(() => {
+              const caseType = this.pConn$.getCaseInfo().c11nEnv.getValue(PCore.getConstants().CASE_INFO.CASE_TYPE_ID);
+              this.PCore$.getPubSubUtils().publish('cancelPressed');
+              this.onSaveActionSuccess({ caseType, caseID, assignmentID });
+            })
+            .catch(() => {
+              this.psService.sendMessage(false);
+            });
+
+          break;
+        }
+
         case 'cancelAssignment':
           this.bReInit = true;
           this.erService.sendMessage('dismiss', '');
+          const isAssignmentInCreateStage = this.pConn$.getCaseInfo().isAssignmentInCreateStage();
+          const isLocalAction =
+            this.pConn$.getCaseInfo().isLocalAction() ||
+            (PCore.getConstants().CASE_INFO.IS_LOCAL_ACTION &&
+              this.pConn$.getValue(PCore.getConstants().CASE_INFO.IS_LOCAL_ACTION));
           // check if create stage (modal)
-          if (this.isCreateStage$) {
+          if (isAssignmentInCreateStage && this.isInModal$ && !isLocalAction) {
             const cancelPromise = this.cancelCreateStageAssignment(this.itemKey$);
             cancelPromise
               .then(() => {
@@ -392,13 +424,13 @@ export class AssignmentComponent implements OnInit {
   }
 
   touchAll(): void {
-    Object.values(this.formGroup$.controls).forEach((control) => {
+    Object.values(this.formGroup$.controls).forEach((control: any) => {
       control.markAsTouched();
     });
   }
 
   topViewRefresh(): void {
-    Object.values(this.formGroup$.controls).forEach((control) => {
+    Object.values(this.formGroup$.controls).forEach((control: any) => {
       control.markAsTouched();
     });
   }

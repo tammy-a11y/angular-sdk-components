@@ -1,4 +1,5 @@
 import { forwardRef } from '@angular/core';
+import { AlertBannerComponent } from '../../../projects/angular-sdk-library/src/lib/_components/designSystemExtension/alert-banner/alert-banner.component';
 import { AutoCompleteComponent } from '../../../projects/angular-sdk-library/src/lib/_components/field/auto-complete/auto-complete.component';
 import { CancelAlertComponent } from '../../../projects/angular-sdk-library/src/lib/_components/field/cancel-alert/cancel-alert.component';
 import { CheckBoxComponent } from '../../../projects/angular-sdk-library/src/lib/_components/field/check-box/check-box.component';
@@ -74,13 +75,16 @@ import { MaterialSummaryListComponent } from '../../../projects/angular-sdk-libr
 import { MaterialVerticalTabsComponent } from '../../../projects/angular-sdk-library/src/lib/_components/designSystemExtension/material-vertical-tabs/material-vertical-tabs.component';
 import { OperatorComponent } from '../../../projects/angular-sdk-library/src/lib/_components/designSystemExtension/operator/operator.component';
 import { PulseComponent } from '../../../projects/angular-sdk-library/src/lib/_components/designSystemExtension/pulse/pulse.component';
-import { MaterialDetailsFieldsComponent } from 'projects/angular-sdk-library/src/lib/_components/designSystemExtension/material-details-fields/material-details-fields.component';
-import { ErrorBoundaryComponent } from 'projects/angular-sdk-library/src/lib/_components/infra/error-boundary/error-boundary.component';
-import { FieldGroupListComponent } from 'projects/angular-sdk-library/src/lib/_components/template/field-group-list/field-group-list.component';
-import { FieldValueListComponent } from 'projects/angular-sdk-library/src/lib/_components/template/field-value-list/field-value-list.component';
-import { ConfirmationComponent } from 'projects/angular-sdk-library/src/lib/_components/template/confirmation/confirmation.component';
-import { DetailsNarrowWideComponent } from 'projects/angular-sdk-library/src/lib/_components/template/details-narrow-wide/details-narrow-wide.component';
-import { DetailsWideNarrowComponent } from 'projects/angular-sdk-library/src/lib/_components/template/details-wide-narrow/details-wide-narrow.component';
+import { MaterialDetailsFieldsComponent } from '../../../projects/angular-sdk-library/src/lib/_components/designSystemExtension/material-details-fields/material-details-fields.component';
+import { ErrorBoundaryComponent } from '../../../projects/angular-sdk-library/src/lib/_components/infra/error-boundary/error-boundary.component';
+import { FieldGroupListComponent } from '../../../projects/angular-sdk-library/src/lib/_components/template/field-group-list/field-group-list.component';
+import { FieldValueListComponent } from '../../../projects/angular-sdk-library/src/lib/_components/template/field-value-list/field-value-list.component';
+import { ConfirmationComponent } from '../../../projects/angular-sdk-library/src/lib/_components/template/confirmation/confirmation.component';
+import { DetailsNarrowWideComponent } from '../../../projects/angular-sdk-library/src/lib/_components/template/details-narrow-wide/details-narrow-wide.component';
+import { DetailsWideNarrowComponent } from '../../../projects/angular-sdk-library/src/lib/_components/template/details-wide-narrow/details-wide-narrow.component';
+import { MaterialCaseSummaryComponent } from '../../../projects/angular-sdk-library/src/lib/_components/designSystemExtension/material-case-summary/material-case-summary.component';
+import { DetailsOneColumnComponent } from '../../../projects/angular-sdk-library/src/lib/_components/template/details-one-column/details-one-column.component';
+import { TextComponent } from '../../../projects/angular-sdk-library/src/lib/_components/field/text/text.component';
 
 // pegaSdkComponentMap is the JSON object where we'll store the components that are
 // the default implementations provided by the SDK. These will be used if there isn't
@@ -93,11 +97,12 @@ import { DetailsWideNarrowComponent } from 'projects/angular-sdk-library/src/lib
 
 const pegaSdkComponentMap = {
   ActionButtons: ActionButtonsComponent,
+  AlertBanner: AlertBannerComponent,
   //   'ActionButtonsForFileUtil': ActionButtonsForFileUtil,
   AppAnnouncement: AppAnnouncementComponent,
   AppShell: AppShellComponent,
   Assignment: AssignmentComponent,
-  AssignmentCard: forwardRef(() => AssignmentCardComponent),
+  AssignmentCard: AssignmentCardComponent,
   Attachment: AttachmentComponent,
   AutoComplete: AutoCompleteComponent,
   //   'Banner': Banner,
@@ -105,7 +110,7 @@ const pegaSdkComponentMap = {
   CancelAlert: CancelAlertComponent,
   CaseHistory: CaseHistoryComponent,
   CaseSummary: CaseSummaryComponent,
-  //   'CaseSummaryFields': CaseSummaryFields,
+  CaseSummaryFields: MaterialCaseSummaryComponent,
   CaseView: CaseViewComponent,
   //   'CaseViewActionsMenu': CaseViewActionsMenu,
   Checkbox: CheckBoxComponent,
@@ -120,6 +125,7 @@ const pegaSdkComponentMap = {
   DeferLoad: DeferLoadComponent,
   Details: DetailsComponent,
   DetailsFields: MaterialDetailsFieldsComponent,
+  DetailsOneColumn: DetailsOneColumnComponent,
   DetailsSubTabs: DetailsSubTabsComponent,
   DetailsThreeColumn: DetailsThreeColumnComponent,
   DetailsTwoColumn: DetailsTwoColumnComponent,
@@ -158,7 +164,7 @@ const pegaSdkComponentMap = {
   //   'QuickCreate': QuickCreate,
   reference: ReferenceComponent,
   RadioButtons: RadioButtonsComponent,
-  Region: forwardRef(() => RegionComponent),
+  Region: RegionComponent,
   RootContainer: RootContainerComponent,
   SemanticLink: SemanticLinkComponent,
   SimpleTable: SimpleTableComponent,
@@ -169,6 +175,7 @@ const pegaSdkComponentMap = {
   SubTabs: SubTabsComponent,
   SummaryItem: MaterialSummaryItemComponent,
   SummaryList: MaterialSummaryListComponent,
+  Text: TextComponent,
   TextArea: TextAreaComponent,
   TextContent: TextContentComponent,
   TextInput: TextInputComponent,
@@ -189,7 +196,7 @@ const pegaSdkComponentMap = {
   WideNarrowForm: WideNarrowFormComponent,
   WideNarrowPage: WideNarrowPageComponent
   //   'WssNavBar': WssNavBar,
-  //   'WssQuickcreate': WssQuickCreate
+  //   'WssQuickcreate': WssQuickCreate,
 };
 
 export default pegaSdkComponentMap;

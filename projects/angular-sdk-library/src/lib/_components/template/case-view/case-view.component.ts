@@ -1,18 +1,14 @@
 import { Component, OnInit, Input, ChangeDetectorRef, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
 import { interval } from 'rxjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
-import { DeferLoadComponent } from '../../infra/defer-load/defer-load.component';
 import { RegionComponent } from '../../infra/region/region.component';
-import { MaterialVerticalTabsComponent } from '../../designSystemExtension/material-vertical-tabs/material-vertical-tabs.component';
-import { CaseSummaryComponent } from '../case-summary/case-summary.component';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatButtonModule } from '@angular/material/button';
-import { MatToolbarModule } from '@angular/material/toolbar';
-
-declare const window: any;
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
   selector: 'app-case-view',
@@ -20,16 +16,7 @@ declare const window: any;
   styleUrls: ['./case-view.component.scss'],
   providers: [Utils],
   standalone: true,
-  imports: [
-    CommonModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatMenuModule,
-    CaseSummaryComponent,
-    MaterialVerticalTabsComponent,
-    DeferLoadComponent,
-    forwardRef(() => RegionComponent)
-  ]
+  imports: [CommonModule, MatToolbarModule, MatButtonModule, MatMenuModule, ComponentMapperComponent, forwardRef(() => RegionComponent)]
 })
 export class CaseViewComponent implements OnInit {
   @Input() pConn$: any;
@@ -59,6 +46,8 @@ export class CaseViewComponent implements OnInit {
 
   caseSummaryPConn$: any;
   currentCaseID: string = '';
+  editAction: boolean;
+  bHasNewAttachments: boolean = false;
 
   constructor(
     private cdRef: ChangeDetectorRef,
@@ -125,6 +114,17 @@ export class CaseViewComponent implements OnInit {
 
   updateHeaderAndSummary() {
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    let hasNewAttachments = this.pConn$.getDataObject().caseInfo?.hasNewAttachments;
+    
+    if(hasNewAttachments !== this.bHasNewAttachments){
+      this.bHasNewAttachments = hasNewAttachments;
+      if(this.bHasNewAttachments){
+        this.PCore$.getPubSubUtils().publish(
+          this.PCore$.getEvents().getCaseEvent().CASE_ATTACHMENTS_UPDATED_FROM_CASEVIEW,
+          true
+        );
+      }
+    }
 
     let kids = this.pConn$.getChildren();
     for (let kid of kids) {
@@ -153,6 +153,7 @@ export class CaseViewComponent implements OnInit {
     let caseInfo = this.pConn$.getDataObject().caseInfo;
     this.currentCaseID = caseInfo.ID;
     this.arAvailableActions$ = caseInfo?.availableActions ? caseInfo.availableActions : [];
+    this.editAction = this.arAvailableActions$.find((action) => action.ID === 'pyUpdateCaseDetails');
     this.arAvailabeProcesses$ = caseInfo?.availableProcesses ? caseInfo.availableProcesses : [];
 
     this.svgCase$ = this.utils.getImageSrc(this.configProps$['icon'], this.utils.getSDKStaticContentUrl());
@@ -215,7 +216,7 @@ export class CaseViewComponent implements OnInit {
     const actionsAPI = this.pConn$.getActionsApi();
     const openLocalAction = actionsAPI.openLocalAction.bind(actionsAPI);
 
-    openLocalAction(data.ID, { ...data });
+    openLocalAction(data.ID, { ...data, containerName: 'modal', type: 'express' });
   }
 
   _menuProcessClick(data) {

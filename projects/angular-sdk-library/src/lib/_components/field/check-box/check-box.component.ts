@@ -2,19 +2,17 @@ import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
-import { TextComponent } from '../text/text.component';
-import { FieldValueListComponent } from '../../template/field-value-list/field-value-list.component';
-
-declare const window: any;
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
   selector: 'app-check-box',
   templateUrl: './check-box.component.html',
   styleUrls: ['./check-box.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatCheckboxModule, TextComponent, FieldValueListComponent]
+  imports: [CommonModule, ReactiveFormsModule, MatCheckboxModule, MatFormFieldModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class CheckBoxComponent implements OnInit {
   @Input() pConn$: any;
@@ -39,6 +37,7 @@ export class CheckBoxComponent implements OnInit {
   controlName$: string;
   bHasForm$: boolean = true;
   componentReference: string = '';
+  helperText: string;
 
   fieldControl = new FormControl('', null);
 
@@ -109,6 +108,7 @@ export class CheckBoxComponent implements OnInit {
     this.displayMode$ = this.configProps$['displayMode'];
 
     this.caption$ = this.configProps$['caption'];
+    this.helperText = this.configProps$['helperText'];
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
@@ -162,4 +162,24 @@ export class CheckBoxComponent implements OnInit {
     event.value = event.checked;
     this.angularPConnectData.actions.onBlur(this, event);
   }
+
+  getErrorMessage() {
+    let errMessage: string = '';
+
+    // look for validation messages for json, pre-defined or just an error pushed from workitem (400)
+    if (this.fieldControl.hasError('message')) {
+      errMessage = this.angularPConnectData.validateMessage;
+      return errMessage;
+    } else if (this.fieldControl.hasError('required')) {
+      errMessage = 'You must enter a value';
+    } else if (this.fieldControl.errors) {
+      errMessage = this.fieldControl.errors.toString();
+    }
+
+    return errMessage;
+  }
 }
+function forwardRef(arg0: () => typeof ComponentMapperComponent) {
+  throw new Error('Function not implemented.');
+}
+

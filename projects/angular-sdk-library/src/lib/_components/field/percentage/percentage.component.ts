@@ -6,17 +6,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { interval } from 'rxjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
-import { TextComponent } from '../text/text.component';
-import { FieldValueListComponent } from '../../template/field-value-list/field-value-list.component';
-
-declare const window: any;
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
   selector: 'app-percentage',
   templateUrl: './percentage.component.html',
   styleUrls: ['./percentage.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, TextComponent, FieldValueListComponent]
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class PercentageComponent implements OnInit {
   @Input() pConn$: any;
@@ -37,6 +34,7 @@ export class PercentageComponent implements OnInit {
   bHasForm$: boolean = true;
   componentReference: string = '';
   testId: string;
+  helperText: string;
 
   fieldControl = new FormControl<number | null>(null, null);
 
@@ -107,6 +105,7 @@ export class PercentageComponent implements OnInit {
       }
       this.value$ = nValue;
     }
+    this.helperText = this.configProps$['helperText'];
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
@@ -174,3 +173,7 @@ export class PercentageComponent implements OnInit {
     return errMessage;
   }
 }
+function forwardRef(arg0: () => typeof ComponentMapperComponent) {
+  throw new Error('Function not implemented.');
+}
+

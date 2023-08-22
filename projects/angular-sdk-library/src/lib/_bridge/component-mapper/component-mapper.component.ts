@@ -19,6 +19,9 @@ export class ComponentMapperComponent implements OnInit {
   @Input() name: string = '';
   @Input() props: any;
   @Input() errorMsg: string = '';
+  @Input() outputEvents: any;
+  // parent prop is compulsory when outputEvents is present
+  @Input() parent: any;
 
   constructor() {}
 
@@ -47,17 +50,45 @@ export class ComponentMapperComponent implements OnInit {
         if (component === ErrorBoundaryComponent) {
           this.componentRef.instance.message = this.errorMsg;
         } else {
-          for (let propName in this.props) {
-            if (this.props[propName] !== undefined) {
-              this.componentRef.instance[propName] = this.props[propName];
-            }
-          }
+          this.bindInputProps();
+          this.bindOutputEvents();
         }
       }
     } else {
       // We no longer handle the "old" switch statement that was here in the original packaging.
       //  All components seen here need to be in the SdkComponentMap
       console.error(`SdkComponentMap not defined! Unable to process component: ${this.name}`);
+    }
+  }
+
+  bindInputProps() {
+    try {
+      for (const propName in this.props) {
+        if (this.props[propName] !== undefined) {
+          this.componentRef.setInput(propName, this.props[propName]);
+        }
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  bindOutputEvents() {
+    try {
+      for (const event in this.outputEvents) {
+        this.componentRef.instance[event].subscribe((value) => {
+          const callbackFn = this.outputEvents[event].bind(this.parent);
+          callbackFn(value);
+        });
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.componentRef) {
+      this.componentRef.destroy();
     }
   }
 }

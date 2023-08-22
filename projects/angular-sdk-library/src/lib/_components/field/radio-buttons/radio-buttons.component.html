@@ -4,7 +4,7 @@
 <ng-template #noDisplayMode>
   <div *ngIf="!bReadonly$ && bHasForm$; else noEdit">
     <div [formGroup]="formGroup$" *ngIf="bVisible$">
-      <mat-form-field class="psdk-radio-form">
+      <mat-form-field class="psdk-radio-form" subscriptSizing="dynamic" [hintLabel]="helperText">
         <span class="psdk-label-wrapper-readonly">
           <label class="psdk-label-readonly">{{ label$ }}</label>
         </span>
@@ -28,5 +28,5 @@
   </div>
 </ng-template>
 <ng-template #noEdit>
-  <app-text [pConn$]="pConn$" [formatAs$]="'text'"></app-text>
+  <component-mapper name="Text" [props]="{ pConn$, formatAs$: 'text' }"></component-mapper>
 </ng-template>

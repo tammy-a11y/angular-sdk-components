@@ -5,7 +5,7 @@
   <div *ngIf="!bReadonly$ && bHasForm$; else noEdit">
     <div #f="ngForm" [formGroup]="formGroup$">
       <div class="psdk-full-width">
-        <mat-form-field class="psdk-full-width">
+        <mat-form-field class="psdk-full-width" subscriptSizing="dynamic" [hintLabel]="helperText">
           <ngx-mat-intl-tel-input
             [attr.data-test-id]="testId"
             [formControlName]="controlName$"
@@ -23,5 +23,5 @@
   </div>
 </ng-template>
 <ng-template #noEdit>
-  <app-text [pConn$]="pConn$" [formatAs$]="'text'"></app-text>
+  <component-mapper name="Text" [props]="{ pConn$, formatAs$: 'text' }"></component-mapper>
 </ng-template>

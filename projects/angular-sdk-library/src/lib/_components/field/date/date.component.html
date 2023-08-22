@@ -4,7 +4,7 @@
 <ng-template #noDisplayMode>
   <div *ngIf="!bReadonly$ && bHasForm$; else noEdit">
     <div [formGroup]="formGroup$" *ngIf="bVisible$">
-      <mat-form-field class="psdk-full-width">
+      <mat-form-field class="psdk-full-width" subscriptSizing="dynamic" [hintLabel]="helperText">
         <mat-label>{{ label$ }}</mat-label>
         <input
           matInput
@@ -28,5 +28,5 @@
   </div>
 </ng-template>
 <ng-template #noEdit>
-  <app-text [pConn$]="pConn$" [formatAs$]="'date'"></app-text>
+  <component-mapper name="Text" [props]="{ pConn$, formatAs$: 'date' }"></component-mapper>
 </ng-template>

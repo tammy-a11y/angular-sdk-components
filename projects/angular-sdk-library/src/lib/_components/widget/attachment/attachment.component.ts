@@ -1,4 +1,5 @@
-import { Component, OnInit, Input, NgZone } from '@angular/core';
+import { Component, OnInit, Input, NgZone, forwardRef } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -18,10 +19,12 @@ declare const window: any;
 })
 export class AttachmentComponent implements OnInit {
   @Input() pConn$: any;
+  @Input() formGroup$: FormGroup;
 
   // For interaction with AngularPConnect
   angularPConnectData: any = {};
   PCore$: any;
+  PCoreVersion: string;
 
   label$: string = '';
   value$: any;
@@ -39,6 +42,11 @@ export class AttachmentComponent implements OnInit {
   att_valueRef: any;
   att_categoryName: string;
   att_id: string;
+  myFiles: any;
+  fileTemp: any = {};
+  caseID: any;
+  status: any;
+  validatemessage: any = '';
 
   constructor(private angularPConnect: AngularPConnectService, private utils: Utils, private ngZone: NgZone) {}
 
@@ -51,6 +59,9 @@ export class AttachmentComponent implements OnInit {
     }
 
     this.removeFileFromList$ = { onClick: this._removeFileFromList.bind(this) };
+    this.PCoreVersion = this.PCore$.getPCoreVersion();
+
+    this.caseID = this.PCore$.getStoreValue('.pyID', 'caseInfo.content', this.pConn$.getContextName());
 
     //let configProps: any = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
     this.checkAndUpdate();
@@ -68,11 +79,13 @@ export class AttachmentComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    this.att_id = '';
+    // this.att_id = '';
 
     if (this.angularPConnectData.unsubscribeFn) {
       this.angularPConnectData.unsubscribeFn();
     }
+
+    this.PCore$.getPubSubUtils().unsubscribe(this.PCore$.getConstants().PUB_SUB_EVENTS.CASE_EVENTS.ASSIGNMENT_SUBMISSION, this.caseID);
   }
 
   // Callback passed when subscribing to store change
@@ -82,6 +95,7 @@ export class AttachmentComponent implements OnInit {
 
   updateSelf() {
     let configProps: any = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    let stateProps: any = this.pConn$.getStateProps();
 
     const { value, validatemessage, label, helperText } = configProps;
 
@@ -103,6 +117,8 @@ export class AttachmentComponent implements OnInit {
 
     this.label$ = label;
     this.value$ = value;
+    this.status = stateProps.status;
+    this.validatemessage = stateProps.validateMessage;
 
     /* this is a temporary fix because required is supposed to be passed as a boolean and NOT as a string */
     let { required, disabled } = configProps;
@@ -118,24 +134,24 @@ export class AttachmentComponent implements OnInit {
     this.att_valueRef = this.pConn$.getStateProps().value;
     this.att_valueRef = this.att_valueRef.indexOf('.') === 0 ? this.att_valueRef.substring(1) : this.att_valueRef;
 
-    let fileTemp: any = {};
+    // let this.fileTemp: any = {};
 
     if (value && value.pxResults && +value.pyCount > 0) {
-      fileTemp = this.buildFilePropsFromResponse(value.pxResults[0]);
+      this.fileTemp = this.buildFilePropsFromResponse(value.pxResults[0]);
 
-      if (fileTemp.responseProps) {
+      if (this.fileTemp.responseProps) {
         if (!this.pConn$.attachmentsInfo) {
           this.pConn$.attachmentsInfo = {
             type: 'File',
             attachmentFieldName: this.att_valueRef,
             category: this.att_categoryName,
-            ID: this.att_id
           };
         }
 
-        if (fileTemp.responseProps.pzInsKey && !fileTemp.responseProps.pzInsKey.includes('temp')) {
-          fileTemp.props.type = fileTemp.responseProps.pyMimeFileExtension;
-          fileTemp.props.mimeType = fileTemp.responseProps.pyMimeFileExtension;
+        if (this.fileTemp.responseProps.pzInsKey && !this.fileTemp.responseProps.pzInsKey.includes('temp')) {
+          this.fileTemp.props.type = this.fileTemp.responseProps.pyMimeFileExtension;
+          this.fileTemp.props.mimeType = this.fileTemp.responseProps.pyMimeFileExtension;
+          this.fileTemp.props.ID = this.fileTemp.responseProps.pzInsKey;
 
           // create the actions for the "more" menu on the attachment
           let arMenuList = new Array();
@@ -158,7 +174,7 @@ export class AttachmentComponent implements OnInit {
           this.arFileList$ = new Array();
           this.arFileList$.push(
             this.getNewListUtilityItemProps({
-              att: fileTemp.props,
+              att: this.fileTemp.props,
               downloadFile: null,
               cancelFile: null,
               deleteFile: null,
@@ -170,9 +186,39 @@ export class AttachmentComponent implements OnInit {
 
           this.bShowSelector$ = false;
         }
+        if (this.fileTemp) {
+          const currentAttachmentList = this.getCurrentAttachmentsList(this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
+          this.pConn$.getContextName());
+          const index = currentAttachmentList.findIndex(element => element.props.ID === this.fileTemp.props.ID);
+          let tempFiles: any = [];
+          if (index < 0) {
+            tempFiles = [this.fileTemp];
+          }
+          this.PCore$.getStateUtils().updateState(
+            this.pConn$.getContextName(),
+            this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
+            [...currentAttachmentList, ...tempFiles],
+            {
+              pageReference: 'context_data',
+              isArrayDeepMerge: false
+            }
+          );
+        }
       }
     }
+    this.PCore$.getPubSubUtils().subscribe(
+      this.PCore$.getConstants().PUB_SUB_EVENTS.CASE_EVENTS.ASSIGNMENT_SUBMISSION,
+      this.resetAttachmentStoredState.bind(this),
+      this.caseID
+    );
   }
+
+  resetAttachmentStoredState(){
+    this.PCore$?.getStateUtils().updateState(this.pConn$.getContextName(), this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''), undefined, {
+      pageReference: 'context_data',
+      isArrayDeepMerge: false
+    });
+  };
 
   _downloadFileFromList(fileObj: any) {
     this.PCore$.getAttachmentUtils()
@@ -191,10 +237,12 @@ export class AttachmentComponent implements OnInit {
     download(atob(data), file);
   };
 
+  getAttachmentKey = (name = '') => (name ? `attachmentsList.${name}` : 'attachmentsList');
+
   _removeFileFromList(item: any) {
     const fileIndex = this.arFileList$.findIndex((element) => element?.id === item?.id);
     if (this.PCore$.getPCoreVersion()?.includes('8.7')) {
-      if (this.value$ && this.value$.pxResults[0]) {
+      if (this.value$) {
         this.pConn$.attachmentsInfo = {
           type: 'File',
           attachmentFieldName: this.att_valueRef,
@@ -206,9 +254,10 @@ export class AttachmentComponent implements OnInit {
       }
     } else {
       const attachmentsList = [];
-      const currentAttachmentList = this.getCurrentAttachmentsList(this.pConn$.getContextName()).filter(
-        (f) => f.label !== this.att_valueRef
-      );
+      const currentAttachmentList = this.getCurrentAttachmentsList(
+        this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
+        this.pConn$.getContextName()
+      ).filter((f) => f.label !== this.att_valueRef);
       if (this.value$ && this.value$.pxResults && +this.value$.pyCount > 0) {
         const deletedFile = {
           type: 'File',
@@ -219,25 +268,15 @@ export class AttachmentComponent implements OnInit {
           }
         };
         // updating the redux store to help form-handler in passing the data to delete the file from server
-        this.PCore$.getStateUtils().updateState(
-          this.pConn$.getContextName(),
-          'attachmentsList',
-          [...currentAttachmentList, deletedFile],
-          {
-            pageReference: 'context_data',
-            isArrayDeepMerge: false
-          }
-        );
+        this.PCore$.getStateUtils().updateState(this.pConn$.getContextName(), this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''), [...currentAttachmentList, deletedFile], {
+          pageReference: 'context_data',
+          isArrayDeepMerge: false
+        });
       } else {
-        this.PCore$.getStateUtils().updateState(
-          this.pConn$.getContextName(),
-          'attachmentsList',
-          [...currentAttachmentList, ...attachmentsList],
-          {
-            pageReference: 'context_data',
-            isArrayDeepMerge: false
-          }
-        );
+        this.PCore$.getStateUtils().updateState(this.pConn$.getContextName(), this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''), [...currentAttachmentList, ...attachmentsList], {
+          pageReference: 'context_data',
+          isArrayDeepMerge: false
+        });
       }
       if (fileIndex > -1) {
         this.arFileList$.splice(fileIndex, 1);
@@ -246,29 +285,59 @@ export class AttachmentComponent implements OnInit {
     this.bShowSelector$ = this.arFileList$?.length > 0 ? false : true;
   }
 
-  getCurrentAttachmentsList(context) {
-    return this.PCore$.getStoreValue('.attachmentsList', 'context_data', context) || [];
+  getCurrentAttachmentsList(key, context) {
+    return this.PCore$.getStoreValue(`.${key}`, 'context_data', context) || [];
   }
 
+  errorHandler(isFetchCanceled){
+      return (error) => {
+        if (!isFetchCanceled(error)) {
+          let uploadFailMsg = this.pConn$.getLocalizedValue('Something went wrong');
+          if (error.response && error.response.data && error.response.data.errorDetails) {
+            uploadFailMsg = this.pConn$.getLocalizedValue(error.response.data.errorDetails[0].localizedValue);
+          }
+          this.bShowSelector$ = false;
+          this.myFiles[0].meta = uploadFailMsg;
+          this.myFiles[0].error = true;
+          this.myFiles[0].fileName = this.pConn$.getLocalizedValue('Unable to upload file');
+          this.arFileList$ = this.myFiles.map((att) => {
+            return this.getNewListUtilityItemProps({
+              att,
+              downloadFile: null,
+              cancelFile: null,
+              deleteFile: null,
+              removeFile: null
+            });
+          });
+  
+          this.bShowJustDelete$ = true;
+          this.bLoading$ = false;
+        }
+        throw error;
+      };
+    };
+
   uploadMyFiles(event: any) {
-    //alert($event.target.files[0]); // outputs the first file
+
     this.arFiles$ = this.getFiles(event.target.files);
-
     // convert FileList to an array
-    let myFiles = Array.from(this.arFiles$);
+    this.myFiles = Array.from(this.arFiles$);
+  
+    //alert($event.target.files[0]); // outputs the first file
+    
 
-    if (myFiles.length == 1) {
+    if (this.myFiles.length == 1) {
       this.bLoading$ = true;
 
-      myFiles[0].ID = undefined;
+      // this.myFiles[0].ID = undefined;
 
       this.PCore$.getAttachmentUtils()
-        .uploadAttachment(myFiles[0], this.onUploadProgress, this.errorHandler, this.pConn$.getContextName())
+        .uploadAttachment(this.myFiles[0], this.onUploadProgress, this.errorHandler , this.pConn$.getContextName())
         .then((fileRes) => {
           this.att_id = fileRes.ID;
 
           let reqObj;
-          if (this.PCore$.getPCoreVersion()?.includes('8.7')) {
+          if (this.PCoreVersion?.includes('8.7')) {
             reqObj = {
               type: 'File',
               attachmentFieldName: this.att_valueRef,
@@ -284,10 +353,19 @@ export class AttachmentComponent implements OnInit {
               handle: fileRes.ID,
               ID: fileRes.clientFileID
             };
-            this.PCore$.getStateUtils().updateState(this.pConn$.getContextName(), 'attachmentsList', [reqObj], {
-              pageReference: 'context_data',
-              isArrayDeepMerge: false
-            });
+            const currentAttachmentList = this.getCurrentAttachmentsList(
+              this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
+              this.pConn$.getContextName()
+            ).filter((f) => f.label !== this.att_valueRef);
+            this.PCore$.getStateUtils().updateState(
+              this.pConn$.getContextName(),
+              this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
+              [...currentAttachmentList, reqObj],
+              {
+                pageReference: 'context_data',
+                isArrayDeepMerge: false
+              }
+            );
           }
 
           const fieldName = this.pConn$.getStateProps().value;
@@ -299,11 +377,10 @@ export class AttachmentComponent implements OnInit {
             pageReference: this.pConn$.getPageReference(),
             context
           });
-
           this.ngZone.run(() => {
             this.bShowSelector$ = false;
-            myFiles[0].meta = 'File uplooaded successfully';
-            this.arFileList$ = myFiles.map((att) => {
+            this.myFiles[0].meta = 'File uploaded successfully';
+            this.arFileList$ = this.myFiles.map((att) => {
               return this.getNewListUtilityItemProps({
                 att,
                 downloadFile: null,
@@ -321,6 +398,23 @@ export class AttachmentComponent implements OnInit {
         .catch((error) => {
           // just catching the rethrown error at uploadAttachment
           // to handle Unhandled rejections
+
+          this.bShowJustDelete$ = true;
+          this.bLoading$ = false
+            this.bShowSelector$ = false;
+            this.myFiles[0].meta = 'File uploaded failed';
+            this.arFileList$ = this.myFiles.map((att) => {
+              return this.getNewListUtilityItemProps({
+                att,
+                downloadFile: null,
+                cancelFile: null,
+                deleteFile: null,
+                removeFile: null
+              });
+            });
+
+            this.bShowJustDelete$ = true;
+            this.bLoading$ = false;          
         });
     }
   }
@@ -387,20 +481,19 @@ export class AttachmentComponent implements OnInit {
       },
       primary: {
         type: att.type,
-        name: att.name,
+        name: att.error ? att.fileName : att.name,
         icon: 'trash',
         click: removeFile
       },
       secondary: {
-        text: att.meta
+        text: att.meta,
+        error: att.error
       },
       actions
     };
   };
 
   onUploadProgress() {}
-
-  errorHandler() {}
 
   getFiles(arFiles: Array<any>): Array<any> {
     return this.setNewFiles(arFiles);

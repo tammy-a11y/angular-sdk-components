@@ -2,24 +2,17 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ReferenceComponent } from '../reference/reference.component';
-import { ActionButtonsComponent } from '../action-buttons/action-buttons.component';
 import { RegionComponent } from '../region/region.component';
 import { CaseCreateStageComponent } from '../../designSystemExtension/case-create-stage/case-create-stage.component';
 import { ViewComponent } from '../view/view.component';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
   selector: 'app-assignment-card',
   templateUrl: './assignment-card.component.html',
   styleUrls: ['./assignment-card.component.scss'],
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    ViewComponent,
-    CaseCreateStageComponent,
-    RegionComponent,
-    ActionButtonsComponent
-  ]
+  imports: [CommonModule, ReactiveFormsModule, CaseCreateStageComponent, RegionComponent, forwardRef(() => ComponentMapperComponent)]
 })
 export class AssignmentCardComponent implements OnInit {
   @Input() pConn$: any;
@@ -29,7 +22,7 @@ export class AssignmentCardComponent implements OnInit {
   @Input() arChildren$: Array<any>;
   @Input() updateToken$: number;
 
-  @Output() ActionButtonClick: EventEmitter<any> = new EventEmitter();
+  @Output() actionButtonClick: EventEmitter<any> = new EventEmitter();
 
   constructor() {}
 
@@ -46,6 +39,10 @@ export class AssignmentCardComponent implements OnInit {
   }
 
   onActionButtonClick(oData: any) {
-    this.ActionButtonClick.emit(oData);
+    this.actionButtonClick.emit(oData);
   }
 }
+function forwardRef(arg0: () => any) {
+  throw new Error('Function not implemented.');
+}
+

@@ -1,9 +1,9 @@
-import { Component, OnInit, Input, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, OnChanges, SimpleChanges } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { OneColumnComponent } from '../one-column/one-column.component';
 import { RegionComponent } from '../../infra/region/region.component';
 import { ViewComponent } from '../../infra/view/view.component';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-one-column-tab',
@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule, OneColumnComponent, RegionComponent, forwardRef(() => ViewComponent)]
 })
-export class OneColumnTabComponent implements OnInit {
+export class OneColumnTabComponent implements OnInit, OnChanges {
   @Input() pConn$: any;
   @Input() formGroup$: FormGroup;
 
@@ -22,6 +22,18 @@ export class OneColumnTabComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
+    this.updateSelf();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    const { pConn$ } = changes;
+
+    if (pConn$.previousValue && pConn$.previousValue !== pConn$.currentValue) {
+      this.updateSelf();
+    }
+  }
+
+  updateSelf() {
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
     this.arChildren$ = this.pConn$.getChildren();
   }

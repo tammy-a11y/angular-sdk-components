@@ -4,8 +4,8 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import isEqual from 'fast-deep-equal';
 import { AngularPConnectService } from '../../../../_bridge/angular-pconnect';
 import { ProgressSpinnerService } from '../../../../_messages/progress-spinner.service';
-import { CancelAlertComponent } from '../../../field/cancel-alert/cancel-alert.component';
-import { AssignmentComponent } from '../../assignment/assignment.component';
+import { ComponentMapperComponent } from '../../../../_bridge/component-mapper/component-mapper.component';
+import { getBanners } from 'packages/angular-sdk-components/src/app/_helpers/case-utils';
 
 /**
  * WARNING:  It is not expected that this file should be modified.  It is part of infrastructure code that works with
@@ -20,7 +20,7 @@ declare const window: any;
   templateUrl: './modal-view-container.component.html',
   styleUrls: ['./modal-view-container.component.scss'],
   standalone: true,
-  imports: [CommonModule, AssignmentComponent, CancelAlertComponent]
+  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class ModalViewContainerComponent implements OnInit {
   @Input() pConn$: any;
@@ -35,6 +35,8 @@ export class ModalViewContainerComponent implements OnInit {
 
   arChildren$: Array<any>;
   configProps$: Object;
+  stateProps$: Object;
+  banners: any;
   templateName$: string;
   buildName$: string;
   context$: string;
@@ -144,6 +146,8 @@ export class ModalViewContainerComponent implements OnInit {
       loadingInfo = this.pConn$.getLoadingStatus();
     } catch (ex) {}
     let configProps = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    this.stateProps$ = this.pConn$.getStateProps();
+    this.banners = this.getBanners();
 
     if (!loadingInfo) {
       // turn off spinner
@@ -348,4 +352,12 @@ export class ModalViewContainerComponent implements OnInit {
 
     return bRet;
   }
+
+  getBanners() {
+    return getBanners({target: this.itemKey$, ...this.stateProps$})
+  }
 }
+function forwardRef(arg0: () => typeof ComponentMapperComponent) {
+  throw new Error('Function not implemented.');
+}
+
