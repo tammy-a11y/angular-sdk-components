@@ -31,6 +31,7 @@ export class RadioButtonsComponent implements OnInit {
   bReadonly$: boolean = false;
   bDisabled$: boolean = false;
   bVisible$: boolean = true;
+  bInline$: boolean = false;
   displayMode$: string = '';
   controlName$: string;
   bHasForm$: boolean = true;
@@ -120,6 +121,10 @@ export class RadioButtonsComponent implements OnInit {
     // disabled
     if (this.configProps$['disabled'] != undefined) {
       this.bDisabled$ = this.utils.getBooleanValue(this.configProps$['disabled']);
+    }
+
+    if (this.configProps$['inline'] != null) {
+      this.bInline$ = this.utils.getBooleanValue(this.configProps$['inline']);
     }
 
     if (this.bDisabled$) {

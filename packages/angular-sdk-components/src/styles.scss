@@ -35,6 +35,14 @@ a.mat-mdc-menu-item > mat-icon {
   background-color: transparent;
 }
 
+.mdc-text-field{
+  padding: 0 !important;
+}
+
+.psdk-radio-vertical > .mat-mdc-radio-button .mdc-radio{
+  padding: 10px 0 !important;
+}
+
 .mat-sort-header-content{
   justify-content: space-between;
   width: 100%;
