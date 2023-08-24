@@ -15,6 +15,7 @@
 .psdk-radio-horizontal {
   display: flex;
   flex-direction: row;
+  padding: 0.3125rem;
 }
 
 .psdk-radio-vertical {
@@ -23,7 +24,7 @@
 }
 
 .psdk-radio-button {
-  padding: 0.3125rem;
+  padding: 0.3125rem 0;
 }
 
 .psdk-radio-form {
