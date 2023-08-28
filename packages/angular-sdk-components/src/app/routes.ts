@@ -1,5 +1,4 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { Routes } from '@angular/router';
 import { TopAppComponent } from '../../../../projects/angular-sdk-library/src/lib/_components/designSystemExtension/top-app/top-app.component';
 import { TopAppMashupComponent } from '../../../../projects/angular-sdk-library/src/lib/_samples/full-portal/top-app-mashup/top-app-mashup.component';
 import { NavigationComponent } from '../../../../projects/angular-sdk-library/src/lib/_samples/simple-portal/navigation/navigation.component';

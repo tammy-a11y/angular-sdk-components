@@ -6,7 +6,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import download from 'downloadjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
-import { MaterialSummaryListComponent } from '../../designSystemExtension/material-summary-list/material-summary-list.component';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 declare const window: any;
 
@@ -15,7 +15,7 @@ declare const window: any;
   templateUrl: './attachment.component.html',
   styleUrls: ['./attachment.component.scss'],
   standalone: true,
-  imports: [CommonModule, MatProgressSpinnerModule, MatButtonModule, MaterialSummaryListComponent]
+  imports: [CommonModule, MatProgressSpinnerModule, MatButtonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class AttachmentComponent implements OnInit {
   @Input() pConn$: any;

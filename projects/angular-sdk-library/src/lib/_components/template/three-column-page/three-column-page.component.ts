@@ -1,6 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+// import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { ThreeColumnComponent } from '../three-column/three-column.component';
+
 
 @Component({
   selector: 'app-three-column-page',

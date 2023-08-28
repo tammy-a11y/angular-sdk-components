@@ -10,6 +10,7 @@ import { AssignmentComponent } from '../../assignment/assignment.component';
 import { TodoComponent } from '../../../widget/todo/todo.component';
 import { getToDoAssignments, showBanner } from './helpers';
 import { ViewComponent } from '../../view/view.component';
+import { ComponentMapperComponent } from 'projects/angular-sdk-library/src/public-api';
 
 /**
  * WARNING:  It is not expected that this file should be modified.  It is part of infrastructure code that works with
@@ -25,7 +26,7 @@ declare const window: any;
   styleUrls: ['./flow-container.component.scss'],
   providers: [Utils],
   standalone: true,
-  imports: [CommonModule, TodoComponent, MatCardModule, ViewComponent, forwardRef(() => AssignmentComponent)]
+  imports: [CommonModule, ComponentMapperComponent, MatCardModule, ViewComponent, forwardRef(() => AssignmentComponent)]
 })
 export class FlowContainerComponent implements OnInit {
   @Input() pConn$: any;

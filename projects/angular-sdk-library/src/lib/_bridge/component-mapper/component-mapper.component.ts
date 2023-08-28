@@ -1,20 +1,21 @@
-import { Component, ComponentRef, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ComponentRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild, ViewContainerRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SdkComponentMap } from '../helpers/sdk_component_map';
 import { ErrorBoundaryComponent } from '../../_components/infra/error-boundary/error-boundary.component';
 
 @Component({
-  selector: 'app-component-mapper',
+  selector: 'component-mapper',
   templateUrl: './component-mapper.component.html',
   styleUrls: ['./component-mapper.component.scss'],
   standalone: true,
   imports: [CommonModule, ErrorBoundaryComponent]
 })
-export class ComponentMapperComponent implements OnInit {
+export class ComponentMapperComponent implements OnInit, OnChanges {
   @ViewChild('dynamicComponent', { read: ViewContainerRef, static: true })
   public dynamicComponent: ViewContainerRef | undefined;
 
   public componentRef: ComponentRef<any> | undefined;
+  public isInitialized: boolean = false;
 
   @Input() name: string = '';
   @Input() props: any;
@@ -26,6 +27,23 @@ export class ComponentMapperComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
+    this.loadComponent();
+    this.isInitialized = true;
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    const { name } = changes;
+    if (name) {
+      const { previousValue, currentValue } = name;
+      if (previousValue && previousValue !== currentValue) {
+        this.loadComponent();
+      }
+    } else if (this.isInitialized) {
+      this.bindInputProps();
+    }
+  }
+
+  loadComponent() {
     if (SdkComponentMap) {
       let component: any;
 
@@ -43,6 +61,7 @@ export class ComponentMapperComponent implements OnInit {
           component = ErrorBoundaryComponent;
         }
       }
+
       if (this.dynamicComponent) {
         this.dynamicComponent.clear();
         this.componentRef = this.dynamicComponent.createComponent(component);

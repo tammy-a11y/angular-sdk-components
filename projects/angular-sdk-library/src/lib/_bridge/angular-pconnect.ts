@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
 import { interval } from 'rxjs';
-import isEqual from 'fast-deep-equal';
+import * as isEqual from 'fast-deep-equal';
 import { ProgressSpinnerService } from '../_messages/progress-spinner.service';
 import { ErrorMessagesService } from '../_messages/error-messages.service';
 import { Utils } from '../_helpers/utils';
-
-declare const window: any;
 
 @Injectable({
   providedIn: 'root'

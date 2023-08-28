@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, NgZone } from '@angular/core';
+import { Component, OnInit, Input, NgZone, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
@@ -719,8 +719,5 @@ export class FileUtilityComponent implements OnInit {
 
     return false;
   }
-}
-function forwardRef(arg0: () => any) {
-  throw new Error('Function not implemented.');
 }
 

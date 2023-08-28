@@ -1,10 +1,9 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ReferenceComponent } from '../reference/reference.component';
 import { RegionComponent } from '../region/region.component';
 import { CaseCreateStageComponent } from '../../designSystemExtension/case-create-stage/case-create-stage.component';
-import { ViewComponent } from '../view/view.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
@@ -41,8 +40,5 @@ export class AssignmentCardComponent implements OnInit {
   onActionButtonClick(oData: any) {
     this.actionButtonClick.emit(oData);
   }
-}
-function forwardRef(arg0: () => any) {
-  throw new Error('Function not implemented.');
 }
 

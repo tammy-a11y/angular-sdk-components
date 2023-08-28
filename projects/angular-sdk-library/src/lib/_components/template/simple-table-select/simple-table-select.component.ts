@@ -1,10 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
-import { ListViewComponent } from '../list-view/list-view.component';
-import { PromotedFiltersComponent } from '../promoted-filters/promoted-filters.component';
-import { SimpleTableComponent } from '../simple-table/simple-table.component';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 declare const window: any;
 
@@ -13,7 +11,7 @@ declare const window: any;
   templateUrl: './simple-table-select.component.html',
   styleUrls: ['./simple-table-select.component.scss'],
   standalone: true,
-  imports: [CommonModule, SimpleTableComponent, PromotedFiltersComponent, ListViewComponent]
+  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class SimpleTableSelectComponent implements OnInit {
   @Input() pConn$: any;

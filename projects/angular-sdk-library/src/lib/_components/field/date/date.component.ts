@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -204,8 +204,5 @@ export class DateComponent implements OnInit {
     }
     return errMessage;
   }
-}
-function forwardRef(arg0: () => typeof ComponentMapperComponent) {
-  throw new Error('Function not implemented.');
 }
 

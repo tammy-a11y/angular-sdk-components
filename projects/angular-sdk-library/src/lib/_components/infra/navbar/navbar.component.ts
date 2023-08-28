@@ -158,20 +158,14 @@ export class NavbarComponent implements OnInit {
   }
 
   navPanelCreateCaseType(sCaseType: string, sFlowType: string) {
+    this.psService.sendMessage(true);
+    this.navPanelCreateButtonClick();
+
     const actionInfo = {
       containerName: 'primary',
       flowType: sFlowType ? sFlowType : 'pyStartCase'
     };
-
-    this.psService.sendMessage(true);
-
     this.createWork(sCaseType, actionInfo);
-
-    let timer = interval(100).subscribe(() => {
-      this.navPanelCreateButtonClick();
-
-      timer.unsubscribe();
-    });
   }
 
   navPanelLogoutClick() {

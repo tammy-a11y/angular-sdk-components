@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -189,8 +189,5 @@ export class PhoneComponent implements OnInit {
 
     return errMessage;
   }
-}
-function forwardRef(arg0: () => typeof ComponentMapperComponent) {
-  throw new Error('Function not implemented.');
 }
 

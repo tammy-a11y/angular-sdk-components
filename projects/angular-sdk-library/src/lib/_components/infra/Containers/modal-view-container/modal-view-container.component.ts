@@ -1,11 +1,11 @@
-import { Component, OnInit, Input, Output, EventEmitter, NgZone } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, NgZone, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import isEqual from 'fast-deep-equal';
 import { AngularPConnectService } from '../../../../_bridge/angular-pconnect';
 import { ProgressSpinnerService } from '../../../../_messages/progress-spinner.service';
 import { ComponentMapperComponent } from '../../../../_bridge/component-mapper/component-mapper.component';
-import { getBanners } from 'packages/angular-sdk-components/src/app/_helpers/case-utils';
+import { getBanners } from '../../../../_helpers/case-utils';
 
 /**
  * WARNING:  It is not expected that this file should be modified.  It is part of infrastructure code that works with
@@ -357,7 +357,3 @@ export class ModalViewContainerComponent implements OnInit {
     return getBanners({target: this.itemKey$, ...this.stateProps$})
   }
 }
-function forwardRef(arg0: () => typeof ComponentMapperComponent) {
-  throw new Error('Function not implemented.');
-}
-

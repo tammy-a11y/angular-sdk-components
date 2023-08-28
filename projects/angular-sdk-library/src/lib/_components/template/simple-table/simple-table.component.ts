@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
@@ -82,8 +82,5 @@ export class SimpleTableComponent implements OnInit {
   onStateChange() {
     this.checkAndUpdate();
   }
-}
-function forwardRef(arg0: () => typeof ComponentMapperComponent) {
-  throw new Error('Function not implemented.');
 }
 

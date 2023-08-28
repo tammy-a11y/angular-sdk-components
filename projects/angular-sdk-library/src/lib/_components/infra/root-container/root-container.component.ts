@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, NgZone } from '@angular/core';
+import { Component, OnInit, Input, NgZone, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { interval, Subscription } from 'rxjs';
@@ -30,7 +30,8 @@ const options = { context: 'app' };
     MatProgressSpinnerModule,
     HybridViewContainerComponent,
     ModalViewContainerComponent,
-    PreviewViewContainerComponent
+    PreviewViewContainerComponent,
+    forwardRef(() => ComponentMapperComponent)
   ]
 })
 export class RootContainerComponent implements OnInit {

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -9,6 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { OperatorComponent } from '../../designSystemExtension/operator/operator.component';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 declare const window: any;
 
@@ -29,7 +30,8 @@ const SEARCH_BOX = 'Search box';
     MatSelectModule,
     MatOptionModule,
     MatInputModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    forwardRef(() => ComponentMapperComponent)
   ]
 })
 export class UserReferenceComponent implements OnInit {

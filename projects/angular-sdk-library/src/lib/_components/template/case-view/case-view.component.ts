@@ -145,6 +145,7 @@ export class CaseViewComponent implements OnInit {
   }
 
   fullUpdate() {
+    this.caseTabs$ = [];
     this.updateHeaderAndSummary();
 
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
