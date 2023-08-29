@@ -2,14 +2,14 @@
   <div>{{ listViewProps.title }}</div>
   <div *ngIf="showFilters" class="psdk-grid-filter">
     <div *ngFor="let kid of processedFilters">
-      <app-component-mapper
+      <component-mapper
         [name]="kid.getPConnect().getComponentName()"
         [props]="{
           pConn$: kid.getPConnect(),
           formGroup$: formGroup$
         }"
         errorMsg="Promoted filters wants component not yet available: {{ kid.getPConnect().getComponentName() }}"
-      ></app-component-mapper>
+      ></component-mapper>
     </div>
   </div>
 
@@ -30,6 +30,6 @@
     </button>
   </div>
   <div *ngIf="showTable">
-    <app-list-view [pConn$]="pConn$" [payload]="payload"></app-list-view>
+    <component-mapper name="ListView" [props]="{ pConn$, payload }"></component-mapper>
   </div>
 </div>

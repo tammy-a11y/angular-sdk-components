@@ -1,29 +1,26 @@
 <div id="dialog" *ngIf="bShowModal$ && bShowAsModal$" class="psdk-dialog-background">
   <div class="psdk-modal-view-container-top" id="{{ buildName$ }}">
     <h3 *ngIf="title$ != ''">{{ title$ }}</h3>
-    <app-assignment
-      [pConn$]="createdViewPConn$"
-      [formGroup$]="formGroup$"
-      [arChildren$]="arChildren$"
-      [itemKey$]="itemKey$"
-      [isCreateStage$]="true"
-      [updateToken$]="updateToken$"
-    ></app-assignment>
+    <component-mapper
+      name="Assignment"
+      [props]="{ pConn$: createdViewPConn$, formGroup$, arChildren$, itemKey$, isCreateStage$: true, updateToken$, isInModal$: true, banners }"
+    ></component-mapper>
   </div>
 </div>
 
 <div *ngIf="bShowModal$ && !bShowAsModal$">
   <div id="{{ buildName$ }}">
     <h3 *ngIf="title$ != ''">{{ title$ }}</h3>
-    <app-assignment
-      [pConn$]="createdViewPConn$"
-      [formGroup$]="formGroup$"
-      [arChildren$]="arChildren$"
-      [itemKey$]="itemKey$"
-      [isCreateStage$]="true"
-      [updateToken$]="updateToken$"
-    ></app-assignment>
+    <component-mapper
+      name="Assignment"
+      [props]="{ pConn$: createdViewPConn$, formGroup$, arChildren$, itemKey$, isCreateStage$: true, updateToken$ }"
+    ></component-mapper>
   </div>
 </div>
 
-<app-cancel-alert [bShowAlert$]="bShowCancelAlert$" (onAlertState$)="onAlertState($event)" [pConn$]="cancelPConn$"></app-cancel-alert>
+<component-mapper
+  name="CancelAlert"
+  [props]="{ bShowAlert$: bShowCancelAlert$, pConn$: cancelPConn$ }"
+  [parent]="this"
+  [outputEvents]="{ onAlertState$: onAlertState }"
+></component-mapper>

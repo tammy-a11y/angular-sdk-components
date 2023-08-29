@@ -6,7 +6,7 @@ import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { FieldGroupUtils } from '../../../_helpers/field-group-utils';
 import { Utils } from '../../../_helpers/utils';
 import { RegionComponent } from '../../infra/region/region.component';
-import { FieldGroupListComponent } from '../field-group-list/field-group-list.component';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 declare const window: any;
 
@@ -15,7 +15,7 @@ declare const window: any;
   templateUrl: './field-group-template.component.html',
   styleUrls: ['./field-group-template.component.scss'],
   standalone: true,
-  imports: [CommonModule, FieldGroupListComponent, MatButtonModule, forwardRef(() => RegionComponent)]
+  imports: [CommonModule, MatButtonModule, ComponentMapperComponent, forwardRef(() => RegionComponent)]
 })
 export class FieldGroupTemplateComponent implements OnInit {
   @Input() configProps$: any;
@@ -39,11 +39,7 @@ export class FieldGroupTemplateComponent implements OnInit {
   allowAddEdit: boolean;
   fieldHeader: any;
 
-  constructor(
-    private angularPConnect: AngularPConnectService,
-    private utils: Utils,
-    private fieldGroupUtils: FieldGroupUtils
-  ) {}
+  constructor(private angularPConnect: AngularPConnectService, private utils: Utils, private fieldGroupUtils: FieldGroupUtils) {}
 
   ngOnInit(): void {
     // First thing in initialization is registering and subscribing to the AngularPConnect service
@@ -98,7 +94,7 @@ export class FieldGroupTemplateComponent implements OnInit {
     this.showLabel$ = this.inheritedProps$['showLabel'] || this.showLabel$;
 
     this.allowAddEdit = this.configProps$['allowTableEdit'];
-    
+
     const renderMode = this.configProps$['renderMode'];
     const displayMode = this.configProps$['displayMode'];
     this.readonlyMode = renderMode === 'ReadOnly' || displayMode === 'LABELS_LEFT';
@@ -109,7 +105,7 @@ export class FieldGroupTemplateComponent implements OnInit {
     const resolvedList = this.fieldGroupUtils.getReferenceList(this.pConn$);
     this.pageReference = `${this.pConn$.getPageReference()}${resolvedList}`;
     this.pConn$.setReferenceList(resolvedList);
-    if(this.readonlyMode){
+    if (this.readonlyMode) {
       this.pConn$.setInheritedProp('displayMode', 'LABELS_LEFT');
     }
     this.referenceList = this.configProps$['referenceList'];
@@ -123,10 +119,7 @@ export class FieldGroupTemplateComponent implements OnInit {
       this.referenceList?.map((item, index) => {
         children.push({
           id: index,
-          name:
-            this.fieldHeader === 'propertyRef'
-              ? this.getDynamicHeader(item, index)
-              : this.getStaticHeader(this.heading, index),
+          name: this.fieldHeader === 'propertyRef' ? this.getDynamicHeader(item, index) : this.getStaticHeader(this.heading, index),
           children: this.fieldGroupUtils.buildView(this.pConn$, index, lookForChildInConfig)
         });
       });
@@ -148,9 +141,7 @@ export class FieldGroupTemplateComponent implements OnInit {
 
   addFieldGroupItem() {
     if (this.PCore$?.getPCoreVersion()?.includes('8.7')) {
-      this.pConn$
-        .getListActions()
-        .insert({ classID: this.contextClass }, this.referenceList.length, this.pageReference);
+      this.pConn$.getListActions().insert({ classID: this.contextClass }, this.referenceList.length, this.pageReference);
     } else {
       this.pConn$.getListActions().insert({ classID: this.contextClass }, this.referenceList.length);
     }

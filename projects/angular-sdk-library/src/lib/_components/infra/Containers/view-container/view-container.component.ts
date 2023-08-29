@@ -48,11 +48,7 @@ export class ViewContainerComponent implements OnInit {
   state: any;
   dispatchObject: any;
 
-  constructor(
-    private angularPConnect: AngularPConnectService,
-    private psService: ProgressSpinnerService,
-    private ngZone: NgZone
-  ) {}
+  constructor(private angularPConnect: AngularPConnectService, private psService: ProgressSpinnerService, private ngZone: NgZone) {}
 
   ngOnInit() {
     if (this.PCore$ == null) {

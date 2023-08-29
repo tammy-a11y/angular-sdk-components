@@ -1,7 +1,7 @@
 // Helper singleton class to assist with loading and
 //  accessing the SDK components
 // import localSdkComponentMap from '../../sdk-local-component-map';
-import pegaSdkComponentMap from './sdk-pega-component-map';
+import pegaSdkComponentMap from '../../../../../../packages/angular-sdk-components/src/sdk-pega-component-map';
 
 // Statically load all "local" components
 

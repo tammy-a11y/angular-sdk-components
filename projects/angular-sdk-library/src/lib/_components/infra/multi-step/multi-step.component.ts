@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, forwardRef } from '@ang
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { Utils } from '../../../_helpers/utils';
-import { AssignmentCardComponent } from '../assignment-card/assignment-card.component';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 declare const window: any;
 
@@ -12,7 +12,7 @@ declare const window: any;
   styleUrls: ['./multi-step.component.scss'],
   providers: [Utils],
   standalone: true,
-  imports: [CommonModule, forwardRef(() => AssignmentCardComponent)]
+  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class MultiStepComponent implements OnInit {
   @Input() pConn$: any;
@@ -23,7 +23,7 @@ export class MultiStepComponent implements OnInit {
   @Input() bIsVertical$: boolean;
   @Input() arCurrentStepIndicies$: Array<number>;
   @Input() arNavigationSteps$: Array<any>;
-  @Output() ActionButtonClick: EventEmitter<any> = new EventEmitter();
+  @Output() actionButtonClick: EventEmitter<any> = new EventEmitter();
 
   PCore$: any;
 
@@ -44,7 +44,7 @@ export class MultiStepComponent implements OnInit {
   }
 
   onActionButtonClick(oData: any) {
-    this.ActionButtonClick.emit(oData);
+    this.actionButtonClick.emit(oData);
   }
 
   _getVIconClass(status): String {

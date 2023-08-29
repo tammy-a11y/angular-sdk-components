@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
@@ -6,17 +6,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { interval } from 'rxjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
-import { TextComponent } from '../text/text.component';
-import { FieldValueListComponent } from '../../template/field-value-list/field-value-list.component';
-
-declare const window: any;
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
   selector: 'app-email',
   templateUrl: './email.component.html',
   styleUrls: ['./email.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, TextComponent, FieldValueListComponent]
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class EmailComponent implements OnInit {
   @Input() pConn$: any;
@@ -37,6 +34,7 @@ export class EmailComponent implements OnInit {
   bHasForm$: boolean = true;
   componentReference: string = '';
   testId: string;
+  helperText: string;
 
   fieldControl = new FormControl('', null);
 
@@ -105,6 +103,7 @@ export class EmailComponent implements OnInit {
     if (this.configProps$['value'] != undefined) {
       this.value$ = this.configProps$['value'];
     }
+    this.helperText = this.configProps$['helperText'];
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
@@ -173,3 +172,4 @@ export class EmailComponent implements OnInit {
     return errMessage;
   }
 }
+

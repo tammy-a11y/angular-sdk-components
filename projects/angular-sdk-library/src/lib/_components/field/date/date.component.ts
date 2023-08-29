@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -8,10 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { interval } from 'rxjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
-import { TextComponent } from '../text/text.component';
-import { FieldValueListComponent } from '../../template/field-value-list/field-value-list.component';
-
-declare const window: any;
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
   selector: 'app-date',
@@ -25,8 +22,7 @@ declare const window: any;
     MatInputModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    TextComponent,
-    FieldValueListComponent
+    forwardRef(() => ComponentMapperComponent)
   ]
 })
 export class DateComponent implements OnInit {
@@ -47,6 +43,7 @@ export class DateComponent implements OnInit {
   bHasForm$: boolean = true;
   componentReference: string = '';
   testId: string = '';
+  helperText: string;
 
   fieldControl = new FormControl('', null);
 
@@ -127,6 +124,7 @@ export class DateComponent implements OnInit {
     this.testId = this.configProps$['testId'];
     this.label$ = this.configProps$['label'];
     this.displayMode$ = this.configProps$['displayMode'];
+    this.helperText = this.configProps$['helperText'];
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
@@ -207,3 +205,4 @@ export class DateComponent implements OnInit {
     return errMessage;
   }
 }
+

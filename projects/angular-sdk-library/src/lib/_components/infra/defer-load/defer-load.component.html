@@ -1,6 +1,3 @@
-<div>
-  <div [ngSwitch]="componentName$">
-    <app-view *ngSwitchCase="'View'" [pConn$]="loadedPConn$"></app-view>
-    <div *ngSwitchDefault>Defer Load Missing: {{ componentName$ }}</div>
-  </div>
+<div *ngIf="loadedPConn$">
+  <component-mapper [name]="componentName$" [props]="{ pConn$: loadedPConn$ }" errorMsg="Defer Load Missing: {{ componentName$ }}"></component-mapper>
 </div>

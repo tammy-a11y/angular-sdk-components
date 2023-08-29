@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
@@ -8,10 +8,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { interval } from 'rxjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
-import { TextComponent } from '../text/text.component';
-import { FieldValueListComponent } from '../../template/field-value-list/field-value-list.component';
-
-declare const window: any;
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { DatapageService } from '../../../_services/datapage.service';
+import { handleEvent } from '../../../_helpers/event-util';
 
 @Component({
   selector: 'app-auto-complete',
@@ -25,8 +24,7 @@ declare const window: any;
     MatInputModule,
     MatAutocompleteModule,
     MatOptionModule,
-    TextComponent,
-    FieldValueListComponent
+    forwardRef(() => ComponentMapperComponent)
   ]
 })
 export class AutoCompleteComponent implements OnInit {
@@ -36,7 +34,7 @@ export class AutoCompleteComponent implements OnInit {
   // Used with AngularPConnect
   angularPConnectData: any = {};
   PCore$: any;
-  configProps$: Object;
+  configProps$: any;
 
   label$: string = '';
   value$: string = '';
@@ -53,12 +51,16 @@ export class AutoCompleteComponent implements OnInit {
   listType: string;
   columns = [];
 
+  helperText: string;
   fieldControl = new FormControl('', null);
+  parameters: {};
+  hideLabel: any;
 
   constructor(
     private angularPConnect: AngularPConnectService,
     private cdRef: ChangeDetectorRef,
-    private utils: Utils
+    private utils: Utils,
+    private dataPageService: DatapageService
   ) {}
 
   ngOnInit(): void {
@@ -129,8 +131,39 @@ export class AutoCompleteComponent implements OnInit {
     this.displayMode$ = this.configProps$['displayMode'];
     this.listType = this.configProps$['listType'];
     const displayMode = this.configProps$['displayMode'];
-    const datasource = this.configProps$['datasource'];
-    const columns = this.configProps$['columns'];
+    let datasource = this.configProps$['datasource'];
+    let columns = this.configProps$['columns'];
+    this.hideLabel = this.configProps$['hideLabel'];
+    const { deferDatasource, datasourceMetadata } = this.configProps$;
+    this.helperText = this.configProps$['helperText'];
+    this.parameters = this.configProps$?.parameters;
+    const context = this.pConn$.getContextName();
+    // convert associated to datapage listtype and transform props
+    // Process deferDatasource when datapage name is present. WHhen tableType is promptList / localList
+    if (deferDatasource && datasourceMetadata?.datasource?.name) {
+      this.listType = 'datapage';
+      datasource = datasourceMetadata.datasource.name;
+      this.parameters = this.flattenParameters(datasourceMetadata?.datasource?.parameters);
+      const displayProp = datasourceMetadata.datasource.propertyForDisplayText.startsWith('@P')
+        ? datasourceMetadata.datasource.propertyForDisplayText.substring(3)
+        : datasourceMetadata.datasource.propertyForDisplayText;
+      const valueProp = datasourceMetadata.datasource.propertyForValue.startsWith('@P')
+        ? datasourceMetadata.datasource.propertyForValue.substring(3)
+        : datasourceMetadata.datasource.propertyForValue;
+      columns = [
+        {
+          key: 'true',
+          setProperty: 'Associated property',
+          value: valueProp
+        },
+        {
+          display: 'true',
+          primary: 'true',
+          useForSearch: true,
+          value: displayProp
+        }
+      ];
+    }
     if (columns) {
       this.columns = this.preProcessColumns(columns);
     }
@@ -195,6 +228,16 @@ export class AutoCompleteComponent implements OnInit {
     }
   }
 
+  flattenParameters(params = {}) {
+    const flatParams = {};
+    Object.keys(params).forEach((key) => {
+      const { name, value: theVal } = params[key];
+      flatParams[name] = theVal;
+    });
+
+    return flatParams;
+  }
+
   getDisplayFieldsMetaData(columnList) {
     const displayColumns = columnList.filter((col) => col.display === 'true');
     const metaDataObj: any = { key: '', primary: '', secondary: [] };
@@ -247,11 +290,14 @@ export class AutoCompleteComponent implements OnInit {
       key = index > -1 ? (key = this.options$[index].key) : event.target.value;
     }
 
-    const eve = {
-      value: key
-    };
-    // PConnect wants to use eventHandler for onBlur
-    this.angularPConnectData.actions.onChange(this, eve);
+    const value = key;
+    const actionsApi = this.pConn$?.getActionsApi();
+    const propName = this.pConn$?.getStateProps().value;
+    handleEvent(actionsApi, 'changeNblur', propName, value);
+    if (this.configProps$?.onRecordChange) {
+      event.target.value = value;
+      this.configProps$.onRecordChange(event);
+    }
   }
 
   getErrorMessage() {

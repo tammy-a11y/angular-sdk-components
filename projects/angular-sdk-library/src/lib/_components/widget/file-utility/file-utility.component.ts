@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, NgZone } from '@angular/core';
+import { Component, OnInit, Input, NgZone, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
@@ -6,9 +6,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import download from 'downloadjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
-import { ActionButtonsComponent } from '../../infra/action-buttons/action-buttons.component';
-import { MaterialSummaryListComponent } from '../../designSystemExtension/material-summary-list/material-summary-list.component';
 import { ListUtilityComponent } from '../list-utility/list-utility.component';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 declare const window: any;
 
@@ -17,15 +16,7 @@ declare const window: any;
   templateUrl: './file-utility.component.html',
   styleUrls: ['./file-utility.component.scss'],
   standalone: true,
-  imports: [
-    CommonModule,
-    ListUtilityComponent,
-    MatButtonModule,
-    MaterialSummaryListComponent,
-    ActionButtonsComponent,
-    MatFormFieldModule,
-    MatInputModule
-  ]
+  imports: [CommonModule, ListUtilityComponent, MatButtonModule, MatFormFieldModule, MatInputModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class FileUtilityComponent implements OnInit {
   @Input() pConn$: any;
@@ -112,12 +103,23 @@ export class FileUtilityComponent implements OnInit {
     this.updateSelf();
 
     this.createModalButtons();
+
+    this.PCore$.getPubSubUtils().subscribe(
+      this.PCore$.getEvents().getCaseEvent().CASE_ATTACHMENTS_UPDATED_FROM_CASEVIEW,
+      this.updateSelf.bind(this),
+      "caseAttachmentsUpdateFromCaseview"
+    );
   }
 
   ngOnDestroy(): void {
     if (this.angularPConnectData.unsubscribeFn) {
       this.angularPConnectData.unsubscribeFn();
     }
+
+    this.PCore$.getPubSubUtils().unsubscribe(
+      this.PCore$.getEvents().getCaseEvent().CASE_ATTACHMENTS_UPDATED_FROM_CASEVIEW,
+      "caseAttachmentsUpdateFromCaseview"
+    );
   }
 
   // Callback passed when subscribing to store change
@@ -718,3 +720,4 @@ export class FileUtilityComponent implements OnInit {
     return false;
   }
 }
+

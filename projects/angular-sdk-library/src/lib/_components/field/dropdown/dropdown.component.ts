@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
@@ -7,17 +7,15 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { interval } from 'rxjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
-import { TextComponent } from '../text/text.component';
-import { FieldValueListComponent } from '../../template/field-value-list/field-value-list.component';
-
-declare const window: any;
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { handleEvent } from '../../../_helpers/event-util';
 
 @Component({
   selector: 'app-dropdown',
   templateUrl: './dropdown.component.html',
   styleUrls: ['./dropdown.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatSelectModule, MatOptionModule, TextComponent, FieldValueListComponent]
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatSelectModule, MatOptionModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class DropdownComponent implements OnInit {
   @Input() pConn$: any;
@@ -25,7 +23,7 @@ export class DropdownComponent implements OnInit {
 
   // Used with AngularPConnect
   angularPConnectData: any = {};
-  configProps$: Object;
+  configProps$: any;
 
   label$: string = '';
   value$: string = '';
@@ -39,6 +37,8 @@ export class DropdownComponent implements OnInit {
   options$: Array<any>;
   componentReference: string = '';
   testId: string = '';
+  helperText: string;	
+  hideLabel: any;
 
   fieldControl = new FormControl('', null);
 
@@ -108,7 +108,8 @@ export class DropdownComponent implements OnInit {
     this.testId = this.configProps$['testId'];
     this.displayMode$ = this.configProps$['displayMode'];
     this.label$ = this.configProps$['label'];
-
+    this.helperText = this.configProps$['helperText'];
+    this.hideLabel = this.configProps$['hideLabel'];
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
       if (this.configProps$['required'] != null) {
@@ -167,7 +168,12 @@ export class DropdownComponent implements OnInit {
     if (event?.value === 'Select') {
       event.value = '';
     }
-    this.angularPConnectData.actions.onChange(this, event);
+    const actionsApi = this.pConn$?.getActionsApi();
+    const propName = this.pConn$?.getStateProps().value;
+    handleEvent(actionsApi, 'changeNblur', propName, event.value);
+    if (this.configProps$?.onRecordChange) {
+      this.configProps$.onRecordChange(event);
+    }
   }
 
   fieldOnClick(event: any) {}
@@ -193,3 +199,4 @@ export class DropdownComponent implements OnInit {
     return errMessage;
   }
 }
+

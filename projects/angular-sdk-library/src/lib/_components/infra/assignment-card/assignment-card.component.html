@@ -1,7 +1,7 @@
 <form [formGroup]="formGroup$" name="flowContainer" class="psdk-flow-container">
   <div *ngFor="let kid of arChildren$">
     <div [ngSwitch]="kid.getPConnect().getComponentName()">
-      <app-view *ngSwitchCase="'View'" [formGroup$]="formGroup$" [pConn$]="kid.getPConnect()"></app-view>
+      <component-mapper *ngSwitchCase="'View'" name="View" [props]="{ formGroup$, pConn$: kid.getPConnect() }"></component-mapper>
       <app-case-create-stage *ngSwitchCase="'CaseCreateStage'" [formGroup$]="formGroup$" [pConn$]="kid.getPConnect()"></app-case-create-stage>
       <app-region *ngSwitchCase="'Region'" [formGroup$]="formGroup$" [pConn$]="kid.getPConnect()"></app-region>
       <div *ngSwitchDefault>Assignment Card wants component not yet available: {{ kid.getPConnect().getComponentName() }}</div>
@@ -13,9 +13,10 @@
   <br />
   <div class="psdk-case-view-divider"></div>
 
-  <app-action-buttons
-    [arMainButtons$]="arMainButtons$"
-    [arSecondaryButtons$]="arSecondaryButtons$"
-    (ActionButtonClick)="onActionButtonClick($event)"
-  ></app-action-buttons>
+  <component-mapper
+    name="ActionButtons"
+    [props]="{ arMainButtons$, arSecondaryButtons$ }"
+    [parent]="this"
+    [outputEvents]="{ actionButtonClick: onActionButtonClick }"
+  ></component-mapper>
 </div>

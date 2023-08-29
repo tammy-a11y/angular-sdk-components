@@ -1,14 +1,12 @@
 import { Injectable } from '@angular/core';
 import { interval } from 'rxjs';
-import isEqual from 'fast-deep-equal';
+import * as isEqual from 'fast-deep-equal';
 import { ProgressSpinnerService } from '../_messages/progress-spinner.service';
 import { ErrorMessagesService } from '../_messages/error-messages.service';
 import { Utils } from '../_helpers/utils';
 
-declare const window: any;
-
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class AngularPConnectService {
   /**
@@ -125,7 +123,7 @@ export class AngularPConnectService {
 
     return {
       ...compProps,
-      ...addProps,
+      ...addProps
     };
   }
 
@@ -194,7 +192,7 @@ export class AngularPConnectService {
       compID: '',
       unsubscribeFn: null,
       validateMessage: '',
-      actions: null,
+      actions: null
     };
 
     if (inComp === null || inCallback === null) {
@@ -312,7 +310,7 @@ export class AngularPConnectService {
 
     if (incomingProps['httpMessages']) {
       inComp.angularPConnectData.httpMessages = incomingProps['httpMessages'];
-      delete incomingProps['httpMessages'];
+      incomingProps['httpMessages'] = undefined;
     }
 
     let incomingPropsAsStr: string = JSON.stringify(incomingProps);
@@ -359,12 +357,12 @@ export class AngularPConnectService {
     //console.log("current props: " + currentPropsAsStr);
 
     if (bRet) {
-      //console.log(`**** change for: ${inComp.constructor.name}`);
-      //console.log("current props: " + currentPropsAsStr);
+      // console.log(`**** change for: ${inComp.constructor.name}`);
+      // console.log("current props: " + currentPropsAsStr);
       // console.log("incoming props: " + incomingPropsAsStr);
-      //console.log(`    ${inComp.constructor.name}: shouldComponentUpdate returning: ${bRet}, compId: ${compID}` );
-      //console.log( `    Updating with componentProps for ${inComp.constructor.name}: ${JSON.stringify(this.componentPropsArr[compID])}`);
-      //console.log( `          and validateMessage: ${inComp.validateMessage}`);
+      // console.log(`    ${inComp.constructor.name}: shouldComponentUpdate returning: ${bRet}, compId: ${compID}` );
+      // console.log( `    Updating with componentProps for ${inComp.constructor.name}: ${JSON.stringify(this.componentPropsArr[compID])}`);
+      // console.log( `          and validateMessage: ${inComp.validateMessage}`);
     }
     // else if (inComp.constructor.name.indexOf("View") >= 0 || inComp.constructor.name.indexOf("Root") >= 0) {
     //   console.log("no change");

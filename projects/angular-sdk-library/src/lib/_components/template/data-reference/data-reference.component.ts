@@ -159,7 +159,7 @@ export class DataReferenceComponent implements OnInit {
     }
 
     // AutoComplete sets value on event.id whereas Dropdown sets it on event.target.value
-    const propValue = event?.id || event?.target.value;
+    const propValue = event?.id || event?.target?.value;
     if (propValue && this.canBeChangedInReviewMode && this.isDisplayModeEnabled) {
       this.PCore$.getDataApiUtils()
         .getCaseEditLock(caseKey)
@@ -243,7 +243,7 @@ export class DataReferenceComponent implements OnInit {
               ? this.rawViewMetadata.config.name
               : null,
           hideLabel: this.hideLabel,
-          onRecordChange: this.handleSelection
+          onRecordChange: this.handleSelection.bind(this)
         }
       });
     }

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatRadioModule } from '@angular/material/radio';
@@ -7,10 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { interval } from 'rxjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
-import { TextComponent } from '../text/text.component';
-import { FieldValueListComponent } from '../../template/field-value-list/field-value-list.component';
-
-declare const window: any;
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
   selector: 'app-radio-buttons',
@@ -18,7 +15,7 @@ declare const window: any;
   styleUrls: ['./radio-buttons.component.scss'],
   providers: [Utils],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatRadioModule, TextComponent, FieldValueListComponent]
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatRadioModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class RadioButtonsComponent implements OnInit {
   @Input() pConn$: any;
@@ -40,6 +37,7 @@ export class RadioButtonsComponent implements OnInit {
   options$: Array<any>;
   componentReference: string = '';
   testId: string;
+  helperText: string;
 
   fieldControl = new FormControl('', null);
 
@@ -109,6 +107,7 @@ export class RadioButtonsComponent implements OnInit {
     this.testId = this.configProps$['testId'];
     this.label$ = this.configProps$['label'];
     this.displayMode$ = this.configProps$['displayMode'];
+    this.helperText = this.configProps$['helperText'];
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
@@ -187,3 +186,4 @@ export class RadioButtonsComponent implements OnInit {
     return errMessage;
   }
 }
+

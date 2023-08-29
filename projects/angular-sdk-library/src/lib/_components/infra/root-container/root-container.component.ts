@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, NgZone } from '@angular/core';
+import { Component, OnInit, Input, NgZone, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { interval, Subscription } from 'rxjs';
@@ -8,8 +8,7 @@ import { ReferenceComponent } from '../reference/reference.component';
 import { PreviewViewContainerComponent } from '../Containers/preview-view-container/preview-view-container.component';
 import { ModalViewContainerComponent } from '../Containers/modal-view-container/modal-view-container.component';
 import { HybridViewContainerComponent } from '../Containers/hybrid-view-container/hybrid-view-container.component';
-import { ViewContainerComponent } from '../Containers/view-container/view-container.component';
-import { ViewComponent } from '../view/view.component';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 /**
  * WARNING:  It is not expected that this file should be modified.  It is part of infrastructure code that works with
@@ -29,11 +28,10 @@ const options = { context: 'app' };
   imports: [
     CommonModule,
     MatProgressSpinnerModule,
-    ViewComponent,
-    ViewContainerComponent,
     HybridViewContainerComponent,
     ModalViewContainerComponent,
-    PreviewViewContainerComponent
+    PreviewViewContainerComponent,
+    forwardRef(() => ComponentMapperComponent)
   ]
 })
 export class RootContainerComponent implements OnInit {

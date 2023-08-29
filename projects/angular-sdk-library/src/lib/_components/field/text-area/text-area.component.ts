@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
@@ -6,17 +6,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { interval } from 'rxjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
-import { TextComponent } from '../text/text.component';
-import { FieldValueListComponent } from '../../template/field-value-list/field-value-list.component';
-
-declare const window: any;
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
   selector: 'app-text-area',
   templateUrl: './text-area.component.html',
   styleUrls: ['./text-area.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, TextComponent, FieldValueListComponent]
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class TextAreaComponent implements OnInit {
   @Input() pConn$: any;
@@ -32,11 +29,13 @@ export class TextAreaComponent implements OnInit {
   bReadonly$: boolean = false;
   bDisabled$: boolean = false;
   bVisible$: boolean = true;
+  nMaxLength$: number;
   displayMode$: string = '';
   controlName$: string;
   bHasForm$: boolean = true;
   componentReference: string = '';
   testId: string;
+  helperText: string;
 
   fieldControl = new FormControl('', null);
 
@@ -102,9 +101,11 @@ export class TextAreaComponent implements OnInit {
     if (this.configProps$['value'] != undefined) {
       this.value$ = this.configProps$['value'];
     }
+    this.nMaxLength$ = this.pConn$.getFieldMetadata(this.pConn$.getRawConfigProps()?.value)?.maxLength || 100;
     this.testId = this.configProps$['testId'];
     this.displayMode$ = this.configProps$['displayMode'];
     this.label$ = this.configProps$['label'];
+    this.helperText = this.configProps$['helperText'];
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
@@ -174,3 +175,4 @@ export class TextAreaComponent implements OnInit {
     return errMessage;
   }
 }
+

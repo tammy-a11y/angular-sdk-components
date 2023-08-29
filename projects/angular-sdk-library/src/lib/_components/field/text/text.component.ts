@@ -1,8 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
-import { FieldValueListComponent } from '../../template/field-value-list/field-value-list.component';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 declare const window: any;
 
@@ -11,7 +11,7 @@ declare const window: any;
   templateUrl: './text.component.html',
   styleUrls: ['./text.component.scss'],
   standalone: true,
-  imports: [CommonModule, FieldValueListComponent]
+  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class TextComponent implements OnInit {
   @Input() pConn$: any;

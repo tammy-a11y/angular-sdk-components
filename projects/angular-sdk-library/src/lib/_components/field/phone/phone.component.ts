@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -7,17 +7,13 @@ import { NgxMatIntlTelInputComponent } from 'ngx-mat-intl-tel-input';
 import { Utils } from '../../../_helpers/utils';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { handleEvent } from '../../../_helpers/event-util';
-import { TextComponent } from '../text/text.component';
-import { FieldValueListComponent } from '../../template/field-value-list/field-value-list.component';
-
-declare const window: any;
-
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 @Component({
   selector: 'app-phone',
   templateUrl: './phone.component.html',
   styleUrls: ['./phone.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, NgxMatIntlTelInputComponent, TextComponent, FieldValueListComponent]
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, NgxMatIntlTelInputComponent, forwardRef(() => ComponentMapperComponent)]
 })
 export class PhoneComponent implements OnInit {
   @Input() pConn$: any;
@@ -40,6 +36,7 @@ export class PhoneComponent implements OnInit {
   testId: string;
   separateDialCode = false;
   afterBlur: boolean;
+  helperText: string;
 
   fieldControl = new FormControl('', null);
 
@@ -112,6 +109,7 @@ export class PhoneComponent implements OnInit {
     if (this.configProps$['value'] != undefined) {
       this.value$ = this.configProps$['value'];
     }
+    this.helperText = this.configProps$['helperText'];
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
@@ -192,3 +190,4 @@ export class PhoneComponent implements OnInit {
     return errMessage;
   }
 }
+

@@ -1,8 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
-import { FieldValueListComponent } from '../../template/field-value-list/field-value-list.component';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 declare const window: any;
 
@@ -11,7 +11,7 @@ declare const window: any;
   templateUrl: './semantic-link.component.html',
   styleUrls: ['./semantic-link.component.scss'],
   standalone: true,
-  imports: [CommonModule, FieldValueListComponent]
+  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class SemanticLinkComponent implements OnInit {
   @Input() pConn$: any;
