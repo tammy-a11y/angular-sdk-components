@@ -1,5 +1,5 @@
 import { forwardRef } from '@angular/core';
-import { AlertBannerComponent } from '../src/lib/_components/designSystemExtension/alert-banner/alert-banner.component';
+import { AlertBannerComponent } from '../../../projects/angular-sdk-library/src/lib/_components/designSystemExtension/alert-banner/alert-banner.component';
 import { AutoCompleteComponent } from '../../../projects/angular-sdk-library/src/lib/_components/field/auto-complete/auto-complete.component';
 import { CancelAlertComponent } from '../../../projects/angular-sdk-library/src/lib/_components/field/cancel-alert/cancel-alert.component';
 import { CheckBoxComponent } from '../../../projects/angular-sdk-library/src/lib/_components/field/check-box/check-box.component';
