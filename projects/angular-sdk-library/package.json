@@ -1,6 +1,6 @@
 {
-  "name": "angular-sdk-library",
-  "version": "0.0.1",
+  "name": "@pega/angular-sdk-library",
+  "version": "8.23.10",
   "peerDependencies": {
     "@angular/common": "^15.2.0",
     "@angular/core": "^15.2.0"
