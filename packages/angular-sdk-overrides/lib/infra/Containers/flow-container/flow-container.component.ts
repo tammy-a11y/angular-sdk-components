@@ -10,7 +10,7 @@ import { AssignmentComponent } from '@pega/angular-sdk-library';
 import { TodoComponent } from '@pega/angular-sdk-library';
 import { getToDoAssignments, showBanner } from './helpers';
 import { ViewComponent } from '@pega/angular-sdk-library';
-import { ComponentMapperComponent } from 'projects/angular-sdk-library/src/public-api';
+import { ComponentMapperComponent } from '@pega/angular-sdk-library';
 
 /**
  * WARNING:  It is not expected that this file should be modified.  It is part of infrastructure code that works with

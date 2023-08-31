@@ -10,7 +10,7 @@ import { AssignmentComponent } from '../../assignment/assignment.component';
 import { TodoComponent } from '../../../widget/todo/todo.component';
 import { getToDoAssignments, showBanner } from './helpers';
 import { ViewComponent } from '../../view/view.component';
-import { ComponentMapperComponent } from 'projects/angular-sdk-library/src/public-api';
+import { ComponentMapperComponent } from '../../../../_bridge/component-mapper/component-mapper.component';
 
 /**
  * WARNING:  It is not expected that this file should be modified.  It is part of infrastructure code that works with
