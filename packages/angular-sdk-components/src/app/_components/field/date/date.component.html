@@ -20,6 +20,7 @@
           (click)="fieldOnClick($event)"
           (blur)="fieldOnBlur($event)"
         />
+        <mat-hint>{{dateFormatInfo.dateFormatString}}</mat-hint>
         <mat-datepicker-toggle matSuffix [for]="pegadate"></mat-datepicker-toggle>
         <mat-datepicker #pegadate [startAt]="value$"></mat-datepicker>
         <mat-error *ngIf="fieldControl.invalid">{{ getErrorMessage() }}</mat-error>
