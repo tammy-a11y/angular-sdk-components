@@ -20,7 +20,7 @@ import { Utils } from '@pega/angular-sdk-library';
 
 declare const window: any;
 
-export class Group {
+class Group {
   level = 0;
   parent: Group;
   expanded = true;

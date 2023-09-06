@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { MatTabsModule } from '@angular/material/tabs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
-import { getTransientTabs, getVisibleTabs, tabClick } from '../sub-tabs/tabUtils';
+import { getTransientTabs, getVisibleTabs, tabClick } from '../../../_helpers/tabUtils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 declare const window: any;
