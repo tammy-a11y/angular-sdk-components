@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { interval } from 'rxjs';
-import * as isEqual from 'fast-deep-equal';
+import isEqual from 'fast-deep-equal';
 import { ProgressSpinnerService } from '../_messages/progress-spinner.service';
 import { ErrorMessagesService } from '../_messages/error-messages.service';
 import { Utils } from '../_helpers/utils';

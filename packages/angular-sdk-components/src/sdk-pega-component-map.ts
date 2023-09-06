@@ -165,7 +165,7 @@ const pegaSdkComponentMap = {
   reference: ReferenceComponent,
   RadioButtons: RadioButtonsComponent,
   Region: RegionComponent,
-  RootContainer: RootContainerComponent,
+  RootContainer: forwardRef(() => RootContainerComponent),
   SemanticLink: SemanticLinkComponent,
   SimpleTable: SimpleTableComponent,
   SimpleTableManual: SimpleTableManualComponent,
