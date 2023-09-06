@@ -16,16 +16,16 @@ import { MomentDateModule } from "@angular/material-moment-adapter";
 
 
 class MyFormat {
-  constructor() {}
+  constructor() { }
   theDateFormat: any = getDateFormatInfo();
- 
+
   get display() {
     return {
-          dateInput: this.theDateFormat.dateFormatString,
-          monthYearLabel: "MMM YYYY",
-          dateA11yLabel: "LL",
-          monthYearA11yLabel: "MMMM YYYY"
-        }
+      dateInput: this.theDateFormat.dateFormatString,
+      monthYearLabel: "MMM YYYY",
+      dateA11yLabel: "LL",
+      monthYearA11yLabel: "MMMM YYYY"
+    }
   }
 }
 
@@ -71,12 +71,12 @@ export class DateComponent implements OnInit {
 
   fieldControl = new FormControl('', null);
 
-   // Start with default dateFormatInfo
-   dateFormatInfo = dateFormatInfoDefault;
-   // and then update, as needed, based on locale, etc.
-   theDateFormat: any = getDateFormatInfo();
+  // Start with default dateFormatInfo
+  dateFormatInfo = dateFormatInfoDefault;
+  // and then update, as needed, based on locale, etc.
+  theDateFormat: any = getDateFormatInfo();
 
-  constructor(private angularPConnect: AngularPConnectService, private cdRef: ChangeDetectorRef, private utils: Utils, @Inject(MAT_DATE_FORMATS) private config: MyFormat) {}
+  constructor(private angularPConnect: AngularPConnectService, private cdRef: ChangeDetectorRef, private utils: Utils, @Inject(MAT_DATE_FORMATS) private config: MyFormat) { }
 
   ngOnInit(): void {
     this.dateFormatInfo = this.theDateFormat;
@@ -201,7 +201,7 @@ export class DateComponent implements OnInit {
     this.angularPConnectData.actions.onChange(this, { value: event.value });
   }
 
-  fieldOnClick(event: any) {}
+  fieldOnClick(event: any) { }
 
   fieldOnBlur(event: any) {
     // PConnect wants to use eventHandler for onBlur
