@@ -27,6 +27,12 @@ class MyFormat {
       monthYearA11yLabel: "MMMM YYYY"
     }
   }
+
+  get parse() {
+    return {
+      dateInput: this.theDateFormat.dateFormatString,
+    };
+  }
 }
 
 @Component({
