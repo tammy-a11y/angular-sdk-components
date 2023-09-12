@@ -6,7 +6,6 @@ import { ComponentMapperComponent } from '@pega/angular-sdk-library';
 import { compareSdkPCoreVersions } from '@pega/angular-sdk-library';
 
 import { getSdkComponentMap } from '@pega/angular-sdk-library';
-// import localSdkComponentMap from '@pega/angular-sdk-library';
 import localSdkComponentMap from '@pega/angular-sdk-library';
 
 declare const window: any;

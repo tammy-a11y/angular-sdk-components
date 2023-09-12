@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { AngSdkCompsService } from './angular-sdk-library.service';
+import { AngSdkLibService } from './angular-sdk-library.service';
 
 describe('AngSdkCompsService', () => {
-  let service: AngSdkCompsService;
+  let service: AngSdkLibService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(AngSdkCompsService);
+    service = TestBed.inject(AngSdkLibService);
   });
 
   it('should be created', () => {

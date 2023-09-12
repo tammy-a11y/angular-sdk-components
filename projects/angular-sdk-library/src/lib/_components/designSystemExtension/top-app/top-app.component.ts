@@ -6,7 +6,6 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
 import { compareSdkPCoreVersions } from '../../../_helpers/versionHelpers';
 
 import { getSdkComponentMap } from '../../../_bridge/helpers/sdk_component_map';
-// import localSdkComponentMap from '../../../../sdk-local-component-map';
 import localSdkComponentMap from '../../../../sdk-local-component-map';
 
 declare const window: any;

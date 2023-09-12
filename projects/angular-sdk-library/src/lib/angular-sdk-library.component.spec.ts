@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AngSdkCompsComponent } from './angular-sdk-library.component';
+import { AngSdkLibComponent } from './angular-sdk-library.component';
 
 describe('AngSdkCompsComponent', () => {
-  let component: AngSdkCompsComponent;
-  let fixture: ComponentFixture<AngSdkCompsComponent>;
+  let component: AngSdkLibComponent;
+  let fixture: ComponentFixture<AngSdkLibComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ AngSdkCompsComponent ]
+      declarations: [ AngSdkLibComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(AngSdkCompsComponent);
+    fixture = TestBed.createComponent(AngSdkLibComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
