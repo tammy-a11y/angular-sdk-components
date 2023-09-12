@@ -12,6 +12,7 @@ export * from './lib/angular-sdk-library.module';
 export * from './lib/_bridge/component-mapper/component-mapper.component';
 export * from './lib/_bridge/helpers/sdk_component_map';
 export * from './lib/_bridge/angular-pconnect';
+
 export * from './lib/_components/field/auto-complete/auto-complete.component';
 export * from './lib/_components/field/cancel-alert/cancel-alert.component';
 export * from './lib/_components/field/check-box/check-box.component';
@@ -33,6 +34,7 @@ export * from './lib/_components/field/text-input/text-input.component';
 export * from './lib/_components/field/time/time.component';
 export * from './lib/_components/field/url/url.component';
 export * from './lib/_components/field/user-reference/user-reference.component';
+
 export * from './lib/_components/infra/action-buttons/action-buttons.component';
 export * from './lib/_components/infra/assignment/assignment.component';
 export * from './lib/_components/infra/assignment-card/assignment-card.component';
@@ -51,6 +53,7 @@ export * from './lib/_components/infra/region/region.component';
 export * from './lib/_components/infra/root-container/root-container.component';
 export * from './lib/_components/infra/stages/stages.component';
 export * from './lib/_components/infra/view/view.component';
+
 export * from './lib/_components/template/app-shell/app-shell.component';
 export * from './lib/_components/template/case-summary/case-summary.component';
 export * from './lib/_components/template/case-view/case-view.component';
@@ -89,7 +92,6 @@ export * from './lib/_components/template/two-column-page/two-column-page.compon
 export * from './lib/_components/template/two-column-tab/two-column-tab.component';
 export * from './lib/_components/template/wide-narrow-form/wide-narrow-form.component';
 export * from './lib/_components/template/wide-narrow-page/wide-narrow-page.component';
-
 export * from './lib/_components/template/utils';
 
 export * from './lib/_components/widget/app-announcement/app-announcement.component';
@@ -100,6 +102,7 @@ export * from './lib/_components/widget/file-utility/file-utility.component';
 export * from './lib/_components/widget/list-utility/list-utility.component';
 export * from './lib/_components/widget/todo/todo.component';
 export * from './lib/_components/widget/utility/utility.component';
+
 export * from './lib/_components/designSystemExtension/case-create-stage/case-create-stage.component';
 export * from './lib/_components/designSystemExtension/material-case-summary/material-case-summary.component';
 export * from './lib/_components/designSystemExtension/material-details/material-details.component';
@@ -111,12 +114,13 @@ export * from './lib/_components/designSystemExtension/material-vertical-tabs/ma
 export * from './lib/_components/designSystemExtension/operator/operator.component';
 export * from './lib/_components/designSystemExtension/pulse/pulse.component';
 export * from './lib/_components/designSystemExtension/top-app/top-app.component';
-export * from './lib/_bridge/helpers/sdk_component_map';
+
 export * from './lib/_services/server-config.service';
 export * from './lib/_services/auth.service';
 export * from './lib/_services/case.service';
 export * from './lib/_services/datapage.service';
 export * from './lib/_services/endpoints';
+
 export * from './lib/_helpers/case-utils';
 export * from './lib/_helpers/event-util';
 export * from './lib/_helpers/field-group-utils';
@@ -124,12 +128,14 @@ export * from './lib/_helpers/tabUtils';
 export * from './lib/_helpers/template-utils';
 export * from './lib/_helpers/utils';
 export * from './lib/_helpers/versionHelpers';
+
 export * from './lib/_messages/error-messages.service';
 export * from './lib/_messages/get-login-status.service';
 export * from './lib/_messages/oauth-response.service';
 export * from './lib/_messages/progress-spinner.service';
 export * from './lib/_messages/reset-pconnect.service';
 export * from './lib/_messages/update-worklist.service';
+
 export * from './lib/_samples/full-portal/top-app-mashup/top-app-mashup.component';
 export * from './lib/_samples/mashup/bundle-swatch/bundle-swatch.component';
 export * from './lib/_samples/mashup/main-screen/main-screen.component';
@@ -139,4 +145,5 @@ export * from './lib/_samples/mashup/resolution-screen/resolution-screen.compone
 export * from './lib/_samples/simple-portal/main-content/main-content.component';
 export * from './lib/_samples/simple-portal/navigation/navigation.component';
 export * from './lib/_samples/simple-portal/side-bar/side-bar.component';
+
 export * from './sdk-local-component-map';

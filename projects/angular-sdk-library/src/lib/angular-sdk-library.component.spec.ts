@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AngSdkLibComponent } from './angular-sdk-library.component';
 
-describe('AngSdkCompsComponent', () => {
+describe('AngSdkLibComponent', () => {
   let component: AngSdkLibComponent;
   let fixture: ComponentFixture<AngSdkLibComponent>;
 

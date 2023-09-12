@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { AngSdkLibService } from './angular-sdk-library.service';
 
-describe('AngSdkCompsService', () => {
+describe('AngSdkLibService', () => {
   let service: AngSdkLibService;
 
   beforeEach(() => {
