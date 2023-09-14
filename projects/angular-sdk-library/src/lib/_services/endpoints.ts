@@ -60,7 +60,7 @@ export const endpoints = {
   SIMPLEPORTAL: 'simpleportal',
   SIMPLEPORTALHTML: 'simpleportal.html',
   PORTAL: 'portal',
-  PORTALHMTL: 'portal.html',
+  PORTALHTML: 'portal.html',
   FULLPORTAL: 'fullportal',
   FULLPORTALHTML: 'fullportal.html',
 };

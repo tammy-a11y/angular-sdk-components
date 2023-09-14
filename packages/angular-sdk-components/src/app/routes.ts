@@ -19,7 +19,7 @@ const appName = window.location.pathname.split('/')[3];
 export const routes: Routes = [
   { path: '', component: MCNavComponent },
   { path: endpoints.PORTAL, component: TopAppMashupComponent },
-  { path: endpoints.PORTALHMTL, component: TopAppMashupComponent },
+  { path: endpoints.PORTALHTML, component: TopAppMashupComponent },
   { path: endpoints.FULLPORTAL, component: TopAppMashupComponent },
   { path: endpoints.FULLPORTALHTML, component: TopAppMashupComponent },
   { path: endpoints.SIMPLEPORTAL, component: NavigationComponent },
