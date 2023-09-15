@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { Utils } from '../../../_helpers/utils';
 
 @Component({
   selector: 'app-semantic-link',
@@ -21,8 +22,9 @@ export class SemanticLinkComponent implements OnInit {
   label$: string = '';
   value$: string = '';
   displayMode$: string = '';
+  bVisible$: boolean = true;
 
-  constructor(private angularPConnect: AngularPConnectService) {}
+  constructor(private angularPConnect: AngularPConnectService, private utils: Utils) {}
 
   ngOnInit(): void {
     // First thing in initialization is registering and subscribing to the AngularPConnect service
@@ -52,5 +54,8 @@ export class SemanticLinkComponent implements OnInit {
     this.value$ = this.configProps$['text'] || '---';
     this.displayMode$ = this.configProps$['displayMode'];
     this.label$ = this.configProps$['label'];
+    if (this.configProps$['visibility']) {
+      this.bVisible$ = this.utils.getBooleanValue(this.configProps$['visibility']);
+    }
   }
 }

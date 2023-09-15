@@ -1,8 +1,8 @@
 <div *ngIf="displayMode$; else noDisplayMode">
-  <component-mapper name="FieldValueList" [props]="{ label$, value$, displayMode$ }"></component-mapper>
+  <component-mapper *ngIf="bVisible$ !== false" name="FieldValueList" [props]="{ label$, value$, displayMode$ }"></component-mapper>
 </div>
 <ng-template #noDisplayMode>
-  <div class="psdk-label-infix-readonly">
+  <div class="psdk-label-infix-readonly" *ngIf="bVisible$ !== false">
     <span class="psdk-label-wrapper-readonly">
       <label class="psdk-label-readonly">{{ label$ }}</label>
     </span>

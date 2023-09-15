@@ -1,4 +1,4 @@
-<div class="psdk-data-readonly">
+<div class="psdk-data-readonly" *ngIf="bVisible$ !== false">
   <div *ngIf="displayAs$ == 'Paragraph'" class="mat-subtitle-2">{{ content$ }}</div>
   <div *ngIf="displayAs$ == 'Heading 1'" class="mat-h1">{{ content$ }}</div>
   <div *ngIf="displayAs$ == 'Heading 2'" class="mat-h2">{{ content$ }}</div>
