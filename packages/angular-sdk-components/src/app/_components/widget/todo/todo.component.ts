@@ -34,6 +34,8 @@ export class TodoComponent implements OnInit {
   bShowMore$: boolean = true;
   arAssignments$: Array<any>;
   assignmentsSource$: any;
+  CONSTS: any;
+  bLogging = true;
 
   constructor(private psService: ProgressSpinnerService, private ngZone: NgZone, private utils: Utils) {}
 
@@ -41,7 +43,7 @@ export class TodoComponent implements OnInit {
     if (!this.PCore$) {
       this.PCore$ = window.PCore;
     }
-
+    this.CONSTS = this.PCore$.getConstants();
     const { CREATE_STAGE_SAVED, CREATE_STAGE_DELETED } = this.PCore$.getEvents().getCaseEvent();
 
     this.PCore$.getPubSubUtils().subscribe(
@@ -136,59 +138,58 @@ export class TodoComponent implements OnInit {
   }
 
   getID(assignment: any) {
-    let sID = '';
     if (assignment.value) {
-      let refKey = assignment.value;
-      sID = refKey.substring(refKey.lastIndexOf(' ') + 1);
+      const refKey = assignment.value;
+      return refKey.substring(refKey.lastIndexOf(' ') + 1);
     } else {
-      let refKey = assignment.ID;
-      let arKeys = refKey.split('!')[0].split(' ');
-
-      sID = arKeys[2];
+      const refKey = assignment.ID;
+      const arKeys = refKey.split('!')[0].split(' ');
+      return arKeys[2];
     }
-
-    return sID;
   }
 
-  topThreeAssignments(arList: Array<any>) {
-    let arList3: Array<any> = new Array<any>();
-
-    if (arList && typeof arList == 'object') {
-      let len = arList.length;
-      if (len > 3) len = 3;
-
-      for (let i = 0; i < len; i++) {
-        arList3.push(arList[i]);
-      }
-    }
-
-    return arList3;
+  topThreeAssignments(assignmentsSource: Array<any>): Array<any> {
+    return Array.isArray(assignmentsSource) ? assignmentsSource.slice(0, 3) : [];
   }
 
-  getCaseInfoAssignment(arList: Array<any>, caseInfoID: string) {
-    let arList1: Array<any> = new Array<any>();
-    for (var aIndex in arList) {
-      if (arList[aIndex].ID.indexOf(caseInfoID) >= 0) {
-        let listRow = JSON.parse(JSON.stringify(arList[aIndex]));
+  getAssignmentId(assignment) {
+    return this.type$ === this.CONSTS.TODO ? assignment.ID : assignment.id;
+  };
 
+  getPriority(assignment) {
+    return this.type$ === this.CONSTS.TODO ? assignment.urgency : assignment.priority;
+  };
+
+  getAssignmentName(assignment) {
+    return this.type$ === this.CONSTS.TODO ? assignment.name : assignment.stepName;
+  };
+
+  initAssignments(): Array<any> {
+    if (this.assignmentsSource$) {
+      this.assignmentCount$ = this.assignmentsSource$.length;
+      return this.topThreeAssignments(this.assignmentsSource$);
+    } else {
+      // turn off todolist
+      return [];
+    }
+  }
+
+  getCaseInfoAssignment(assignmentsSource: Array<any>, caseInfoID: string) {
+    const result: Array<any> = [];
+    for (const source of assignmentsSource) {
+      if (source.ID.indexOf(caseInfoID) >= 0) {
+        const listRow = JSON.parse(JSON.stringify(source));
         // urgency becomes priority
-        if (listRow.urgency) {
-          listRow['priority'] = listRow.urgency;
-        }
-
-        if (listRow.ID) {
-          // mimic regular list
-          listRow['id'] = listRow['ID'];
-        }
-
-        arList1.push(listRow);
-        break;
+        listRow['priority'] = listRow.urgency || undefined;
+        // mimic regular list
+        listRow['id'] = listRow['ID'] || undefined;
+        result.push(listRow);
       }
     }
-
-    return arList1;
+  
+    return result;
   }
-
+  
   _showMore() {
     this.ngZone.run(() => {
       this.bShowMore$ = false;
@@ -204,40 +205,42 @@ export class TodoComponent implements OnInit {
     });
   }
 
-  clickGo(assignment: any) {
-    let { id, classname } = assignment[0];
+  isChildCase(assignment) {
+    return assignment.isChild;
+  };
 
-    // capture className, as seem to loose it when
-    if (classname == null || classname == '') {
-      classname = this.pConn$.getCaseInfo().getClassName();
-    }
+  clickGo(assignment) {
+    const id = this.getAssignmentId(assignment);
+    let { classname = '' } = assignment;
+    const sTarget = this.pConn$.getContainerName();
+    const sTargetContainerName = sTarget;
 
-    let sTarget = this.pConn$.getContainerName();
-    let sTargetContainerName = sTarget;
-    let sIsActionFromTodoList = 'todo';
+    const options = { containerName: sTargetContainerName };
 
-    let options = { containerName: sTarget };
-
-    if (classname == null || classname == '') {
+    if (classname === null || classname === '') {
       classname = this.pConn$.getCaseInfo().getClassName();
     }
 
     if (sTarget === 'workarea') {
       options['isActionFromToDoList'] = true;
       options['target'] = '';
-      options['context'] = this.context$;
-      options['isChild'] = undefined;
+      options['context'] = null;
+      options['isChild'] = this.isChildCase(assignment);
     } else {
       options['isActionFromToDoList'] = false;
       options['target'] = sTarget;
-      options['context'] = '';
     }
-
-    this.psService.sendMessage(true);
 
     this.pConn$
       .getActionsApi()
       .openAssignment(id, classname, options)
-      .then(() => {});
+      .then(() => {
+        if (this.bLogging) {
+          console.log(`openAssignment completed`);
+        }
+      })
+      .catch(() => {
+        alert(`Submit failed!`);
+      });
   }
 }

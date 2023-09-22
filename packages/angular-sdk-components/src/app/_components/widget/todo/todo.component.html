@@ -12,26 +12,26 @@
       <div class="psdk-todo-assignment">
         <div class="psdk-avatar">{{ this.currentUserInitials$ }}</div>
         <div class="psdk-todo-card">
-          <div class="psdk-todo-assignment-title">{{ assignment.stepName }}</div>
+          <div class="psdk-todo-assignment-title">{{getAssignmentName(assignment)}}</div>
           <div class="psdk-todo-assignment-data">
-            <div class="psdk-todo-assignment-task" (click)="clickGo([assignment])">
+            <div class="psdk-todo-assignment-task" (click)="clickGo(assignment)">
               Task in <span class="psdk-todo-id">{{ assignment.name }} {{ getID(assignment) }}</span>
               <span *ngIf="assignment.status != undefined">
                 &bull; <span class="psdk-todo-assignment-status">{{ assignment?.status }}</span>
               </span>
-              &bull; Priority {{ assignment?.priority }}
+              &bull; Urgency {{ getPriority(assignment) }}
             </div>
           </div>
         </div>
         <div class="psdk-todo-assignment-action">
-          <button mat-flat-button color="primary" (click)="clickGo([assignment])">Go</button>
+          <button mat-flat-button color="primary" (click)="clickGo(assignment)">Go</button>
         </div>
       </div>
       <div class="psdk-display-divider"></div>
     </div>
   </div>
 
-  <div *ngIf="showTodoList$">
+  <div *ngIf="assignmentCount$ > 3">
     <div *ngIf="bShowMore$; else showLess" class="psdk-todo-show-more">
       <button mat-stroked-button (click)="_showMore()">Show more</button>
     </div>
