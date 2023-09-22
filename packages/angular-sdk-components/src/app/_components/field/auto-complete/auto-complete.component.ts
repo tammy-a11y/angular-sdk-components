@@ -158,10 +158,10 @@ export class AutoCompleteComponent implements OnInit {
       this.listType = 'datapage';
       datasource = datasourceMetadata.datasource.name;
       this.parameters = this.flattenParameters(datasourceMetadata?.datasource?.parameters);
-      const displayProp = datasourceMetadata.datasource.propertyForDisplayText.startsWith('@P')
+      const displayProp = datasourceMetadata.datasource.propertyForDisplayText?.startsWith('@P')
         ? datasourceMetadata.datasource.propertyForDisplayText.substring(3)
         : datasourceMetadata.datasource.propertyForDisplayText;
-      const valueProp = datasourceMetadata.datasource.propertyForValue.startsWith('@P')
+      const valueProp = datasourceMetadata.datasource.propertyForValue?.startsWith('@P')
         ? datasourceMetadata.datasource.propertyForValue.substring(3)
         : datasourceMetadata.datasource.propertyForValue;
       columns = [
