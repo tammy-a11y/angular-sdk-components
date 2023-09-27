@@ -17,6 +17,15 @@ export class ComponentMapperComponent implements OnInit, OnChanges {
   public componentRef: ComponentRef<any> | undefined;
   public isInitialized: boolean = false;
 
+  private componentsRequireDisplayOnlyFAProp: Array<string> = [
+    "HybridViewContainer",
+    "ModalViewContainer",
+    "ViewContainer",
+    "RootContainer",
+    "View",
+    "CaseView"
+  ];
+
   @Input() name: string = '';
   @Input() props: any;
   @Input() errorMsg: string = '';
@@ -84,7 +93,11 @@ export class ComponentMapperComponent implements OnInit, OnChanges {
     try {
       for (const propName in this.props) {
         if (this.props[propName] !== undefined) {
-          this.componentRef.setInput(propName, this.props[propName]);
+          // We'll set 'displayOnlyFA$' prop only to the components which really need it
+          // Eventual plan is to get rid of this particular prop 
+          if(propName !== "displayOnlyFA$" || (propName === "displayOnlyFA$" && this.componentsRequireDisplayOnlyFAProp.includes(this.name))){
+            this.componentRef.setInput(propName, this.props[propName]);
+          }
         }
       }
     } catch (e) {

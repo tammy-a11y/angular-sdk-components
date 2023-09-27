@@ -14,7 +14,6 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class ReferenceComponent implements OnInit {
   @Input() pConn$: any;
-  @Input() displayOnlyFA$: boolean;
 
   configProps$: Object;
   referencedComponent: any = null;
