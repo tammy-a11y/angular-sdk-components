@@ -3,6 +3,16 @@ import { CommonModule } from '@angular/common';
 import { SdkComponentMap } from '../helpers/sdk_component_map';
 import { ErrorBoundaryComponent } from '../../_components/infra/error-boundary/error-boundary.component';
 
+
+const componentsRequireDisplayOnlyFAProp: Array<string> = [
+  "HybridViewContainer",
+  "ModalViewContainer",
+  "ViewContainer",
+  "RootContainer",
+  "View",
+  "CaseView"
+];
+
 @Component({
   selector: 'component-mapper',
   templateUrl: './component-mapper.component.html',
@@ -16,15 +26,6 @@ export class ComponentMapperComponent implements OnInit, OnChanges {
 
   public componentRef: ComponentRef<any> | undefined;
   public isInitialized: boolean = false;
-
-  private componentsRequireDisplayOnlyFAProp: Array<string> = [
-    "HybridViewContainer",
-    "ModalViewContainer",
-    "ViewContainer",
-    "RootContainer",
-    "View",
-    "CaseView"
-  ];
 
   @Input() name: string = '';
   @Input() props: any;
@@ -95,9 +96,11 @@ export class ComponentMapperComponent implements OnInit, OnChanges {
         if (this.props[propName] !== undefined) {
           // We'll set 'displayOnlyFA$' prop only to the components which really need it
           // Eventual plan is to get rid of this particular prop 
-          if(propName !== "displayOnlyFA$" || (propName === "displayOnlyFA$" && this.componentsRequireDisplayOnlyFAProp.includes(this.name))){
-            this.componentRef.setInput(propName, this.props[propName]);
+          if(propName === "displayOnlyFA$" && !componentsRequireDisplayOnlyFAProp.includes(this.name)){
+            // eslint-disable-next-line no-continue
+            continue;
           }
+          this.componentRef.setInput(propName, this.props[propName]);
         }
       }
     } catch (e) {
