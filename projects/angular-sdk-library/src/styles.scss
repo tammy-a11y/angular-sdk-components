@@ -35,11 +35,19 @@ a.mat-mdc-menu-item > mat-icon {
   background-color: transparent;
 }
 
-.mat-sort-header-content{
+.mdc-text-field {
+  padding: 0 !important;
+}
+
+.psdk-radio-vertical > .mat-mdc-radio-button .mdc-radio {
+  padding: 10px 0 !important;
+}
+
+.mat-sort-header-content {
   justify-content: space-between;
   width: 100%;
 }
-.mat-sort-header-container{
+.mat-sort-header-container {
   justify-content: space-between;
 }
 
@@ -51,7 +59,7 @@ a.mat-mdc-menu-item > mat-icon {
   align-items: start;
 }
 
-.psdk-grid-label{
+.psdk-grid-label {
   color: rgba(0, 0, 0, 0.54);
   margin: 8px 0px;
 }

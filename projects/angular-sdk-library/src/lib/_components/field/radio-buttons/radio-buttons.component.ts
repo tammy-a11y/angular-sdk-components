@@ -31,6 +31,7 @@ export class RadioButtonsComponent implements OnInit {
   bReadonly$: boolean = false;
   bDisabled$: boolean = false;
   bVisible$: boolean = true;
+  bInline$: boolean = false;
   displayMode$: string = '';
   controlName$: string;
   bHasForm$: boolean = true;
@@ -41,11 +42,7 @@ export class RadioButtonsComponent implements OnInit {
 
   fieldControl = new FormControl('', null);
 
-  constructor(
-    private angularPConnect: AngularPConnectService,
-    private cdRef: ChangeDetectorRef,
-    private utils: Utils
-  ) {}
+  constructor(private angularPConnect: AngularPConnectService, private cdRef: ChangeDetectorRef, private utils: Utils) {}
 
   ngOnInit(): void {
     // First thing in initialization is registering and subscribing to the AngularPConnect service
@@ -121,7 +118,10 @@ export class RadioButtonsComponent implements OnInit {
       this.bVisible$ = this.utils.getBooleanValue(this.configProps$['visibility']);
     }
 
-    // disabled
+    if (this.configProps$['inline'] != null) {
+      this.bInline$ = this.utils.getBooleanValue(this.configProps$['inline']);
+    }
+
     if (this.configProps$['disabled'] != undefined) {
       this.bDisabled$ = this.utils.getBooleanValue(this.configProps$['disabled']);
     }
@@ -186,4 +186,3 @@ export class RadioButtonsComponent implements OnInit {
     return errMessage;
   }
 }
-
