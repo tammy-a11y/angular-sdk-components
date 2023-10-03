@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { Utils } from '../../../_helpers/utils';
 
 declare const window: any;
 
@@ -21,8 +22,9 @@ export class TextContentComponent implements OnInit {
   content$: string = '';
   displayAs$: string;
   displayMode$: string = '';
+  bVisible$: boolean = true;
 
-  constructor(private angularPConnect: AngularPConnectService) {}
+  constructor(private angularPConnect: AngularPConnectService, private utils: Utils) {}
 
   ngOnInit(): void {
     // First thing in initialization is registering and subscribing to the AngularPConnect service
@@ -52,6 +54,10 @@ export class TextContentComponent implements OnInit {
       this.displayAs$ = this.configProps$['displayAs'];
     }
     this.displayMode$ = this.configProps$['displayMode'];
+
+    if (this.configProps$['visibility'] != null) {
+      this.bVisible$ = this.utils.getBooleanValue(this.configProps$['visibility']);
+    }
 
     // Any update to content or displayAs will re-render this component.
     //  All rendering logic is in the .html file.

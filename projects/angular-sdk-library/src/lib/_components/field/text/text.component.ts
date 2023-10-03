@@ -71,6 +71,10 @@ export class TextComponent implements OnInit {
       this.value$ = this.configProps$['value'];
     }
 
+    if (this.configProps$['visibility'] != null) {
+      this.bVisible$ = this.utils.getBooleanValue(this.configProps$['visibility']);
+    }
+
     this.label$ = this.configProps$['label'];
     this.displayMode$ = this.configProps$['displayMode'];
 
