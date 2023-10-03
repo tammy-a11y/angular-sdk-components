@@ -1,19 +1,58 @@
+/* eslint-disable max-classes-per-file */
 import { Component, OnInit, Input, ChangeDetectorRef, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { NgxMatDatetimePickerModule, NgxMatTimepickerModule, NGX_MAT_DATE_FORMATS } from '@angular-material-components/datetime-picker';
+import { NgxMatMomentModule } from '@angular-material-components/moment-adapter';
+import { MomentDateModule } from '@angular/material-moment-adapter';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { interval } from 'rxjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { dateFormatInfoDefault, getDateFormatInfo } from '../../../_helpers/date-format.utls';
+import { handleEvent } from '../../../_helpers/event-util';
+
+class MyFormat {
+  constructor() {}
+  theDateFormat: any = getDateFormatInfo();
+
+  get display() {
+    return {
+      dateInput: `${this.theDateFormat.dateFormatString}, LT`,
+      monthYearLabel: 'MMM YYYY',
+      dateA11yLabel: 'LL',
+      monthYearA11yLabel: 'MMMM YYYY'
+    };
+  }
+
+  get parse() {
+    return {
+      dateInput: `${this.theDateFormat.dateFormatString}, LT`
+    };
+  }
+}
 
 @Component({
   selector: 'app-date-time',
   templateUrl: './date-time.component.html',
   styleUrls: ['./date-time.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDatepickerModule,
+    NgxMatMomentModule,
+    NgxMatDatetimePickerModule,
+    NgxMatTimepickerModule,
+    MomentDateModule,
+    forwardRef(() => ComponentMapperComponent)
+  ],
+  providers: [{ provide: NGX_MAT_DATE_FORMATS, useClass: MyFormat }]
 })
 export class DateTimeComponent implements OnInit {
   @Input() pConn$: any;
@@ -37,14 +76,20 @@ export class DateTimeComponent implements OnInit {
   helperText: string;
 
   fieldControl = new FormControl('', null);
+  stepHour = 1;
+  stepMinute = 1;
+  stepSecond = 1;
+  public color = 'primary';
+  // Start with default dateFormatInfo
+  dateFormatInfo = dateFormatInfoDefault;
+  // and then update, as needed, based on locale, etc.
+  theDateFormat: any = getDateFormatInfo();
+  placeholder: any;
 
-  constructor(
-    private angularPConnect: AngularPConnectService,
-    private cdRef: ChangeDetectorRef,
-    private utils: Utils
-  ) {}
+  constructor(private angularPConnect: AngularPConnectService, private cdRef: ChangeDetectorRef, private utils: Utils) {}
 
   ngOnInit(): void {
+    this.placeholder = `${this.theDateFormat.dateFormatStringLC}, hh:mm a`;
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
     this.controlName$ = this.angularPConnect.getComponentID(this);
@@ -98,10 +143,6 @@ export class DateTimeComponent implements OnInit {
     this.label$ = this.configProps$['label'];
     this.displayMode$ = this.configProps$['displayMode'];
     this.testId = this.configProps$['testId'];
-    if (this.configProps$['value'] != undefined) {
-      const value = this.configProps$['value'];
-      this.value$ = value ? value.replace('Z', '') : value;
-    }
     this.helperText = this.configProps$['helperText'];
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
@@ -145,10 +186,10 @@ export class DateTimeComponent implements OnInit {
   }
 
   fieldOnChange(event: any) {
-    if (event.target.value) {
-      event.value = event.target.value;
-    }
-    this.angularPConnectData.actions.onChange(this, event);
+    const value = event.value && event.value.isValid() ? event.value : null;
+    const actionsApi = this.pConn$?.getActionsApi();
+    const propName = this.pConn$?.getStateProps().value;
+    handleEvent(actionsApi, 'changeNblur', propName, value?.toISOString());
   }
 
   fieldOnClick(event: any) {}
@@ -174,4 +215,3 @@ export class DateTimeComponent implements OnInit {
     return errMessage;
   }
 }
-

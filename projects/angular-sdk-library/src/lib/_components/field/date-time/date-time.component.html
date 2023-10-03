@@ -9,15 +9,17 @@
         <input
           matInput
           [attr.data-test-id]="testId"
-          [placeholder]=""
-          type="datetime-local"
-          [value]="value$"
-          [required]="bRequired$"
+          [ngxMatDatetimePicker]="picker"
+          [placeholder]="placeholder"
           [formControlName]="controlName$"
           (click)="fieldOnClick($event)"
-          (change)="fieldOnChange($event)"
+          (dateChange)="fieldOnChange($event)"
           (blur)="fieldOnBlur($event)"
+          [value]="value$"
+          [required]="bRequired$"
         />
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <ngx-mat-datetime-picker #picker [stepHour]="stepHour" [stepMinute]="stepMinute" [stepSecond]="stepSecond"> </ngx-mat-datetime-picker>
         <mat-error *ngIf="fieldControl.invalid">{{ getErrorMessage() }}</mat-error>
       </mat-form-field>
     </div>
