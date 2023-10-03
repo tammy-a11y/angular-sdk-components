@@ -14,7 +14,6 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class ReferenceComponent implements OnInit {
   @Input() pConn$: any;
-  @Input() displayOnlyFA$: boolean;
 
   configProps$: Object;
   referencedComponent: any = null;
@@ -43,9 +42,7 @@ export class ReferenceComponent implements OnInit {
     if (inPConn.getComponentName() !== 'reference') {
       // debugger;
 
-      console.error(
-        `Reference component: createFullReferencedViewFromRef inPConn is NOT a reference! ${inPConn.getComponentName()}`
-      );
+      console.error(`Reference component: createFullReferencedViewFromRef inPConn is NOT a reference! ${inPConn.getComponentName()}`);
     }
 
     const theResolvedConfigProps = inPConn.resolveConfigProps(inPConn.getConfigProps());
@@ -79,9 +76,7 @@ export class ReferenceComponent implements OnInit {
     };
 
     if (ReferenceComponent.bLogging) {
-      console.log(
-        `Reference: about to call createComponent with pageReference: context: ${theResolvedConfigProps['context']}`
-      );
+      console.log(`Reference: about to call createComponent with pageReference: context: ${theResolvedConfigProps['context']}`);
     }
 
     const viewComponent = inPConn.createComponent(viewObject, null, null, {
