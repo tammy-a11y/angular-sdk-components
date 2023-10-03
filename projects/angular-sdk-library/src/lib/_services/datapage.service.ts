@@ -4,10 +4,8 @@ import { endpoints } from './endpoints';
 import { ServerConfigService } from './server-config.service';
 import { Utils } from '../_helpers/utils';
 
-declare const window: any;
-
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class DatapageService {
   constructor(private http: HttpClient, private scService: ServerConfigService) {}
@@ -32,10 +30,16 @@ export class DatapageService {
     return response.pxResults;
   }
 
-  getDataPageData(dataPageName, context) {
+  getDataPageData(dataPageName, parameters, context) {
+    let dataViewParams;
+    if (parameters) {
+      dataViewParams = {
+        dataViewParameters: parameters
+      };
+    }
     return new Promise((resolve, reject) => {
       window.PCore.getDataApiUtils()
-        .getData(dataPageName, null, context)
+        .getData(dataPageName, dataViewParams, context)
         .then((response) => {
           resolve(response.data.data);
         })
