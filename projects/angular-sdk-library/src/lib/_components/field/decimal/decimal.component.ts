@@ -1,18 +1,28 @@
 import { Component, OnInit, Input, ChangeDetectorRef, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { handleEvent } from '../../../_helpers/event-util';
+import { ThousandSeparatorDirective } from '../../../_directives/thousand-seperator.directive';
 
 @Component({
   selector: 'app-decimal',
   templateUrl: './decimal.component.html',
   styleUrls: ['./decimal.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    ThousandSeparatorDirective,
+    forwardRef(() => ComponentMapperComponent)
+  ]
 })
 export class DecimalComponent implements OnInit {
   @Input() pConn$: any;
@@ -37,11 +47,7 @@ export class DecimalComponent implements OnInit {
 
   fieldControl = new FormControl<number | null>(null, null);
 
-  constructor(
-    private angularPConnect: AngularPConnectService,
-    private cdRef: ChangeDetectorRef,
-    private utils: Utils
-  ) {}
+  constructor(private angularPConnect: AngularPConnectService, private cdRef: ChangeDetectorRef, private utils: Utils) {}
 
   ngOnInit(): void {
     // First thing in initialization is registering and subscribing to the AngularPConnect service
@@ -139,16 +145,17 @@ export class DecimalComponent implements OnInit {
     this.componentReference = this.pConn$.getStateProps().value;
   }
 
-  fieldOnChange(event: any) {
-    // this.angularPConnect.changeHandler( this, event );
-    this.angularPConnectData.actions.onChange(this, event);
-  }
+  fieldOnChange(event: any) {}
 
   fieldOnClick(event: any) {}
 
   fieldOnBlur(event: any) {
-    // PConnect wants to use eventHandler for onBlur
-    this.angularPConnectData.actions.onBlur(this, event);
+    const actionsApi = this.pConn$?.getActionsApi();
+    const propName = this.pConn$?.getStateProps().value;
+    let value = event?.target?.value;
+    value = value.replace(/,/g, '');
+    value !== '' ? Number(value) : value;
+    handleEvent(actionsApi, 'changeNblur', propName, value);
   }
 
   getErrorMessage() {
@@ -167,4 +174,3 @@ export class DecimalComponent implements OnInit {
     return errMessage;
   }
 }
-
