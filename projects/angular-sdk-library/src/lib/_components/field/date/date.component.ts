@@ -1,4 +1,5 @@
-import { Component, OnInit, Input, ChangeDetectorRef, forwardRef } from '@angular/core';
+/* eslint-disable max-classes-per-file */
+import { Component, OnInit, Input, ChangeDetectorRef, forwardRef, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -9,6 +10,29 @@ import { interval } from 'rxjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { dateFormatInfoDefault, getDateFormatInfo } from '../../../_helpers/date-format.utls';
+import { MAT_DATE_FORMATS } from '@angular/material/core';
+import { MomentDateModule } from '@angular/material-moment-adapter';
+
+class MyFormat {
+  constructor() {}
+  theDateFormat: any = getDateFormatInfo();
+
+  get display() {
+    return {
+      dateInput: this.theDateFormat.dateFormatString,
+      monthYearLabel: 'MMM YYYY',
+      dateA11yLabel: 'LL',
+      monthYearA11yLabel: 'MMMM YYYY'
+    };
+  }
+
+  get parse() {
+    return {
+      dateInput: this.theDateFormat.dateFormatString
+    };
+  }
+}
 
 @Component({
   selector: 'app-date',
@@ -22,8 +46,10 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
     MatInputModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MomentDateModule,
     forwardRef(() => ComponentMapperComponent)
-  ]
+  ],
+  providers: [{ provide: MAT_DATE_FORMATS, useClass: MyFormat }]
 })
 export class DateComponent implements OnInit {
   @Input() pConn$: any;
@@ -47,13 +73,20 @@ export class DateComponent implements OnInit {
 
   fieldControl = new FormControl('', null);
 
+  // Start with default dateFormatInfo
+  dateFormatInfo = dateFormatInfoDefault;
+  // and then update, as needed, based on locale, etc.
+  theDateFormat: any = getDateFormatInfo();
+
   constructor(
     private angularPConnect: AngularPConnectService,
     private cdRef: ChangeDetectorRef,
-    private utils: Utils
+    private utils: Utils,
+    @Inject(MAT_DATE_FORMATS) private config: MyFormat
   ) {}
 
   ngOnInit(): void {
+    this.dateFormatInfo = this.theDateFormat;
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
     this.controlName$ = this.angularPConnect.getComponentID(this);
@@ -170,7 +203,7 @@ export class DateComponent implements OnInit {
     // this comes from the date pop up
     if (typeof event.value == 'object') {
       // convert date to pega "date" format
-      event.value = event.value.toISOString();
+      event.value = event.value?.toISOString();
     }
     this.angularPConnectData.actions.onChange(this, { value: event.value });
   }
@@ -180,9 +213,8 @@ export class DateComponent implements OnInit {
   fieldOnBlur(event: any) {
     // PConnect wants to use eventHandler for onBlur
     if (typeof event.value == 'object') {
-      event.value = event.value.toISOString();
       // convert date to pega "date" format
-      event.value = event.value.toISOString();
+      event.value = event.value?.toISOString();
     }
     this.angularPConnectData.actions.onBlur(this, { value: event.value });
   }
@@ -205,4 +237,3 @@ export class DateComponent implements OnInit {
     return errMessage;
   }
 }
-
