@@ -45,6 +45,14 @@ export class MaterialCaseSummaryComponent implements OnInit {
         case 'date':
           field.config.value = this.utils.generateDate(field.config.value, 'Date-Long');
           break;
+        case 'userreference':
+        case 'decimal':
+        case 'dropdown':
+          field.config['displayLabel'] = field.config.label;
+          break;
+        case 'checkbox':
+          field.config['displayLabel'] = field.config.caption;
+          break;
       }
     }
   }
