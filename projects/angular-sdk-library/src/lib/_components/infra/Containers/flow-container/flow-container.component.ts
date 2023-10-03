@@ -7,9 +7,7 @@ import { ProgressSpinnerService } from '../../../../_messages/progress-spinner.s
 import { ReferenceComponent } from '../../reference/reference.component';
 import { Utils } from '../../../../_helpers/utils';
 import { AssignmentComponent } from '../../assignment/assignment.component';
-import { TodoComponent } from '../../../widget/todo/todo.component';
 import { getToDoAssignments, showBanner } from './helpers';
-import { ViewComponent } from '../../view/view.component';
 import { ComponentMapperComponent } from '../../../../_bridge/component-mapper/component-mapper.component';
 
 /**
@@ -26,7 +24,7 @@ declare const window: any;
   styleUrls: ['./flow-container.component.scss'],
   providers: [Utils],
   standalone: true,
-  imports: [CommonModule, ComponentMapperComponent, MatCardModule, ViewComponent, forwardRef(() => AssignmentComponent)]
+  imports: [CommonModule, ComponentMapperComponent, MatCardModule, forwardRef(() => AssignmentComponent)]
 })
 export class FlowContainerComponent implements OnInit {
   @Input() pConn$: any;
@@ -41,7 +39,6 @@ export class FlowContainerComponent implements OnInit {
   arChildren$: Array<any>;
   itemKey$: string = '';
   containerName$: string;
-  instructionText$: string;
   buildName$: string;
 
   //todo
@@ -119,10 +116,7 @@ export class FlowContainerComponent implements OnInit {
       this.angularPConnectData.unsubscribeFn();
     }
 
-    this.PCore$.getPubSubUtils().unsubscribe(
-      this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL,
-      'cancelAssignment'
-    );
+    this.PCore$.getPubSubUtils().unsubscribe(this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL, 'cancelAssignment');
 
     this.PCore$.getPubSubUtils().unsubscribe('cancelPressed', 'cancelPressed');
   }
@@ -252,7 +246,6 @@ export class FlowContainerComponent implements OnInit {
     //this.containerName$ = oWorkMeta["name"];
     if (bLoadChildren && oWorkData) {
       this.containerName$ = this.getActiveViewLabel() || oWorkData.caseInfo.assignments[0].name;
-      this.instructionText$ = oWorkData.caseInfo.assignments[0].instructions;
     }
 
     // turn off spinner
@@ -472,12 +465,7 @@ export class FlowContainerComponent implements OnInit {
         });
 
         if (currentOrder.length > 0) {
-          if (
-            currentItems[key] &&
-            currentItems[key].view &&
-            type === 'single' &&
-            Object.keys(currentItems[key].view).length > 0
-          ) {
+          if (currentItems[key] && currentItems[key].view && type === 'single' && Object.keys(currentItems[key].view).length > 0) {
             // when we get here, it it because the flow action data has changed
             // from the server, and need to add to pConnect and update children
 
@@ -523,7 +511,6 @@ export class FlowContainerComponent implements OnInit {
               let oWorkData = oWorkItem.getDataObject();
 
               this.containerName$ = this.getActiveViewLabel() || oWorkData.caseInfo.assignments?.[0].name;
-              this.instructionText$ = oWorkData.caseInfo.assignments?.[0].instructions;
             });
           }
         }
