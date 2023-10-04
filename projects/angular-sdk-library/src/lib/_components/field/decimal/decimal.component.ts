@@ -8,7 +8,6 @@ import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { handleEvent } from '../../../_helpers/event-util';
 import { ThousandSeparatorDirective } from '../../../_directives/thousand-seperator.directive';
-
 @Component({
   selector: 'app-decimal',
   templateUrl: './decimal.component.html',

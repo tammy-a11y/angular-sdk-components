@@ -5,8 +5,6 @@ import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { Utils } from '../../../_helpers/utils';
 
-declare const window: any;
-
 @Component({
   selector: 'app-semantic-link',
   templateUrl: './semantic-link.component.html',

@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 
-declare const window: any;
-
 @Component({
   selector: 'app-text-content',
   templateUrl: './text-content.component.html',

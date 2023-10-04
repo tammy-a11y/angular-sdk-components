@@ -126,6 +126,10 @@ export class RadioButtonsComponent implements OnInit {
       this.bDisabled$ = this.utils.getBooleanValue(this.configProps$['disabled']);
     }
 
+    if (this.configProps$['inline'] != null) {
+      this.bInline$ = this.utils.getBooleanValue(this.configProps$['inline']);
+    }
+
     if (this.bDisabled$) {
       this.fieldControl.disable();
     } else {

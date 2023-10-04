@@ -1,6 +1,3 @@
-/* eslint-disable no-template-curly-in-string */
-/* eslint-disable no-undef */
-
 const { test, expect } = require('@playwright/test');
 
 const config = require('../../../config');
@@ -54,10 +51,9 @@ test.describe('E2E test', () => {
     /** Required tests */
     const requiredTime = page.locator('input[id="mat-input-2"]');
     const date = new Date();
-    const time = `${date.getHours()}${date.getMinutes()}AM`;
+    const time = `${date.getHours() % 12}${date.getMinutes()}AM`;
     requiredTime.type(time);
     attributes = await common.getAttributes(requiredTime);
-    console.log(attributes);
     await expect(attributes.includes('required')).toBeTruthy();
 
     await expect(page.locator('mat-error')).toBeHidden();

@@ -6,13 +6,13 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MAT_DATE_FORMATS } from '@angular/material/core';
+import { MomentDateModule } from '@angular/material-moment-adapter';
 import { interval } from 'rxjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { dateFormatInfoDefault, getDateFormatInfo } from '../../../_helpers/date-format.utls';
-import { MAT_DATE_FORMATS } from '@angular/material/core';
-import { MomentDateModule } from '@angular/material-moment-adapter';
 
 class MyFormat {
   constructor() {}

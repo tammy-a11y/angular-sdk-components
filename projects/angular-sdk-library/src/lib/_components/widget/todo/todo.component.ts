@@ -45,7 +45,6 @@ export class TodoComponent implements OnInit {
     if (!this.PCore$) {
       this.PCore$ = window.PCore;
     }
-
     this.CONSTS = this.PCore$.getConstants();
     const { CREATE_STAGE_SAVED, CREATE_STAGE_DELETED } = this.PCore$.getEvents().getCaseEvent();
 
@@ -189,7 +188,6 @@ export class TodoComponent implements OnInit {
         result.push(listRow);
       }
     }
-
     return result;
   }
 

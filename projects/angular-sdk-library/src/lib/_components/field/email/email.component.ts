@@ -38,11 +38,7 @@ export class EmailComponent implements OnInit {
 
   fieldControl = new FormControl('', null);
 
-  constructor(
-    private angularPConnect: AngularPConnectService,
-    private cdRef: ChangeDetectorRef,
-    private utils: Utils
-  ) {}
+  constructor(private angularPConnect: AngularPConnectService, private cdRef: ChangeDetectorRef, private utils: Utils) {}
 
   ngOnInit(): void {
     // First thing in initialization is registering and subscribing to the AngularPConnect service
@@ -172,4 +168,3 @@ export class EmailComponent implements OnInit {
     return errMessage;
   }
 }
-
