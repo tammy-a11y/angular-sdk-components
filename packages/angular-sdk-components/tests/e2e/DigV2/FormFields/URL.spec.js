@@ -19,11 +19,7 @@ test.describe('E2E test', () => {
   let attributes;
 
   test('should login, create case and run the URL tests', async ({ page }) => {
-    await common.Login(
-      config.config.apps.digv2.user.username,
-      config.config.apps.digv2.user.password,
-      page
-    );
+    await common.Login(config.config.apps.digv2.user.username, config.config.apps.digv2.user.password, page);
 
     /** Testing announcement banner presence */
     const announcementBanner = page.locator('h2:has-text("Announcements")');
@@ -66,15 +62,11 @@ test.describe('E2E test', () => {
     await page.getByRole('option', { name: 'Disable' }).click();
 
     // /** Disable tests */
-    const alwaysDisabledURL = page.locator(
-      'input[id="mat-input-3"]'
-    );
+    const alwaysDisabledURL = page.locator('input[id="mat-input-3"]');
     attributes = await common.getAttributes(alwaysDisabledURL);
     await expect(attributes.includes('disabled')).toBeTruthy();
 
-    const conditionallyDisabledURL = page.locator(
-      'input[id="mat-input-4"]'
-    );
+    const conditionallyDisabledURL = page.locator('input[id="mat-input-4"]');
     attributes = await common.getAttributes(conditionallyDisabledURL);
     if (isDisabled) {
       await expect(attributes.includes('disabled')).toBeTruthy();
@@ -115,18 +107,12 @@ test.describe('E2E test', () => {
     await page.getByRole('option', { name: 'Visibility' }).click();
 
     /** Visibility tests */
-    await expect(
-      page.locator('input[id="mat-input-7"]')
-    ).toBeVisible();
+    await expect(page.locator('input[id="mat-input-7"]')).toBeVisible();
 
-    const neverVisibleURL = await page.locator(
-      'input[data-test-id="01cec81e2fe61acf1b0480187998d1ee"]'
-    );
+    const neverVisibleURL = await page.locator('input[data-test-id="01cec81e2fe61acf1b0480187998d1ee"]');
     await expect(neverVisibleURL).not.toBeVisible();
 
-    const conditionallyVisibleURL = await page.locator(
-      'input[id="mat-input-8"]'
-    );
+    const conditionallyVisibleURL = await page.locator('input[id="mat-input-8"]');
 
     if (isVisible) {
       await expect(conditionallyVisibleURL).toBeVisible();

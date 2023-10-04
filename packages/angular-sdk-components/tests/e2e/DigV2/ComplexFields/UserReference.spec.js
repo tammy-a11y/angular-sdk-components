@@ -31,9 +31,7 @@ test.describe('E2E test', () => {
     await createCase.click();
 
     /** Creating a Complex Fields case-type */
-    const complexFieldsCaseBtn = await page.locator(
-      'mat-list-item[id="case-list-item"] > span:has-text("Complex Fields")'
-    );
+    const complexFieldsCaseBtn = await page.locator('mat-list-item[id="case-list-item"] > span:has-text("Complex Fields")');
     await complexFieldsCaseBtn.click();
 
     /** Selecting User Reference from the Category dropdown */

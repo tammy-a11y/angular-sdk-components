@@ -19,11 +19,7 @@ test.describe('E2E test', () => {
   let attributes;
 
   test('should login, create case and run the Time tests', async ({ page }) => {
-    await common.Login(
-      config.config.apps.digv2.user.username,
-      config.config.apps.digv2.user.password,
-      page
-    );
+    await common.Login(config.config.apps.digv2.user.username, config.config.apps.digv2.user.password, page);
 
     /** Testing announcement banner presence */
     const announcementBanner = page.locator('h2:has-text("Announcements")');
@@ -56,20 +52,17 @@ test.describe('E2E test', () => {
     await expect(page.locator('mat-error')).toBeVisible();
 
     /** Required tests */
-    const requiredTime = page.locator(
-      'input[id="mat-input-2"]'
-    );
+    const requiredTime = page.locator('input[id="mat-input-2"]');
     const date = new Date();
     const time = `${date.getHours()}${date.getMinutes()}AM`;
     requiredTime.type(time);
     attributes = await common.getAttributes(requiredTime);
+    console.log(attributes);
     await expect(attributes.includes('required')).toBeTruthy();
 
     await expect(page.locator('mat-error')).toBeHidden();
 
-    const notRequiredTime = page.locator(
-      'input[id="mat-input-1"]'
-    );
+    const notRequiredTime = page.locator('input[id="mat-input-1"]');
     attributes = await common.getAttributes(notRequiredTime);
     await expect(attributes.includes('required')).toBeFalsy();
 
@@ -79,15 +72,11 @@ test.describe('E2E test', () => {
     await page.getByRole('option', { name: 'Disable' }).click();
 
     // /** Disable tests */
-    const alwaysDisabledTime = page.locator(
-      'input[id="mat-input-3"]'
-    );
+    const alwaysDisabledTime = page.locator('input[id="mat-input-3"]');
     attributes = await common.getAttributes(alwaysDisabledTime);
     await expect(attributes.includes('disabled')).toBeTruthy();
 
-    const conditionallyDisabledTime = page.locator(
-      'input[id="mat-input-4"]'
-    );
+    const conditionallyDisabledTime = page.locator('input[id="mat-input-4"]');
     attributes = await common.getAttributes(conditionallyDisabledTime);
     if (isDisabled) {
       await expect(attributes.includes('disabled')).toBeTruthy();
@@ -95,9 +84,7 @@ test.describe('E2E test', () => {
       await expect(attributes.includes('disabled')).toBeFalsy();
     }
 
-    const neverDisabledTime = page.locator(
-      'input[id="mat-input-5"]'
-    );
+    const neverDisabledTime = page.locator('input[id="mat-input-5"]');
     attributes = await common.getAttributes(neverDisabledTime);
     await expect(attributes.includes('disabled')).toBeFalsy();
 
@@ -113,9 +100,7 @@ test.describe('E2E test', () => {
     // attributes = await common.getAttributes(readonlyTime);
     // await expect(attributes.includes('readonly')).toBeTruthy();
 
-    const editableTime = page.locator(
-      'input[id="mat-input-6"]'
-    );
+    const editableTime = page.locator('input[id="mat-input-6"]');
     editableTime.type(time);
 
     attributes = await common.getAttributes(editableTime);
@@ -127,18 +112,12 @@ test.describe('E2E test', () => {
     await page.getByRole('option', { name: 'Visibility' }).click();
 
     /** Visibility tests */
-    await expect(
-      page.locator('input[id="mat-input-7"]')
-    ).toBeVisible();
+    await expect(page.locator('input[id="mat-input-7"]')).toBeVisible();
 
-    const neverVisibleTime = await page.locator(
-      'input[data-test-id="971d3da425a39fac98652a85633db661"]'
-    );
+    const neverVisibleTime = await page.locator('input[data-test-id="971d3da425a39fac98652a85633db661"]');
     await expect(neverVisibleTime).not.toBeVisible();
 
-    const conditionallyVisibleTime = await page.locator(
-      'input[id="mat-input-8"]'
-    );
+    const conditionallyVisibleTime = await page.locator('input[id="mat-input-8"]');
 
     if (isVisible) {
       await expect(conditionallyVisibleTime).toBeVisible();
