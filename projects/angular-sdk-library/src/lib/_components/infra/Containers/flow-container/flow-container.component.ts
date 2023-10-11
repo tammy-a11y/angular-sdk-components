@@ -234,10 +234,14 @@ export class FlowContainerComponent implements OnInit {
     let baseContext = this.pConn$.getContextName();
     let acName = this.pConn$.getContainerName();
 
+    if(this.itemKey$ === ''){
+      this.itemKey$ = baseContext.concat('/').concat(acName);
+    }
+
     this.pConn$.isBoundToState();
 
     // inside
-    // get fist kid, get the name and displa
+    // get fist kid, get the name and display
     // pass first kid to a view container, which will disperse it to a view which will use one column, two column, etc.
     let oWorkItem = this.arChildren$[0].getPConnect();
     let oWorkMeta = oWorkItem.getRawMetadata();
@@ -310,7 +314,7 @@ export class FlowContainerComponent implements OnInit {
 
     const caseActions = this.pConn$.getValue(CASE_CONSTS.CASE_INFO_ACTIONS);
     const activeActionID = this.pConn$.getValue(CASE_CONSTS.ACTIVE_ACTION_ID);
-    const activeAction = caseActions.find((action) => action.ID === activeActionID);
+    const activeAction = caseActions?.find((action) => action.ID === activeActionID);
     if (activeAction) {
       activeActionLabel = activeAction.name;
     }
@@ -414,7 +418,7 @@ export class FlowContainerComponent implements OnInit {
       if (sessionStorage.getItem('okToInitFlowContainer') == 'true') {
         this.initContainer();
       }
-    } else if (caseViewMode && caseViewMode == 'perform') {
+    } else if (caseViewMode && caseViewMode === 'perform') {
       // perform
       this.todo_showTodo$ = false;
 
@@ -440,14 +444,14 @@ export class FlowContainerComponent implements OnInit {
       this.PCore$.getPubSubUtils().publish('assignmentFinished');
 
       this.psService.sendMessage(false);
-    } else if (this.bHasCaseMessages$) {
+    } else if(this.bHasCaseMessages$) {
       this.bHasCaseMessages$ = false;
       this.bShowConfirm = false;
     }
 
     // this check in routingInfo, mimic Nebula/Constellation (React) to check and get the internals of the
     // flowContainer and force updates to pConnect/redux
-    if (routingInfo && loadingInfo != undefined) {
+    if (routingInfo && loadingInfo !== undefined) {
       let currentOrder = routingInfo.accessedOrder;
       let currentItems = routingInfo.items;
       let type = routingInfo.type;
@@ -471,8 +475,13 @@ export class FlowContainerComponent implements OnInit {
 
             let currentItem = currentItems[key];
             let rootView = currentItem.view;
-            let { context } = rootView.config;
+            let { context, name: ViewName } = rootView.config;
             let config = { meta: rootView };
+
+            // Don't go ahead if View doesn't exist
+            if( !ViewName ){
+              return;
+            }
 
             this.todo_context$ = currentItem.context;
 
@@ -507,7 +516,7 @@ export class FlowContainerComponent implements OnInit {
 
               this.psService.sendMessage(false);
 
-              let oWorkItem = this.arChildren$[0].getPConnect();
+              let oWorkItem = configObject.getPConnect();
               let oWorkData = oWorkItem.getDataObject();
 
               this.containerName$ = this.getActiveViewLabel() || oWorkData.caseInfo.assignments?.[0].name;
