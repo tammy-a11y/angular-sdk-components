@@ -51,7 +51,8 @@ test.describe('E2E test', () => {
     /** Required tests */
     const requiredTime = page.locator('input[id="mat-input-2"]');
     const date = new Date();
-    const time = `${date.getHours() % 12}${date.getMinutes()}AM`;
+    // Converting hours from 24 to 12 format, including the special case of "12"
+    const time = `${(date.getHours() % 12) || 12}${date.getMinutes()}AM`;
     requiredTime.type(time);
     attributes = await common.getAttributes(requiredTime);
     await expect(attributes.includes('required')).toBeTruthy();
