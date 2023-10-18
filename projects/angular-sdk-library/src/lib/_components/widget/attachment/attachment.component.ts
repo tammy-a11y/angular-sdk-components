@@ -122,9 +122,7 @@ export class AttachmentComponent implements OnInit {
 
     /* this is a temporary fix because required is supposed to be passed as a boolean and NOT as a string */
     let { required, disabled } = configProps;
-    [required, disabled] = [required, disabled].map(
-      (prop) => prop === true || (typeof prop === 'string' && prop === 'true')
-    );
+    [required, disabled] = [required, disabled].map((prop) => prop === true || (typeof prop === 'string' && prop === 'true'));
 
     this.att_categoryName = '';
     if (value && value.pyCategoryName) {
@@ -144,7 +142,7 @@ export class AttachmentComponent implements OnInit {
           this.pConn$.attachmentsInfo = {
             type: 'File',
             attachmentFieldName: this.att_valueRef,
-            category: this.att_categoryName,
+            category: this.att_categoryName
           };
         }
 
@@ -158,14 +156,14 @@ export class AttachmentComponent implements OnInit {
           let oMenu: any = {};
 
           oMenu.icon = 'download';
-          oMenu.text = 'Download';
+          oMenu.text = this.pConn$.getLocalizedValue('Download', '', '');
           oMenu.onClick = () => {
             this._downloadFileFromList(this.value$.pxResults[0]);
           };
           arMenuList.push(oMenu);
           oMenu = {};
           oMenu.icon = 'trash';
-          oMenu.text = 'Delete';
+          oMenu.text = this.pConn$.getLocalizedValue('Delete', '', '');
           oMenu.onClick = () => {
             this._removeFileFromList(this.arFileList$[0]);
           };
@@ -187,9 +185,11 @@ export class AttachmentComponent implements OnInit {
           this.bShowSelector$ = false;
         }
         if (this.fileTemp) {
-          const currentAttachmentList = this.getCurrentAttachmentsList(this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
-          this.pConn$.getContextName());
-          const index = currentAttachmentList.findIndex(element => element.props.ID === this.fileTemp.props.ID);
+          const currentAttachmentList = this.getCurrentAttachmentsList(
+            this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
+            this.pConn$.getContextName()
+          );
+          const index = currentAttachmentList.findIndex((element) => element.props.ID === this.fileTemp.props.ID);
           let tempFiles: any = [];
           if (index < 0) {
             tempFiles = [this.fileTemp];
@@ -213,12 +213,17 @@ export class AttachmentComponent implements OnInit {
     );
   }
 
-  resetAttachmentStoredState(){
-    this.PCore$?.getStateUtils().updateState(this.pConn$.getContextName(), this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''), undefined, {
-      pageReference: 'context_data',
-      isArrayDeepMerge: false
-    });
-  };
+  resetAttachmentStoredState() {
+    this.PCore$?.getStateUtils().updateState(
+      this.pConn$.getContextName(),
+      this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
+      undefined,
+      {
+        pageReference: 'context_data',
+        isArrayDeepMerge: false
+      }
+    );
+  }
 
   _downloadFileFromList(fileObj: any) {
     this.PCore$.getAttachmentUtils()
@@ -268,15 +273,25 @@ export class AttachmentComponent implements OnInit {
           }
         };
         // updating the redux store to help form-handler in passing the data to delete the file from server
-        this.PCore$.getStateUtils().updateState(this.pConn$.getContextName(), this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''), [...currentAttachmentList, deletedFile], {
-          pageReference: 'context_data',
-          isArrayDeepMerge: false
-        });
+        this.PCore$.getStateUtils().updateState(
+          this.pConn$.getContextName(),
+          this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
+          [...currentAttachmentList, deletedFile],
+          {
+            pageReference: 'context_data',
+            isArrayDeepMerge: false
+          }
+        );
       } else {
-        this.PCore$.getStateUtils().updateState(this.pConn$.getContextName(), this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''), [...currentAttachmentList, ...attachmentsList], {
-          pageReference: 'context_data',
-          isArrayDeepMerge: false
-        });
+        this.PCore$.getStateUtils().updateState(
+          this.pConn$.getContextName(),
+          this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
+          [...currentAttachmentList, ...attachmentsList],
+          {
+            pageReference: 'context_data',
+            isArrayDeepMerge: false
+          }
+        );
       }
       if (fileIndex > -1) {
         this.arFileList$.splice(fileIndex, 1);
@@ -289,42 +304,40 @@ export class AttachmentComponent implements OnInit {
     return this.PCore$.getStoreValue(`.${key}`, 'context_data', context) || [];
   }
 
-  errorHandler(isFetchCanceled){
-      return (error) => {
-        if (!isFetchCanceled(error)) {
-          let uploadFailMsg = this.pConn$.getLocalizedValue('Something went wrong');
-          if (error.response && error.response.data && error.response.data.errorDetails) {
-            uploadFailMsg = this.pConn$.getLocalizedValue(error.response.data.errorDetails[0].localizedValue);
-          }
-          this.bShowSelector$ = false;
-          this.myFiles[0].meta = uploadFailMsg;
-          this.myFiles[0].error = true;
-          this.myFiles[0].fileName = this.pConn$.getLocalizedValue('Unable to upload file');
-          this.arFileList$ = this.myFiles.map((att) => {
-            return this.getNewListUtilityItemProps({
-              att,
-              downloadFile: null,
-              cancelFile: null,
-              deleteFile: null,
-              removeFile: null
-            });
-          });
-  
-          this.bShowJustDelete$ = true;
-          this.bLoading$ = false;
+  errorHandler(isFetchCanceled) {
+    return (error) => {
+      if (!isFetchCanceled(error)) {
+        let uploadFailMsg = this.pConn$.getLocalizedValue('Something went wrong', '', '');
+        if (error.response && error.response.data && error.response.data.errorDetails) {
+          uploadFailMsg = this.pConn$.getLocalizedValue(error.response.data.errorDetails[0].localizedValue, '', '');
         }
-        throw error;
-      };
+        this.bShowSelector$ = false;
+        this.myFiles[0].meta = uploadFailMsg;
+        this.myFiles[0].error = true;
+        this.myFiles[0].fileName = this.pConn$.getLocalizedValue('Unable to upload file', '', '');
+        this.arFileList$ = this.myFiles.map((att) => {
+          return this.getNewListUtilityItemProps({
+            att,
+            downloadFile: null,
+            cancelFile: null,
+            deleteFile: null,
+            removeFile: null
+          });
+        });
+
+        this.bShowJustDelete$ = true;
+        this.bLoading$ = false;
+      }
+      throw error;
     };
+  }
 
   uploadMyFiles(event: any) {
-
     this.arFiles$ = this.getFiles(event.target.files);
     // convert FileList to an array
     this.myFiles = Array.from(this.arFiles$);
-  
+
     //alert($event.target.files[0]); // outputs the first file
-    
 
     if (this.myFiles.length == 1) {
       this.bLoading$ = true;
@@ -332,7 +345,7 @@ export class AttachmentComponent implements OnInit {
       // this.myFiles[0].ID = undefined;
 
       this.PCore$.getAttachmentUtils()
-        .uploadAttachment(this.myFiles[0], this.onUploadProgress, this.errorHandler , this.pConn$.getContextName())
+        .uploadAttachment(this.myFiles[0], this.onUploadProgress, this.errorHandler, this.pConn$.getContextName())
         .then((fileRes) => {
           this.att_id = fileRes.ID;
 
@@ -379,7 +392,7 @@ export class AttachmentComponent implements OnInit {
           });
           this.ngZone.run(() => {
             this.bShowSelector$ = false;
-            this.myFiles[0].meta = 'File uploaded successfully';
+            this.myFiles[0].meta = this.pConn$.getLocalizedValue('File uploaded successfully', '', '');
             this.arFileList$ = this.myFiles.map((att) => {
               return this.getNewListUtilityItemProps({
                 att,
@@ -400,21 +413,21 @@ export class AttachmentComponent implements OnInit {
           // to handle Unhandled rejections
 
           this.bShowJustDelete$ = true;
-          this.bLoading$ = false
-            this.bShowSelector$ = false;
-            this.myFiles[0].meta = 'File uploaded failed';
-            this.arFileList$ = this.myFiles.map((att) => {
-              return this.getNewListUtilityItemProps({
-                att,
-                downloadFile: null,
-                cancelFile: null,
-                deleteFile: null,
-                removeFile: null
-              });
+          this.bLoading$ = false;
+          this.bShowSelector$ = false;
+          this.myFiles[0].meta = 'File uploaded failed';
+          this.arFileList$ = this.myFiles.map((att) => {
+            return this.getNewListUtilityItemProps({
+              att,
+              downloadFile: null,
+              cancelFile: null,
+              deleteFile: null,
+              removeFile: null
             });
+          });
 
-            this.bShowJustDelete$ = true;
-            this.bLoading$ = false;          
+          this.bShowJustDelete$ = true;
+          this.bLoading$ = false;
         });
     }
   }
@@ -427,7 +440,7 @@ export class AttachmentComponent implements OnInit {
       actions = [
         {
           id: `Cancel-${att.ID}`,
-          text: 'Cancel',
+          text: this.pConn$.getLocalizedValue('Cancel', '', ''),
           icon: 'times',
           onClick: cancelFile
         }
@@ -440,7 +453,7 @@ export class AttachmentComponent implements OnInit {
           'download',
           {
             id: `download-${ID}`,
-            text: isFile ? 'Download' : 'Open',
+            text: isFile ? this.pConn$.getLocalizedValue('Download', '', '') : this.pConn$.getLocalizedValue('Open', '', ''),
             icon: isFile ? 'download' : 'open',
             onClick: downloadFile
           }
@@ -449,7 +462,7 @@ export class AttachmentComponent implements OnInit {
           'delete',
           {
             id: `Delete-${ID}`,
-            text: 'Delete',
+            text: this.pConn$.getLocalizedValue('Delete', '', ''),
             icon: 'trash',
             onClick: deleteFile
           }
@@ -466,7 +479,7 @@ export class AttachmentComponent implements OnInit {
       actions = [
         {
           id: `Remove-${att.ID}`,
-          text: 'Remove',
+          text: this.pConn$.getLocalizedValue('Remove', '', ''),
           icon: 'trash',
           onClick: removeFile
         }
@@ -501,10 +514,11 @@ export class AttachmentComponent implements OnInit {
 
   setNewFiles(arFiles, current = []) {
     let index = 0;
+    const maxAttachmentSize = 5;
     for (let file of arFiles) {
-      if (!this.validateMaxSize(file, 5)) {
+      if (!this.validateMaxSize(file, maxAttachmentSize)) {
         file.error = true;
-        file.meta = 'File is too big. Max allowed size is 5MB.';
+        file.meta = this.pConn$.getLocalizedValue('File is too big. Max allowed size is 5MB.', '', '');
       }
       file.mimeType = file.type;
       file.icon = this.utils.getIconFromFileType(file.type);

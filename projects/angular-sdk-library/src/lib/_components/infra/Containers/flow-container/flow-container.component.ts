@@ -61,6 +61,9 @@ export class FlowContainerComponent implements OnInit {
   bShowConfirm = false;
   bShowBanner: boolean;
   confirm_pconn: any;
+  localizedVal: any;
+  localeCategory = 'Messages';
+  localeReference: any;
   //itemKey: string = "";   // JA - this is what Nebula/Constellation uses to pass to finishAssignment, navigateToStep
 
   constructor(
@@ -82,6 +85,9 @@ export class FlowContainerComponent implements OnInit {
     if (!this.PCore$) {
       this.PCore$ = window.PCore;
     }
+    this.localizedVal = this.PCore$.getLocaleUtils().getLocaleValue;
+    const caseInfo = this.pConn$.getCaseInfo();
+    this.localeReference = `${caseInfo?.getClassName()}!CASE!${caseInfo.getName()}`.toUpperCase();
 
     // Then, continue on with other initialization
 
@@ -234,7 +240,7 @@ export class FlowContainerComponent implements OnInit {
     let baseContext = this.pConn$.getContextName();
     let acName = this.pConn$.getContainerName();
 
-    if(this.itemKey$ === ''){
+    if (this.itemKey$ === '') {
       this.itemKey$ = baseContext.concat('/').concat(acName);
     }
 
@@ -249,7 +255,7 @@ export class FlowContainerComponent implements OnInit {
 
     //this.containerName$ = oWorkMeta["name"];
     if (bLoadChildren && oWorkData) {
-      this.containerName$ = this.getActiveViewLabel() || oWorkData.caseInfo.assignments[0].name;
+      this.containerName$ = this.localizedVal(this.getActiveViewLabel() || oWorkData.caseInfo.assignments[0].name, undefined, this.localeReference);
     }
 
     // turn off spinner
@@ -429,7 +435,7 @@ export class FlowContainerComponent implements OnInit {
     }
 
     // if have caseMessage show message and end
-    this.caseMessages$ = this.pConn$.getValue('caseMessages');
+    this.caseMessages$ = this.localizedVal(this.pConn$.getValue('caseMessages'), this.localeCategory);
     if (this.caseMessages$ || !this.hasAssignments()) {
       this.bHasCaseMessages$ = true;
       this.bShowConfirm = true;
@@ -437,14 +443,14 @@ export class FlowContainerComponent implements OnInit {
       // Temp fix for 8.7 change: confirmationNote no longer coming through in caseMessages$.
       // So, if we get here and caseMessages$ is empty, use default value in DX API response
       if (!this.caseMessages$) {
-        this.caseMessages$ = 'Thank you! The next step in this case has been routed appropriately.';
+        this.caseMessages$ = this.localizedVal('Thank you! The next step in this case has been routed appropriately.', this.localeCategory);
       }
 
       // publish this "assignmentFinished" for mashup, need to get approved as a standard
       this.PCore$.getPubSubUtils().publish('assignmentFinished');
 
       this.psService.sendMessage(false);
-    } else if(this.bHasCaseMessages$) {
+    } else if (this.bHasCaseMessages$) {
       this.bHasCaseMessages$ = false;
       this.bShowConfirm = false;
     }
@@ -479,7 +485,7 @@ export class FlowContainerComponent implements OnInit {
             let config = { meta: rootView };
 
             // Don't go ahead if View doesn't exist
-            if( !ViewName ){
+            if (!ViewName) {
               return;
             }
 
@@ -519,7 +525,11 @@ export class FlowContainerComponent implements OnInit {
               let oWorkItem = configObject.getPConnect();
               let oWorkData = oWorkItem.getDataObject();
 
-              this.containerName$ = this.getActiveViewLabel() || oWorkData.caseInfo.assignments?.[0].name;
+              this.containerName$ = this.localizedVal(
+                this.getActiveViewLabel() || oWorkData.caseInfo.assignments?.[0].name,
+                undefined,
+                this.localeReference
+              );
             });
           }
         }

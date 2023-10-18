@@ -46,6 +46,8 @@ export class NavbarComponent implements OnInit {
 
   configProps: any;
   navIcon$: string;
+  localizedVal: any;
+  localeCategory = 'AppShell';
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -72,6 +74,7 @@ export class NavbarComponent implements OnInit {
     this.loadImage(this.navIcon$);
 
     this.initComponent();
+    this.localizedVal = this.PCore$.getLocaleUtils().getLocaleValue;
   }
 
   // ngOnDestroy
@@ -116,10 +119,7 @@ export class NavbarComponent implements OnInit {
       this.navPages$ = JSON.parse(JSON.stringify(this.pages$));
 
       for (let page in this.navPages$) {
-        this.navPages$[page]['iconName'] = this.utils.getImageSrc(
-          this.navPages$[page]['pxPageViewIcon'],
-          this.utils.getSDKStaticContentUrl()
-        );
+        this.navPages$[page]['iconName'] = this.utils.getImageSrc(this.navPages$[page]['pxPageViewIcon'], this.utils.getSDKStaticContentUrl());
       }
 
       this.actionsAPI = this.pConn$.getActionsApi();

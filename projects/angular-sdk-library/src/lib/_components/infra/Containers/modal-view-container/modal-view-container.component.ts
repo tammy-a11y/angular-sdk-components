@@ -60,6 +60,8 @@ export class ModalViewContainerComponent implements OnInit {
   cancelPConn$: any;
   bShowCancelAlert$: boolean = false;
   bAlertState: boolean;
+  localizedVal: any;
+  localeCategory = 'Data Object';
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -101,6 +103,7 @@ export class ModalViewContainerComponent implements OnInit {
     const { CONTAINER_TYPE, PUB_SUB_EVENTS } = this.PCore$.getConstants();
 
     this.angularPConnect.shouldComponentUpdate(this);
+    this.localizedVal = this.PCore$.getLocaleUtils().getLocaleValue;
   }
 
   ngOnChanges(): void {}
@@ -199,10 +202,7 @@ export class ModalViewContainerComponent implements OnInit {
           //    The config has meta.config.type = "view"
           const newComp = configObject.getPConnect();
           const newCompName = newComp.getComponentName();
-          const caseInfo =
-            newComp && newComp.getDataObject() && newComp.getDataObject().caseInfo
-              ? newComp.getDataObject().caseInfo
-              : null;
+          const caseInfo = newComp && newComp.getDataObject() && newComp.getDataObject().caseInfo ? newComp.getDataObject().caseInfo : null;
           // The metadata for pyDetails changed such that the "template": "CaseView"
           //  is no longer a child of the created View but is in the created View's
           //  config. So, we DON'T want to replace this.pConn$ since the created
@@ -232,7 +232,7 @@ export class ModalViewContainerComponent implements OnInit {
               const caseName = caseInfo.getName();
               const ID = caseInfo.getID();
 
-              this.title$ = actionName || `New ${caseName} (${ID})`;
+              this.title$ = actionName || `${this.localizedVal('New', this.localeCategory)} ${caseName} (${ID})`;
               // // update children with new view's children
               this.arChildren$ = newComp.getChildren();
               this.bShowModal$ = true;
@@ -354,6 +354,6 @@ export class ModalViewContainerComponent implements OnInit {
   }
 
   getBanners() {
-    return getBanners({target: this.itemKey$, ...this.stateProps$})
+    return getBanners({ target: this.itemKey$, ...this.stateProps$ });
   }
 }
