@@ -86,6 +86,11 @@ import { DetailsOneColumnComponent } from '../../_components/template/details-on
 import { ConfirmationComponent } from '../../_components/template/confirmation/confirmation.component';
 import { MaterialCaseSummaryComponent } from '../../_components/designSystemExtension/material-case-summary/material-case-summary.component';
 import { AlertBannerComponent } from '../../_components/designSystemExtension/alert-banner/alert-banner.component';
+import { BannerPageComponent } from '../../_components/template/banner-page/banner-page.component';
+import { WssNavBarComponent } from '../../_components/template/wss-nav-bar/wss-nav-bar.component';
+import { QuickCreateComponent } from '../../_components/widget/quick-create/quick-create.component';
+import { WssQuickCreateComponent } from '../../_components/designSystemExtension/wss-quick-create/wss-quick-create.component';
+import { BannerComponent } from '../../_components/designSystemExtension/banner/banner.component';
 
 // pegaSdkComponentMap is the JSON object where we'll store the components that are
 // the default implementations provided by the SDK. These will be used if there isn't
@@ -106,8 +111,8 @@ const pegaSdkComponentMap = {
     AssignmentCard: AssignmentCardComponent,
     Attachment: AttachmentComponent,
     AutoComplete: AutoCompleteComponent,
-    //   'Banner': Banner,
-    //   'BannerPage': BannerPage,
+    Banner: BannerComponent,
+    BannerPage: BannerPageComponent,
     CancelAlert: CancelAlertComponent,
     CaseHistory: CaseHistoryComponent,
     CaseSummary: CaseSummaryComponent,
@@ -162,7 +167,8 @@ const pegaSdkComponentMap = {
     Phone: PhoneComponent,
     PromotedFilters: PromotedFiltersComponent,
     Pulse: PulseComponent,
-    //   'QuickCreate': QuickCreate,
+    QuickCreate: QuickCreateComponent,
+    WssQuickCreate: WssQuickCreateComponent,
     reference: ReferenceComponent,
     RadioButtons: RadioButtonsComponent,
     Region: RegionComponent,
@@ -195,7 +201,8 @@ const pegaSdkComponentMap = {
     //   'WideNarrow': WideNarrow,
     WideNarrowDetails: DetailsWideNarrowComponent,
     WideNarrowForm: WideNarrowFormComponent,
-    WideNarrowPage: WideNarrowPageComponent
+    WideNarrowPage: WideNarrowPageComponent,
+    WssNavBar: WssNavBarComponent
 };
 
 export default pegaSdkComponentMap;

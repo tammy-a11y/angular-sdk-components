@@ -30,6 +30,8 @@ export class AppShellComponent implements OnInit {
   sErrorMessages: string = '';
   snackBarRef: any;
   bOkDisplayError: boolean = false;
+  portalTemplate: string;
+  links: any = [];
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -49,12 +51,18 @@ export class AppShellComponent implements OnInit {
     // making a copy, so can add info
     this.pages$ = this.configProps$['pages'];
 
+    this.links = this.pages$.filter((page, index) => {
+      return index !== 0;
+    });
+
     if (this.pages$) {
       this.bShowAppShell$ = true;
     }
     this.caseTypes$ = this.configProps$['caseTypes'];
 
     this.arChildren$ = this.pConn$.getChildren();
+
+    this.portalTemplate = this.configProps$['portalTemplate'];
 
     // handle showing and hiding the progress spinner
     this.errorMessagesSubscription = this.erService.getMessage().subscribe((message) => {

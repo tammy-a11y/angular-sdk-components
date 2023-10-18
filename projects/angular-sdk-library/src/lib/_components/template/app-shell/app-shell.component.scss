@@ -1,13 +1,22 @@
 @import '../../../../../_shared/styles.scss';
 
 .appshell-top {
-  display: flex;
+  background-color: $app-background-color;
+}
+
+.appshell-top-wss{
   background-color: $app-background-color;
 }
 
 .appshell-main {
   position: relative;
   margin-left: $app-nav-width;
+  min-height: 100vh;
+  display: block;
+}
+
+.appshell-main-wss {
+  position: relative;
   min-height: 100vh;
   display: block;
   width: 100%;
