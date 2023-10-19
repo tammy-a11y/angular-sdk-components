@@ -1,5 +1,12 @@
 @import '../../../../../_shared/styles.scss';
 
+.psdk-list-header {
+  background-color: white;
+  padding: 1rem;
+  margin: 0.5rem;
+  border-radius: 0.6125rem;
+}
+
 table {
   width: 100%;
 }
