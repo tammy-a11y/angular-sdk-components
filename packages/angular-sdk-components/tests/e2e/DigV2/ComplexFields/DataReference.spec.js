@@ -88,8 +88,6 @@ test.describe('E2E test', () => {
 
     await page.locator('button:has-text("Previous")').click();
 
-    await page.pause();
-
     /** Table display type tests */
     selectedSubCategory = page.locator('mat-select[data-test-id="9463d5f18a8924b3200b56efaad63bda"]');
     await selectedSubCategory.click();
