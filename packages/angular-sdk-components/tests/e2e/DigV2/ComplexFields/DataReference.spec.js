@@ -5,7 +5,7 @@ const common = require('../../../common');
 
 test.beforeEach(async ({ page }) => {
   await page.setViewportSize({ width: 1920, height: 1080 });
-  await page.goto('http://localhost:3500/portal', { waitUntil: 'networkidle' });
+  await page.goto(config.config.baseUrl, { waitUntil: 'networkidle' });
 });
 
 test.describe('E2E test', () => {
@@ -87,6 +87,8 @@ test.describe('E2E test', () => {
     await expect(assignment.locator('app-text >> label').getByText('9f2584c2-5cb4-4abe-a261-d68050ee0f66')).toBeVisible();
 
     await page.locator('button:has-text("Previous")').click();
+
+    await page.pause();
 
     /** Table display type tests */
     selectedSubCategory = page.locator('mat-select[data-test-id="9463d5f18a8924b3200b56efaad63bda"]');
