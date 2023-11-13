@@ -91,6 +91,8 @@ import { WssNavBarComponent } from '../../_components/template/wss-nav-bar/wss-n
 import { QuickCreateComponent } from '../../_components/widget/quick-create/quick-create.component';
 import { WssQuickCreateComponent } from '../../_components/designSystemExtension/wss-quick-create/wss-quick-create.component';
 import { BannerComponent } from '../../_components/designSystemExtension/banner/banner.component';
+import { InlineDashboardComponent } from '../../_components/template/inline-dashboard/inline-dashboard.component';
+import { InlineDashboardPageComponent } from '../../_components/template/inline-dashboard-page/inline-dashboard-page.component';
 
 // pegaSdkComponentMap is the JSON object where we'll store the components that are
 // the default implementations provided by the SDK. These will be used if there isn't
@@ -144,8 +146,8 @@ const pegaSdkComponentMap = {
     FileUtility: FileUtilityComponent,
     FlowContainer: FlowContainerComponent,
     //   'Followers': Followers,
-    //   'InlineDashboard': InlineDashboard,
-    //   'InlineDashboardPage': InlineDashboardPage,
+    InlineDashboard: InlineDashboardComponent,
+    InlineDashboardPage: InlineDashboardPageComponent,
     Integer: IntegerComponent,
     //   'LeftAlignVerticalTabs': LeftAlignVerticalTabs,
     ListPage: ListPageComponent,

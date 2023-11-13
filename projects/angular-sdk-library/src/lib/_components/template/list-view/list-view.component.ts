@@ -128,7 +128,8 @@ export class ListViewComponent implements OnInit {
   response: any;
   compositeKeys: any;
   showDynamicFields: any;
-
+  filters: any = {};
+  selectParam: Array<any> = [];
   constructor(private psService: ProgressSpinnerService, private utils: Utils) {}
 
   ngOnInit(): void {
@@ -161,7 +162,144 @@ export class ListViewComponent implements OnInit {
     this.arFilterSecondaryButtons$.push({ actionID: 'cancel', jsAction: 'cancel', name: 'Cancel' });
 
     this.searchIcon$ = this.utils.getImageSrc('search', this.utils.getSDKStaticContentUrl());
+    setTimeout(() => {
+      this.PCore$.getPubSubUtils().subscribe(
+        this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_DASHBOARD_FILTER_CHANGE,
+        data => {
+          this.processFilterChange(data);
+        },
+        `dashboard-component-${'id'}`,
+        false,
+        this.pConn$.getContextName()
+      );
+      this.PCore$.getPubSubUtils().subscribe(
+        this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_DASHBOARD_FILTER_CLEAR_ALL,
+        () => {
+          // filters.current = {};
+          this.processFilterClear();
+        },
+        `dashboard-component-${'id'}`,
+        false,
+        this.pConn$.getContextName()
+      );
+    }, 0);
     this.getListData();
+  }
+
+  getFieldFromFilter(filter, dateRange = false) {
+    let fieldValue;
+    if (dateRange) {
+      fieldValue = filter?.AND[0]?.condition.lhs.field;
+    } else {
+      fieldValue = filter?.condition.lhs.field;
+    }
+    return fieldValue;
+  }
+
+  // Will be triggered when EVENT_DASHBOARD_FILTER_CHANGE fires
+  processFilterChange(data) {
+    const { filterId, filterExpression } = data;
+    let dashboardFilterPayload : any = {
+      query: {
+        filter: {},
+        select: []
+      }
+    };
+
+    this.filters[filterId] = filterExpression;
+    // eslint-disable-next-line no-unneeded-ternary
+    let isDateRange = data.filterExpression?.AND ? true : false;
+    // Will be AND by default but making it dynamic in case we support dynamic relational ops in future
+    const relationalOp = 'AND';
+
+    let field = this.getFieldFromFilter(filterExpression, isDateRange);
+    let selectParam = [];
+    // Constructing the select parameters list (will be sent in dashboardFilterPayload)
+    this.displayedColumns$?.forEach(col => {
+      selectParam.push({
+        field: col
+      });
+    });
+
+    // Checking if the triggered filter is applicable for this list
+    if (data.filterExpression !== null && !(this.displayedColumns$?.length && this.displayedColumns$?.includes(field))) {
+      return;
+    }
+    // This is a flag which will be used to reset dashboardFilterPayload in case we don't find any valid filters
+    let validFilter = false;
+
+    let index = 1;
+    // Iterating over the current filters list to create filter data which will be POSTed
+    for (const filterExp in this.filters) {
+      const filter = this.filters[filterExp];
+      // If the filter is null then we can skip this iteration
+      if (filter === null) {
+        // eslint-disable-next-line no-continue
+        continue;
+      }
+
+      // Checking if the filter is of type- Date Range
+      // eslint-disable-next-line no-unneeded-ternary
+      isDateRange = filter?.AND ? true : false;
+      field = this.getFieldFromFilter(filter, isDateRange);
+
+      if (!(this.displayedColumns$?.length && this.displayedColumns$?.includes(field))) {
+        // eslint-disable-next-line no-continue
+        continue;
+      }
+      // If we reach here that implies we've at least one valid filter, hence setting the flag
+      validFilter = true;
+      /** Below are the 2 cases for- Text & Date-Range filter types where we'll construct filter data which will be sent in the dashboardFilterPayload
+       * In Constellation DX Components, through Repeating Structures they might be using several APIs to do it. We're doing it here
+       */
+      if (isDateRange) {
+        const dateRelationalOp = filter?.AND ? 'AND' : 'OR';
+        dashboardFilterPayload.query.filter.filterConditions = {
+          ...dashboardFilterPayload.query.filter.filterConditions,
+          [`T${index++}`]: { ...filter[relationalOp][0].condition },
+          [`T${index++}`]: { ...filter[relationalOp][1].condition }
+        };
+        if (dashboardFilterPayload.query.filter.logic) {
+          dashboardFilterPayload.query.filter.logic = `${
+            dashboardFilterPayload.query.filter.logic
+          } ${relationalOp} (T${index - 2} ${dateRelationalOp} T${index - 1})`;
+        } else {
+          dashboardFilterPayload.query.filter.logic = `(T${index - 2} ${relationalOp} T${
+            index - 1
+          })`;
+        }
+
+        dashboardFilterPayload.query.select = selectParam;
+      } else {
+        dashboardFilterPayload.query.filter.filterConditions = {
+          ...dashboardFilterPayload.query.filter.filterConditions,
+          [`T${index++}`]: { ...filter.condition, ignoreCase: true }
+        };
+
+        if (dashboardFilterPayload.query.filter.logic) {
+          dashboardFilterPayload.query.filter.logic = `${
+            dashboardFilterPayload.query.filter.logic
+          } ${relationalOp} T${index - 1}`;
+        } else {
+          dashboardFilterPayload.query.filter.logic = `T${index - 1}`;
+        }
+
+        dashboardFilterPayload.query.select = selectParam;
+      }
+    }
+
+    // Reset the dashboardFilterPayload if we end up with no valid filters for the list
+    if (!validFilter) {
+      dashboardFilterPayload = undefined;
+    }
+    console.log('dashboardFilterPayload', dashboardFilterPayload);
+    // filterPayload.current = dashboardFilterPayload;
+    // fetchDataFromServer();
+  }
+
+
+  processFilterClear() {
+  
   }
 
   getFieldsMetadata(refList) {
