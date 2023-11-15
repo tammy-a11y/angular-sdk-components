@@ -1,6 +1,6 @@
 <div *ngFor="let kid of children">
     <div *ngIf="kid.type === 'DateTime'" [formGroup]="rangeFormGroup">
-        <mat-form-field>
+        <mat-form-field class="psdk-full-width">
             <mat-label>{{kid.label}}</mat-label>
             <mat-date-range-input [rangePicker]="picker">
               <input matStartDate placeholder="Start date" formControlName="start">
