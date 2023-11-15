@@ -18,6 +18,9 @@ import { DragDropModule, CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag } fr
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { getCurrencyOptions } from '../../../_helpers/currency-utils';
+import Currency from '../../../_helpers/formatters/currency';
+import { getLocale } from '../../../_helpers/formatters/common';
 
 declare const window: any;
 
@@ -1110,6 +1113,7 @@ export class ListViewComponent implements OnInit {
         let fieldName;
         let formattedDate;
         let myFormat;
+        let theCurrencyOptions;
 
         switch (fieldData[field].type) {
           case 'Date':
@@ -1131,6 +1135,20 @@ export class ListViewComponent implements OnInit {
             formattedDate = this.utils.generateDateTime(rowData[fieldName], myFormat);
 
             rowData[fieldName] = formattedDate;
+            break;
+          case 'Currency':
+            fieldName = config.name;
+            theCurrencyOptions = getCurrencyOptions(this.PCore$?.getEnvironmentInfo()?.getLocale());
+            // eslint-disable-next-line no-case-declarations
+            const defaultOptions = {
+              locale: getLocale(),
+              position: 'before',
+              decPlaces: 2
+            };
+            // eslint-disable-next-line no-case-declarations
+            const params = { ...defaultOptions, ...theCurrencyOptions };
+            rowData[fieldName] = Currency.Currency(rowData[fieldName], params);
+            //val = format(value, column.type, theCurrencyOptions);
             break;
         }
       }
@@ -1199,7 +1217,7 @@ export class ListViewComponent implements OnInit {
       if (theField.indexOf('.') === 0) {
         theField = theField.substring(1);
       }
-      const colIndex = fields.findIndex(ele => ele.fieldID === theField);
+      const colIndex = fields.findIndex((ele) => ele.fieldID === theField);
       const displayAsLink = field.config.displayAsLink;
       const headerRow: any = {};
       headerRow.id = theField;
