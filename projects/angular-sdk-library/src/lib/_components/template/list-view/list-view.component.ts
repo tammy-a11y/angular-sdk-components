@@ -131,7 +131,7 @@ export class ListViewComponent implements OnInit {
   filters: any = {};
   selectParam: Array<any> = [];
   filterPayload: any;
-  constructor(private psService: ProgressSpinnerService, private utils: Utils) {}
+  constructor(private psService: ProgressSpinnerService, private utils: Utils) { }
 
   ngOnInit(): void {
     if (!this.PCore$) {
@@ -200,7 +200,7 @@ export class ListViewComponent implements OnInit {
   // Will be triggered when EVENT_DASHBOARD_FILTER_CHANGE fires
   processFilterChange(data) {
     const { filterId, filterExpression } = data;
-    let dashboardFilterPayload : any = {
+    let dashboardFilterPayload: any = {
       query: {
         filter: {},
         select: []
@@ -208,7 +208,6 @@ export class ListViewComponent implements OnInit {
     };
 
     this.filters[filterId] = filterExpression;
-    // eslint-disable-next-line no-unneeded-ternary
     let isDateRange = data.filterExpression?.AND ? true : false;
     // Will be AND by default but making it dynamic in case we support dynamic relational ops in future
     const relationalOp = 'AND';
@@ -240,7 +239,6 @@ export class ListViewComponent implements OnInit {
       }
 
       // Checking if the filter is of type- Date Range
-      // eslint-disable-next-line no-unneeded-ternary
       isDateRange = filter?.AND ? true : false;
       field = this.getFieldFromFilter(filter, isDateRange);
 
@@ -261,13 +259,11 @@ export class ListViewComponent implements OnInit {
           [`T${index++}`]: { ...filter[relationalOp][1].condition }
         };
         if (dashboardFilterPayload.query.filter.logic) {
-          dashboardFilterPayload.query.filter.logic = `${
-            dashboardFilterPayload.query.filter.logic
-          } ${relationalOp} (T${index - 2} ${dateRelationalOp} T${index - 1})`;
+          dashboardFilterPayload.query.filter.logic = `${dashboardFilterPayload.query.filter.logic
+            } ${relationalOp} (T${index - 2} ${dateRelationalOp} T${index - 1})`;
         } else {
-          dashboardFilterPayload.query.filter.logic = `(T${index - 2} ${relationalOp} T${
-            index - 1
-          })`;
+          dashboardFilterPayload.query.filter.logic = `(T${index - 2} ${relationalOp} T${index - 1
+            })`;
         }
 
         dashboardFilterPayload.query.select = selectParam;
@@ -278,9 +274,8 @@ export class ListViewComponent implements OnInit {
         };
 
         if (dashboardFilterPayload.query.filter.logic) {
-          dashboardFilterPayload.query.filter.logic = `${
-            dashboardFilterPayload.query.filter.logic
-          } ${relationalOp} T${index - 1}`;
+          dashboardFilterPayload.query.filter.logic = `${dashboardFilterPayload.query.filter.logic
+            } ${relationalOp} T${index - 1}`;
         } else {
           dashboardFilterPayload.query.filter.logic = `T${index - 1}`;
         }
@@ -380,7 +375,20 @@ export class ListViewComponent implements OnInit {
     }
   }
 
-  ngOnDestroy() {}
+  ngOnDestroy() { 
+    this.PCore$.getPubSubUtils().unsubscribe(
+      this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_DASHBOARD_FILTER_CHANGE,
+      `dashboard-component-${'id'}`,
+      false,
+      this.pConn$.getContextName()
+    );
+    this.PCore$.getPubSubUtils().unsubscribe(
+      this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_DASHBOARD_FILTER_CLEAR_ALL,
+      `dashboard-component-${'id'}`,
+      false,
+      this.pConn$.getContextName()
+    );
+  }
 
   ngAfterViewInit() {
     // paginator has to exist for this to work,
@@ -1200,7 +1208,7 @@ export class ListViewComponent implements OnInit {
       headerRow.numeric = field.type === 'Decimal' || field.type === 'Integer' || field.type === 'Percentage' || field.type === 'Currency' || false;
       headerRow.disablePadding = false;
       headerRow.label = presetFields[index].config.label;
-      if(colIndex >= 0){
+      if (colIndex >= 0) {
         headerRow.classID = fields[colIndex].classID;
       }
       if (displayAsLink) {

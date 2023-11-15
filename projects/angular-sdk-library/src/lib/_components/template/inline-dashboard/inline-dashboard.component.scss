@@ -1,38 +1,38 @@
 .psdk-inline-dashboard {
-    margin-left: 8px;
-    margin-right: 8px;
+  margin-left: 8px;
+  margin-right: 8px;
 }
 
-.psdk-inline-dashboard-title{
-    font-weight: 500;
-    font-size: 1.25rem;
+.psdk-inline-dashboard-title {
+  font-weight: 500;
+  font-size: 1.25rem;
 }
 
 .psdk-block-style {
-    display: grid;
-    direction: column-reverse;
-    gap: 1rem;
-    grid-template-columns: repeat(7, 1fr);
+  display: grid;
+  direction: column-reverse;
+  gap: 1rem;
+  grid-template-columns: repeat(7, 1fr);
 }
 
 .psdk-not-block-style {
-    display: grid;
-    grid-template-columns: 3fr 7fr;
+  display: grid;
+  grid-template-columns: 3fr 7fr;
 }
 
 .psdk-inline-style {
-    display: flex;
-    .psdk-inline-filter {
-        width: 25%;
-        padding: 0px 8px;
-        margin-top: 1rem;
-    }
-    .psdk-inline-list {
-        width: 75%;
-        padding: 0px 8px;
-    }
+  display: flex;
+  .psdk-inline-filter {
+    width: 25%;
+    padding: 0px 8px;
+    margin-top: 1rem;
+  }
+  .psdk-inline-list {
+    width: 75%;
+    padding: 0px 8px;
+  }
 }
 
 .psdk-inline-end {
-    flex-direction: row-reverse;
+  flex-direction: row-reverse;
 }

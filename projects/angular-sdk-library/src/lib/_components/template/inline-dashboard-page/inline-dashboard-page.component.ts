@@ -13,7 +13,7 @@ import { buildFilterComponents } from '../../../_helpers/filterUtils';
 })
 export class InlineDashboardPageComponent implements OnInit, OnChanges {
   @Input() pConn$: any;
-  
+
   configProps$: Object;
   arChildren$: Array<any>;
   filterComponents: any;

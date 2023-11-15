@@ -1,4 +1,3 @@
-/* eslint-disable prefer-template */
 /** This file contains various utility methods to generate filter components, regionLayout data, filter expressions, etc.  */
 // Remove this and use "real" PCore type once .d.ts is fixed (currently shows 5 errors)
 import { v4 as uuidv4 } from 'uuid';
@@ -121,7 +120,6 @@ export const getFilterExpression = (filterValue, name, metadata) => {
   if (metadata.config.filterType && metadata.config.filterType === 'RelativeDates') {
     const fieldSource = metadata.config.datasource.filter(source => source.key === filterValue)[0];
     const relativeDateExpression = JSON.parse(fieldSource.json);
-    // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
     const fields = [
       {
         name: relativeDateExpression.condition.lhs.field,

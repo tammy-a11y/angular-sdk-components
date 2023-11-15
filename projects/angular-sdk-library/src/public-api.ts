@@ -44,6 +44,7 @@ export * from './lib/_components/infra/Containers/hybrid-view-container/hybrid-v
 export * from './lib/_components/infra/Containers/modal-view-container/modal-view-container.component';
 export * from './lib/_components/infra/Containers/preview-view-container/preview-view-container.component';
 export * from './lib/_components/infra/Containers/view-container/view-container.component';
+export * from './lib/_components/infra/dashboard-filter/dashboard-filter.component';
 export * from './lib/_components/infra/defer-load/defer-load.component';
 export * from './lib/_components/infra/error-boundary/error-boundary.component';
 export * from './lib/_components/infra/multi-step/multi-step.component';
@@ -70,6 +71,8 @@ export * from './lib/_components/template/details-wide-narrow/details-wide-narro
 export * from './lib/_components/template/field-group-list/field-group-list.component';
 export * from './lib/_components/template/field-group-template/field-group-template.component';
 export * from './lib/_components/template/field-value-list/field-value-list.component';
+export * from './lib/_components/template/inline-dashboard/inline-dashboard.component';
+export * from './lib/_components/template/inline-dashboard-page/inline-dashboard-page.component';
 export * from './lib/_components/template/list-page/list-page.component';
 export * from './lib/_components/template/list-view/list-view.component';
 export * from './lib/_components/template/multi-reference-readonly/multi-reference-readonly.component';
@@ -129,6 +132,7 @@ export * from './lib/_helpers/tabUtils';
 export * from './lib/_helpers/template-utils';
 export * from './lib/_helpers/utils';
 export * from './lib/_helpers/versionHelpers';
+export * from './lib/_helpers/filterUtils';
 
 export * from './lib/_messages/error-messages.service';
 export * from './lib/_messages/get-login-status.service';

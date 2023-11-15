@@ -17,10 +17,9 @@ export class InlineDashboardComponent implements OnInit {
   @Input() formGroup$: FormGroup;
   @Input() inlineProps;
   @Input() children;
-  configProps$: Object;
-  arChildren$: Array<any>;
 
-  constructor() {}
+
+  constructor() { }
 
   ngOnInit() {
 
