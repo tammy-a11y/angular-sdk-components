@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef, SimpleChanges, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { RegionComponent } from '../../infra/region/region.component';
@@ -12,7 +12,7 @@ import { DashboardFilterComponent } from '../../infra/dashboard-filter/dashboard
   standalone: true,
   imports: [CommonModule, DashboardFilterComponent, forwardRef(() => RegionComponent), forwardRef(() => ComponentMapperComponent)]
 })
-export class InlineDashboardComponent implements OnInit, OnChanges {
+export class InlineDashboardComponent implements OnInit {
   @Input() pConn$: any;
   @Input() formGroup$: FormGroup;
   @Input() inlineProps;
@@ -23,20 +23,6 @@ export class InlineDashboardComponent implements OnInit, OnChanges {
   constructor() {}
 
   ngOnInit() {
-    console.log('InlineDashboardComponent inlineProps', this.inlineProps);
-    this.updateSelf();
-  }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    const { children, inlineProps } = changes;
-    console.log('changes', changes);
-    if ((children && children.previousValue !== children.currentValue) || (inlineProps && inlineProps.previousValue !== inlineProps.currentValue)) {
-      this.updateSelf();
-    }
-  }
-
-  updateSelf() {
-    // this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
-    // this.arChildren$ = this.pConn$.getChildren();
   }
 }

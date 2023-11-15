@@ -130,6 +130,7 @@ export class ListViewComponent implements OnInit {
   showDynamicFields: any;
   filters: any = {};
   selectParam: Array<any> = [];
+  filterPayload: any;
   constructor(private psService: ProgressSpinnerService, private utils: Utils) {}
 
   ngOnInit(): void {
@@ -292,14 +293,14 @@ export class ListViewComponent implements OnInit {
     if (!validFilter) {
       dashboardFilterPayload = undefined;
     }
-    console.log('dashboardFilterPayload', dashboardFilterPayload);
-    // filterPayload.current = dashboardFilterPayload;
-    // fetchDataFromServer();
+    this.filterPayload = dashboardFilterPayload;
+    this.getListData();
   }
 
 
   processFilterClear() {
-  
+    this.filterPayload = undefined;
+    this.getListData();
   }
 
   getFieldsMetadata(refList) {
@@ -312,7 +313,15 @@ export class ListViewComponent implements OnInit {
       const refList = this.configProps?.referenceList;
       const fieldsMetaDataPromise = this.getFieldsMetadata(refList);
       // returns a promise
-      const workListDataPromise = this.PCore$.getDataApiUtils().getData(refList, this.payload);
+      let payload = {};
+      if (this.payload) {
+        payload = this.payload;
+      } else if (this.filterPayload) {
+        payload = this.filterPayload;
+      } else {
+        payload = {};
+      }
+      const workListDataPromise = this.PCore$.getDataApiUtils().getData(refList, payload);
 
       this.bShowFilterPopover$ = false;
 

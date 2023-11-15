@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, forwardRef, SimpleChanges, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import {MatNativeDateModule} from '@angular/material/core';
 import {MatDatepickerModule} from '@angular/material/datepicker';
@@ -9,23 +9,30 @@ import { MatButtonModule } from '@angular/material/button';
 import { debounceTime } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { getFilterExpression } from '../../../_helpers/filterUtils';
+import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 
 @Component({
   selector: 'app-dashboard-filter',
   templateUrl: './dashboard-filter.component.html',
   styleUrls: ['./dashboard-filter.component.scss'],
   standalone: true,
-  imports: [CommonModule, MatFormFieldModule, MatDatepickerModule, MatButtonModule, MatNativeDateModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [CommonModule, MatFormFieldModule, ReactiveFormsModule, MatDatepickerModule, MatButtonModule, MatNativeDateModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class DashboardFilterComponent implements OnInit, OnChanges {
+export class DashboardFilterComponent implements OnInit {
   @Input() pConn$: any;
   @Input() formGroup$: FormGroup;
   @Input() inlineProps;
   @Input() children;
+  angularPConnectData: any = {};
   configProps$: Object;
   arChildren$: Array<any>;
   PCore$: any;
   private filterChangeSubject = new Subject<string>();
+  rangeFormGroup = new FormGroup({  
+    start: new FormControl(null),  
+    end: new FormControl(null)  
+  });
+
   constructor() {
     this.filterChangeSubject.pipe(
         debounceTime(500)
@@ -36,33 +43,25 @@ export class DashboardFilterComponent implements OnInit, OnChanges {
     if (!this.PCore$) {
         this.PCore$ = window.PCore;
     }
-    console.log('InlineDashboardComponent inlineProps', this.inlineProps);
-    
-    this.updateSelf();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    const { children, inlineProps } = changes;
-    console.log('changes', changes);
-    if ((children && children.previousValue !== children.currentValue) || (inlineProps && inlineProps.previousValue !== inlineProps.currentValue)) {
-      this.updateSelf();
-    }
+  clearFilters() {
+    this.formGroup$.reset();
+    this.PCore$.getPubSubUtils().publish(
+      this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_DASHBOARD_FILTER_CLEAR_ALL
+    );
   }
-
-  updateSelf() {
-    // this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
-    // this.arChildren$ = this.pConn$.getChildren();
-  }
-
-  
 
   updateTmpData(filterData) {
     this.filterChangeSubject.next(filterData);
   }
 
+  dateRangeChangeHandler(event) {
+    console.log('event', event);
+  }
+
   fireFilterChange(data: any) {
     const { event, field } = data;
-    console.log('filterValue', data);
     const filterData = {
       filterId: field.filterId,
       filterExpression: getFilterExpression(event.target.value, field.name, field.metadata)
