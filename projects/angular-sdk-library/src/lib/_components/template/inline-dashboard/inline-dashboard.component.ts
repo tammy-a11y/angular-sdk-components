@@ -13,7 +13,7 @@ import { DashboardFilterComponent } from '../../infra/dashboard-filter/dashboard
 })
 export class InlineDashboardComponent implements OnInit {
   @Input() pConn$: any;
-  @Input() formGroup$: FormGroup;
+  @Input() filtersFormGroup$: FormGroup;
   @Input() inlineProps;
   @Input() children;
 

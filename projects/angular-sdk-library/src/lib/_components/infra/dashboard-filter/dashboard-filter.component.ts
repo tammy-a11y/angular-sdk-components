@@ -20,7 +20,7 @@ import { getFilterExpression, getFormattedDate, createFilter, combineFilters } f
 })
 export class DashboardFilterComponent implements OnInit {
   @Input() pConn$: any;
-  @Input() formGroup$: FormGroup;
+  @Input() filtersFormGroup$: FormGroup;
   @Input() inlineProps;
   @Input() children;
   angularPConnectData: any = {};
@@ -39,14 +39,14 @@ export class DashboardFilterComponent implements OnInit {
     if (!this.PCore$) {
       this.PCore$ = window.PCore;
     }
-    if (this.formGroup$ != null) {
-      this.formGroup$.addControl('start', new FormControl(null));
-      this.formGroup$.addControl('end', new FormControl(null));
+    if (this.filtersFormGroup$ != null) {
+      this.filtersFormGroup$.addControl('start', new FormControl(null));
+      this.filtersFormGroup$.addControl('end', new FormControl(null));
     }
   }
 
   clearFilters() {
-    this.formGroup$.reset();
+    this.filtersFormGroup$.reset();
     this.PCore$.getPubSubUtils().publish(
       this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_DASHBOARD_FILTER_CLEAR_ALL
     );
@@ -58,8 +58,8 @@ export class DashboardFilterComponent implements OnInit {
 
   dateRangeChangeHandler(field) {
     const { filterId, name } = field;
-    const start = this.formGroup$.get('start').value;
-    const end = this.formGroup$.get('end').value;
+    const start = this.filtersFormGroup$.get('start').value;
+    const end = this.filtersFormGroup$.get('end').value;
     if (start && end) {
       let startDate = getFormattedDate(start);
       let endDate = getFormattedDate(end);

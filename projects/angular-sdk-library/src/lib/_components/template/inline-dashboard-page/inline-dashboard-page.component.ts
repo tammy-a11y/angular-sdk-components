@@ -19,9 +19,9 @@ export class InlineDashboardPageComponent implements OnInit, OnChanges {
   filterComponents: any;
   inlineProps: any;
   children: any = [];
-  formGroup$: FormGroup;
+  filtersFormGroup$: FormGroup;
   constructor(private fb: FormBuilder) {
-    this.formGroup$ = this.fb.group({ hideRequired: false });
+    this.filtersFormGroup$ = this.fb.group({ hideRequired: false });
   }
 
   ngOnInit() {
