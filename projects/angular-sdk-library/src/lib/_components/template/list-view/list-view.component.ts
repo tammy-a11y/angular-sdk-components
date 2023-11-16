@@ -179,7 +179,7 @@ export class ListViewComponent implements OnInit {
       this.PCore$.getPubSubUtils().subscribe(
         this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_DASHBOARD_FILTER_CLEAR_ALL,
         () => {
-          // filters.current = {};
+          this.filters = {};
           this.processFilterClear();
         },
         `dashboard-component-${'id'}`,

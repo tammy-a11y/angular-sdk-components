@@ -28,11 +28,7 @@ export class DashboardFilterComponent implements OnInit {
   arChildren$: Array<any>;
   PCore$: any;
   private filterChangeSubject = new Subject<string>();
-  rangeFormGroup = new FormGroup({
-    start: new FormControl(null),
-    end: new FormControl(null)
-  });
-
+  
   constructor() {
     this.filterChangeSubject.pipe(
       debounceTime(500)
@@ -43,11 +39,14 @@ export class DashboardFilterComponent implements OnInit {
     if (!this.PCore$) {
       this.PCore$ = window.PCore;
     }
+    if (this.formGroup$ != null) {
+      this.formGroup$.addControl('start', new FormControl(null));
+      this.formGroup$.addControl('end', new FormControl(null));
+    }
   }
 
   clearFilters() {
     this.formGroup$.reset();
-    this.rangeFormGroup.reset();
     this.PCore$.getPubSubUtils().publish(
       this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_DASHBOARD_FILTER_CLEAR_ALL
     );
@@ -59,8 +58,8 @@ export class DashboardFilterComponent implements OnInit {
 
   dateRangeChangeHandler(field) {
     const { filterId, name } = field;
-    const start = this.rangeFormGroup.get('start').value;
-    const end = this.rangeFormGroup.get('end').value;
+    const start = this.formGroup$.get('start').value;
+    const end = this.formGroup$.get('end').value;
     if (start && end) {
       let startDate = getFormattedDate(start);
       let endDate = getFormattedDate(end);
