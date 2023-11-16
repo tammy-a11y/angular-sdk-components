@@ -12,7 +12,7 @@
       </div>
     </div>
     <div class="psdk-inline-list">
-      <app-region [pConn$]="children[0].getPConnect()"></app-region>
+      <component-mapper name="Region" [props]="{ pConn$: children[0].getPConnect() }"></component-mapper>
     </div>
   </div>
 </div>

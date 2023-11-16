@@ -3,7 +3,6 @@
 import { v4 as uuidv4 } from 'uuid';
 declare const PCore: any;
 
-
 export const createFilter = (value, fieldId, comparator = 'EQ') => {
   return {
     condition: {
@@ -84,28 +83,7 @@ export const buildFilterComponents = (getPConnect, allFilters) => {
   const filterComponents = allFilters.children.map((filter, index) =>
     createFilterComponent(getPConnect, filter, index)
   );
-  // if (filterComponents && filterComponents.length > 0) {
-  //   filterComponents.push(
-  //     <Grid>
-  //       <Link
-  //         style={{ cursor: 'pointer' }}
-  //         onClick={() => {
-  //           PCore.getPubSubUtils().publish(
-  //             PCore.getConstants().PUB_SUB_EVENTS.EVENT_DASHBOARD_FILTER_CLEAR_ALL
-  //           );
-  //         }}
-  //       >
-  //         Clear All
-  //       </Link>
-  //     </Grid>
-  //   );
-  // }
   return filterComponents;
-};
-
-export const convertDateToGMT = value => {
-  const { valueAsISOString: date } = value;
-  return date ? date.substring(0, date.indexOf('T')) : date;
 };
 
 export const getFilterExpression = (filterValue, name, metadata) => {
@@ -131,36 +109,6 @@ export const getFilterExpression = (filterValue, name, metadata) => {
 
   return createFilter(filterValue, name, comparator);
 };
-
-/**
- * Returns ConfigurableLayout mapped content. With pre-populated default layout configs.
- * @returns {object[]} ConfigurableLayout content.
- */
-export function getLayoutDataFromRegion(regionData) {
-  const defaultLayoutConfig = {
-    width: 'full',
-    fillAvailable: true,
-    minWidth: [300, 'px']
-  };
-
-  return regionData.props
-    ?.getPConnect()
-    ?.getChildren()
-    ?.map((item, index) => {
-      const itemPConnect = item?.getPConnect();
-
-      return {
-        id: itemPConnect?.getComponentName()
-          ? `${itemPConnect.getComponentName()}--${index}`
-          : `item--${index}`,
-        content: itemPConnect?.getComponent(),
-        layoutConfig: {
-          ...defaultLayoutConfig,
-          ...itemPConnect?.getConfigProps().layoutConfig
-        }
-      };
-    });
-}
 
 export const getFormattedDate = date => {
   if (!date) {

@@ -4,6 +4,7 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { RegionComponent } from '../../infra/region/region.component';
 import { InlineDashboardComponent } from '../inline-dashboard/inline-dashboard.component';
 import { buildFilterComponents } from '../../../_helpers/filterUtils';
+
 @Component({
   selector: 'app-inline-dashboard-page',
   templateUrl: './inline-dashboard-page.component.html',
@@ -15,7 +16,6 @@ export class InlineDashboardPageComponent implements OnInit, OnChanges {
   @Input() pConn$: any;
 
   configProps$: Object;
-  arChildren$: Array<any>;
   filterComponents: any;
   inlineProps: any;
   children: any = [];
@@ -38,11 +38,11 @@ export class InlineDashboardPageComponent implements OnInit, OnChanges {
 
   updateSelf() {
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
-    this.arChildren$ = this.pConn$.getChildren();
+    const arChildren$ = this.pConn$.getChildren();
     const allFilters = this.pConn$.getRawMetadata().children[1];
-    this.filterComponents = buildFilterComponents(this.pConn$, allFilters);
+    const filterComponents = buildFilterComponents(this.pConn$, allFilters);
     this.inlineProps = this.configProps$;
-    this.children[0] = this.arChildren$[0];
-    this.children[1] = this.filterComponents;
+    this.children[0] = arChildren$[0];
+    this.children[1] = filterComponents;
   }
 }

@@ -1,13 +1,13 @@
-import { Component, OnInit, Input, forwardRef, SimpleChanges, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
-import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { debounceTime } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { getFilterExpression, getFormattedDate, createFilter, combineFilters } from '../../../_helpers/filterUtils';
 
 

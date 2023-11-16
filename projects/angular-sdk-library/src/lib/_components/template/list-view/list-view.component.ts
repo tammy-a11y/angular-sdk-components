@@ -311,14 +311,7 @@ export class ListViewComponent implements OnInit {
       const refList = this.configProps?.referenceList;
       const fieldsMetaDataPromise = this.getFieldsMetadata(refList);
       // returns a promise
-      let payload = {};
-      if (this.payload) {
-        payload = this.payload;
-      } else if (this.filterPayload) {
-        payload = this.filterPayload;
-      } else {
-        payload = {};
-      }
+      const payload = this.payload || this.filterPayload || {};
       const workListDataPromise = this.PCore$.getDataApiUtils().getData(refList, payload);
 
       this.bShowFilterPopover$ = false;
