@@ -45,11 +45,11 @@ test.describe('E2E test', () => {
     const inlineDashboard = page.locator('mat-list-item > span:has-text("Inline Dashboard")');
     await inlineDashboard.click();
 
-    const complexFieldsListApi = `${endpoints.serverConfig.infinityRestServerUrl}${
+    const complexFieldsListApiUrl = `${endpoints.serverConfig.infinityRestServerUrl}${
       endpoints.serverConfig.appAlias ? `/app/${endpoints.serverConfig.appAlias}` : ''
     }/api/application/v2/data_views/D_ComplexFieldsList`;
 
-    await Promise.all([page.waitForResponse(complexFieldsListApi)]);
+    await Promise.all([page.waitForResponse(complexFieldsListApiUrl)]);
 
     const inlineDashboardTitle = page.locator('h4:has-text("Inline Dashboard")');
     inlineDashboardTitle.click();
@@ -70,7 +70,7 @@ test.describe('E2E test', () => {
     await caseIdInput.click();
     await caseIdInput.type(caseID);
 
-    await Promise.all([page.waitForResponse(complexFieldsListApi)]);
+    await Promise.all([page.waitForResponse(complexFieldsListApiUrl)]);
 
     await expect(page.locator(`td >> text=${caseID} >> nth=1`)).toBeVisible();
     await expect(page.locator('td >> text="Complex  Fields" >> nth=1')).toBeVisible();
@@ -90,7 +90,7 @@ test.describe('E2E test', () => {
 
     await complexFieldsList.click();
 
-    await Promise.all([page.waitForResponse(complexFieldsListApi)]);
+    await Promise.all([page.waitForResponse(complexFieldsListApiUrl)]);
 
     await expect(page.locator(`td:has-text("${new Date().getDate()}") >> nth=1`)).toBeVisible();
 
