@@ -56,7 +56,7 @@ test.describe('E2E test', () => {
     const PCoreVersion = await page.evaluate(() => window.PCore.getPCoreVersion());
 
     if (!PCoreVersion.includes('8.8')) {
-      let editModeType = await page.locator('mat-select[data-test-id="80c1db3a7b228760228004b1a532c71e"]');
+      const editModeType = await page.locator('mat-select[data-test-id="80c1db3a7b228760228004b1a532c71e"]');
       await editModeType.click();
       await page.locator('mat-option > span:has-text("Table rows")').click();
     }
