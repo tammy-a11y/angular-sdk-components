@@ -54,7 +54,7 @@
             kid.getPConnect().getRawMetadata().type.toLowerCase() == 'region' && kid.getPConnect().getRawMetadata().name.toLowerCase() == 'stages'
           "
         >
-          <app-region [pConn$]="kid.getPConnect()"></app-region>
+          <component-mapper name="Region" [props]="{ pConn$: kid.getPConnect() }"></component-mapper>
         </div>
       </div>
     </div>
@@ -63,13 +63,13 @@
       <div
         *ngIf="kid.getPConnect().getRawMetadata().type.toLowerCase() == 'region' && kid.getPConnect().getRawMetadata().name.toLowerCase() == 'todo'"
       >
-        <app-region [formGroup$]="formGroup$" [pConn$]="kid.getPConnect()"></app-region>
+        <component-mapper name="Region" [props]="{ pConn$: kid.getPConnect(), formGroup$ }"></component-mapper>
       </div>
     </div>
 
     <div *ngFor="let kid of arChildren$">
       <div *ngIf="kid.getPConnect().getRawMetadata().type.toLowerCase() == 'region' && kid.getPConnect().getRawMetadata().name == 'Main'">
-        <app-region [formGroup$]="formGroup$" [pConn$]="kid.getPConnect()"></app-region>
+        <component-mapper name="Region" [props]="{ pConn$: kid.getPConnect(), formGroup$ }"></component-mapper>
       </div>
     </div>
 
@@ -81,7 +81,7 @@
     <div *ngIf="arChildren$" class="psdk-case-view-utilities">
       <div *ngFor="let kid of arChildren$">
         <div *ngIf="kid.getPConnect().getRawMetadata()?.type.toLowerCase() == 'region' && kid.getPConnect().getRawMetadata()?.name == 'Utilities'">
-          <app-region [pConn$]="kid.getPConnect()"></app-region>
+          <component-mapper name="Region" [props]="{ pConn$: kid.getPConnect() }"></component-mapper>
         </div>
       </div>
     </div>

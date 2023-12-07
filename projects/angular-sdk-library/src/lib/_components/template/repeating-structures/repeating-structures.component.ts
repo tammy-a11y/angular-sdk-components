@@ -48,7 +48,7 @@ export class RepeatingStructuresComponent implements OnInit {
     let updatedRefList = this.updateData(tableDataResults, this.fields$);
 
     this.repeatList$ = new MatTableDataSource(updatedRefList);
-    this.displayedColumns$ = this.getDisplayColums(this.fields$);
+    this.displayedColumns$ = this.getDisplayColumns(this.fields$);
     this.repeatList$.paginator = this.paginator;
   }
 
@@ -149,7 +149,7 @@ export class RepeatingStructuresComponent implements OnInit {
     }));
   }
 
-  getDisplayColums(fields = []) {
+  getDisplayColumns(fields = []) {
     return fields.map((field, colIndex) => field.name);
   }
 }

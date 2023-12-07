@@ -1,13 +1,14 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { MaterialDetailsComponent } from '../../designSystemExtension/material-details/material-details.component';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
   selector: 'app-details-narrow-wide',
   templateUrl: './details-narrow-wide.component.html',
   styleUrls: ['./details-narrow-wide.component.scss'],
   standalone: true,
-  imports: [MaterialDetailsComponent]
+  imports: [MaterialDetailsComponent, forwardRef(() => ComponentMapperComponent)]
 })
 export class DetailsNarrowWideComponent implements OnInit {
   constructor(private angularPConnect: AngularPConnectService) {}

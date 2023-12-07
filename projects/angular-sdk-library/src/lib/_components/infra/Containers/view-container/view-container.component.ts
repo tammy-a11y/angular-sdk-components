@@ -20,7 +20,7 @@ declare const window: any;
   templateUrl: './view-container.component.html',
   styleUrls: ['./view-container.component.scss'],
   standalone: true,
-  imports: [CommonModule, forwardRef(() => ViewComponent), ComponentMapperComponent]
+  imports: [CommonModule, ViewComponent, forwardRef(() => ComponentMapperComponent)]
 })
 export class ViewContainerComponent implements OnInit {
   @Input() pConn$: any;

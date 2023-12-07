@@ -24,7 +24,7 @@ declare const window: any;
   styleUrls: ['./flow-container.component.scss'],
   providers: [Utils],
   standalone: true,
-  imports: [CommonModule, ComponentMapperComponent, MatCardModule, forwardRef(() => AssignmentComponent)]
+  imports: [CommonModule, AssignmentComponent, MatCardModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class FlowContainerComponent implements OnInit {
   @Input() pConn$: any;

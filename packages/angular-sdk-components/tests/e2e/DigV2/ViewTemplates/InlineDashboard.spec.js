@@ -65,8 +65,7 @@ test.describe('E2E test', () => {
 
     /* Testing the filters */
     let filters = await page.locator('div[id="filters"]');
-    const caseIdFilter = filters.locator('div:has-text("Case ID")');
-    const caseIdInput = caseIdFilter.locator('input');
+    const caseIdInput = filters.getByLabel('Case ID');
     await caseIdInput.click();
     await caseIdInput.fill(caseID);
 

@@ -2,13 +2,14 @@ import { Component, OnInit, Input, forwardRef, SimpleChanges, OnChanges } from '
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { RegionComponent } from '../../infra/region/region.component';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
   selector: 'app-two-column',
   templateUrl: './two-column.component.html',
   styleUrls: ['./two-column.component.scss'],
   standalone: true,
-  imports: [CommonModule, forwardRef(() => RegionComponent)]
+  imports: [CommonModule, RegionComponent, forwardRef(() => ComponentMapperComponent)]
 })
 export class TwoColumnComponent implements OnInit, OnChanges {
   @Input() pConn$: any;

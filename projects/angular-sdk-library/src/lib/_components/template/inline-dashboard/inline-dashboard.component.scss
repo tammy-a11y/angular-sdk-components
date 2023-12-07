@@ -8,13 +8,6 @@
   font-size: 1.25rem;
 }
 
-.psdk-block-style {
-  display: grid;
-  direction: column-reverse;
-  gap: 1rem;
-  grid-template-columns: repeat(7, 1fr);
-}
-
 .psdk-not-block-style {
   display: grid;
   grid-template-columns: 3fr 7fr;

@@ -15,7 +15,7 @@ declare const window: any;
   templateUrl: './field-group-template.component.html',
   styleUrls: ['./field-group-template.component.scss'],
   standalone: true,
-  imports: [CommonModule, MatButtonModule, ComponentMapperComponent, forwardRef(() => RegionComponent)]
+  imports: [CommonModule, MatButtonModule, RegionComponent, forwardRef(() => ComponentMapperComponent)]
 })
 export class FieldGroupTemplateComponent implements OnInit {
   @Input() configProps$: any;

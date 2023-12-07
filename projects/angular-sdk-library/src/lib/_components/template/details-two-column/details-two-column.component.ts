@@ -1,14 +1,15 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { MaterialDetailsComponent } from '../../designSystemExtension/material-details/material-details.component';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
   selector: 'app-details-two-column',
   templateUrl: './details-two-column.component.html',
   styleUrls: ['./details-two-column.component.scss'],
   standalone: true,
-  imports: [MaterialDetailsComponent]
+  imports: [MaterialDetailsComponent, forwardRef(() => ComponentMapperComponent)]
 })
 export class DetailsTwoColumnComponent implements OnInit {
   constructor(private angularPConnect: AngularPConnectService) {}

@@ -1,5 +1,4 @@
 import { forwardRef } from '@angular/core';
-// import { AutoCompleteComponent } from './lib/_components/field/auto-complete/auto-complete.component';
 import { AutoCompleteComponent } from '../../_components/field/auto-complete/auto-complete.component';
 import { CancelAlertComponent } from '../../_components/field/cancel-alert/cancel-alert.component';
 import { CheckBoxComponent } from '../../_components/field/check-box/check-box.component';
@@ -86,6 +85,7 @@ import { DetailsOneColumnComponent } from '../../_components/template/details-on
 import { ConfirmationComponent } from '../../_components/template/confirmation/confirmation.component';
 import { MaterialCaseSummaryComponent } from '../../_components/designSystemExtension/material-case-summary/material-case-summary.component';
 import { AlertBannerComponent } from '../../_components/designSystemExtension/alert-banner/alert-banner.component';
+import { AlertComponent } from '../../_components/designSystemExtension/alert/alert.component';
 import { BannerPageComponent } from '../../_components/template/banner-page/banner-page.component';
 import { WssNavBarComponent } from '../../_components/template/wss-nav-bar/wss-nav-bar.component';
 import { QuickCreateComponent } from '../../_components/widget/quick-create/quick-create.component';
@@ -94,6 +94,12 @@ import { BannerComponent } from '../../_components/designSystemExtension/banner/
 import { InlineDashboardComponent } from '../../_components/template/inline-dashboard/inline-dashboard.component';
 import { InlineDashboardPageComponent } from '../../_components/template/inline-dashboard-page/inline-dashboard-page.component';
 import { ScalarListComponent } from '../../_components/field/scalar-list/scalar-list.component';
+import { FeedContainerComponent } from '../../_components/widget/feed-container/feed-container.component';
+import { CaseCreateStageComponent } from '../../_components/designSystemExtension/case-create-stage/case-create-stage.component';
+import { MaterialDetailsComponent } from '../../_components/designSystemExtension/material-details/material-details.component';
+import { DashboardFilterComponent } from '../../_components/infra/dashboard-filter/dashboard-filter.component';
+import { ListUtilityComponent } from '../../_components/widget/list-utility/list-utility.component';
+import { MaterialUtilityComponent } from '../../_components/designSystemExtension/material-utility/material-utility.component';
 
 // pegaSdkComponentMap is the JSON object where we'll store the components that are
 // the default implementations provided by the SDK. These will be used if there isn't
@@ -106,6 +112,7 @@ import { ScalarListComponent } from '../../_components/field/scalar-list/scalar-
 
 const pegaSdkComponentMap = {
   ActionButtons: ActionButtonsComponent,
+  Alert: AlertComponent,
   AlertBanner: AlertBannerComponent,
   //   'ActionButtonsForFileUtil': ActionButtonsForFileUtil,
   AppAnnouncement: AppAnnouncementComponent,
@@ -117,6 +124,7 @@ const pegaSdkComponentMap = {
   Banner: BannerComponent,
   BannerPage: BannerPageComponent,
   CancelAlert: CancelAlertComponent,
+  CaseCreateStage: CaseCreateStageComponent,
   CaseHistory: CaseHistoryComponent,
   CaseSummary: CaseSummaryComponent,
   CaseSummaryFields: MaterialCaseSummaryComponent,
@@ -125,7 +133,7 @@ const pegaSdkComponentMap = {
   Checkbox: CheckBoxComponent,
   Confirmation: ConfirmationComponent,
   Currency: CurrencyComponent,
-  //   'DashboardFilter': DashboardFilter,
+  DashboardFilter: DashboardFilterComponent,
   DataReference: DataReferenceComponent,
   Date: DateComponent,
   DateTime: DateTimeComponent,
@@ -141,6 +149,7 @@ const pegaSdkComponentMap = {
   Dropdown: DropdownComponent,
   Email: EmailComponent,
   ErrorBoundary: ErrorBoundaryComponent,
+  FeedContainer: FeedContainerComponent,
   FieldGroupList: FieldGroupListComponent,
   FieldGroupTemplate: FieldGroupTemplateComponent,
   FieldValueList: FieldValueListComponent,
@@ -152,8 +161,11 @@ const pegaSdkComponentMap = {
   Integer: IntegerComponent,
   //   'LeftAlignVerticalTabs': LeftAlignVerticalTabs,
   ListPage: ListPageComponent,
+  ListUtility: ListUtilityComponent,
   ListView: ListViewComponent,
-  ModalViewContainer: forwardRef(() => ModalViewContainerComponent),
+  MaterialDetails: MaterialDetailsComponent,
+  MaterialUtility: MaterialUtilityComponent,
+  ModalViewContainer: ModalViewContainerComponent,
   MultiReferenceReadOnly: MultiReferenceReadonlyComponent,
   MultiStep: MultiStepComponent,
   //   'NarrowWide': NarrowWideFormComponent,

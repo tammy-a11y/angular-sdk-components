@@ -16,7 +16,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   styleUrls: ['./case-view.component.scss'],
   providers: [Utils],
   standalone: true,
-  imports: [CommonModule, MatToolbarModule, MatButtonModule, MatMenuModule, ComponentMapperComponent, forwardRef(() => RegionComponent)]
+  imports: [CommonModule, MatToolbarModule, MatButtonModule, MatMenuModule, RegionComponent , forwardRef(() => ComponentMapperComponent)]
 })
 export class CaseViewComponent implements OnInit {
   @Input() pConn$: any;
