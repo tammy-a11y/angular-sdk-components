@@ -6,7 +6,6 @@ import { AngularPConnectService } from '../../../../_bridge/angular-pconnect';
 import { ProgressSpinnerService } from '../../../../_messages/progress-spinner.service';
 import { ReferenceComponent } from '../../reference/reference.component';
 import { Utils } from '../../../../_helpers/utils';
-import { AssignmentComponent } from '../../assignment/assignment.component';
 import { getToDoAssignments, showBanner } from './helpers';
 import { ComponentMapperComponent } from '../../../../_bridge/component-mapper/component-mapper.component';
 
@@ -24,7 +23,7 @@ declare const window: any;
   styleUrls: ['./flow-container.component.scss'],
   providers: [Utils],
   standalone: true,
-  imports: [CommonModule, AssignmentComponent, MatCardModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [CommonModule, MatCardModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class FlowContainerComponent implements OnInit {
   @Input() pConn$: any;

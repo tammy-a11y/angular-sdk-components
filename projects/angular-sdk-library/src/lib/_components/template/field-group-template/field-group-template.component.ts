@@ -5,7 +5,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { FieldGroupUtils } from '../../../_helpers/field-group-utils';
 import { Utils } from '../../../_helpers/utils';
-import { RegionComponent } from '../../infra/region/region.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 declare const window: any;
@@ -15,7 +14,7 @@ declare const window: any;
   templateUrl: './field-group-template.component.html',
   styleUrls: ['./field-group-template.component.scss'],
   standalone: true,
-  imports: [CommonModule, MatButtonModule, RegionComponent, forwardRef(() => ComponentMapperComponent)]
+  imports: [CommonModule, MatButtonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class FieldGroupTemplateComponent implements OnInit {
   @Input() configProps$: any;

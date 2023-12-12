@@ -1,5 +1,5 @@
-import { getLocale } from './common';
-import CurrencyMap from './currency-map';
+import { getLocale } from '../common';
+import { currencyMap } from './currency-map';
 
 function NumberFormatter(value, { locale = 'en-US', decPlaces = 2, style = '', currency = 'USD' } = {}) {
   const currentLocale = getLocale(locale);
@@ -35,9 +35,9 @@ function CurrencyFormatter(
 
     let code;
     if (symbol) {
-      code = CurrencyMap[countryCode]?.symbolFormat;
+      code = currencyMap[countryCode]?.symbolFormat;
     } else {
-      code = CurrencyMap[countryCode]?.currencyCode;
+      code = currencyMap[countryCode]?.currencyCode;
     }
 
     // if position is provided, change placeholder accordingly.
@@ -62,15 +62,15 @@ function SymbolFormatter(value, { symbol = '$', suffix = true, locale = 'en-US' 
   return formattedValue;
 }
 
-export default {
-  Currency: (value, options) => CurrencyFormatter(value, options),
-  'Currency-Code': (value, options) => CurrencyFormatter(value, { ...options, symbol: false }),
-  Decimal: (value, options) => NumberFormatter(value, options),
-  'Decimal-Auto': (value, options) =>
-    NumberFormatter(value, {
-      ...options,
-      decPlaces: Number.isInteger(value) ? 0 : 2
-    }),
-  Integer: (value, options) => NumberFormatter(value, { ...options, decPlaces: 0 }),
-  Percentage: (value, options) => SymbolFormatter(value, { ...options, symbol: '%' })
+export const formatters = {
+    Currency: (value, options) => CurrencyFormatter(value, options),
+    'Currency-Code': (value, options) => CurrencyFormatter(value, { ...options, symbol: false }),
+    Decimal: (value, options) => NumberFormatter(value, options),
+    'Decimal-Auto': (value, options) =>
+      NumberFormatter(value, {
+        ...options,
+        decPlaces: Number.isInteger(value) ? 0 : 2
+      }),
+    Integer: (value, options) => NumberFormatter(value, { ...options, decPlaces: 0 }),
+    Percentage: (value, options) => SymbolFormatter(value, { ...options, symbol: '%' })
 };

@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
-import { MaterialDetailsComponent } from '../../designSystemExtension/material-details/material-details.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
@@ -9,7 +8,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   templateUrl: './details-wide-narrow.component.html',
   styleUrls: ['./details-wide-narrow.component.scss'],
   standalone: true,
-  imports: [MaterialDetailsComponent, forwardRef(() => ComponentMapperComponent)]
+  imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class DetailsWideNarrowComponent implements OnInit {
   constructor(private angularPConnect: AngularPConnectService) {}

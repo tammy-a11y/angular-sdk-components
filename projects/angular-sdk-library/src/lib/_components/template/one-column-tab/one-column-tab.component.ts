@@ -1,8 +1,6 @@
 import { Component, OnInit, Input, forwardRef, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
-import { OneColumnComponent } from '../one-column/one-column.component';
-import { RegionComponent } from '../../infra/region/region.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
@@ -10,7 +8,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   templateUrl: './one-column-tab.component.html',
   styleUrls: ['./one-column-tab.component.scss'],
   standalone: true,
-  imports: [CommonModule, OneColumnComponent, RegionComponent, forwardRef(() => ComponentMapperComponent)]
+  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class OneColumnTabComponent implements OnInit, OnChanges {
   @Input() pConn$: any;

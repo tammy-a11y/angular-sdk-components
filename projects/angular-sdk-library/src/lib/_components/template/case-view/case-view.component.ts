@@ -7,7 +7,6 @@ import { MatMenuModule } from '@angular/material/menu';
 import { interval } from 'rxjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
-import { RegionComponent } from '../../infra/region/region.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
@@ -16,7 +15,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   styleUrls: ['./case-view.component.scss'],
   providers: [Utils],
   standalone: true,
-  imports: [CommonModule, MatToolbarModule, MatButtonModule, MatMenuModule, RegionComponent , forwardRef(() => ComponentMapperComponent)]
+  imports: [CommonModule, MatToolbarModule, MatButtonModule, MatMenuModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class CaseViewComponent implements OnInit {
   @Input() pConn$: any;

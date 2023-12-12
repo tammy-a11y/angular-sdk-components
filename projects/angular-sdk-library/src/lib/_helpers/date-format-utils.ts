@@ -1,4 +1,4 @@
-import { getLocale } from './formatters/common';
+import { getLocale } from './common';
 
 export const dateFormatInfoDefault = {
   dateFormatString: 'MM/DD/YYYY',

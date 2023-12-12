@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 
 /**
@@ -13,7 +14,8 @@ import { FormGroup } from '@angular/forms';
   selector: 'app-hybrid-view-container',
   templateUrl: './hybrid-view-container.component.html',
   styleUrls: ['./hybrid-view-container.component.scss'],
-  standalone: true
+  standalone: true,
+  imports: [CommonModule]
 })
 export class HybridViewContainerComponent implements OnInit {
   @Input() pConn$: any;

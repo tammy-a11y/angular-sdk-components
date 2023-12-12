@@ -1,8 +1,6 @@
 import { Component, OnInit, Input, forwardRef, SimpleChanges, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { RegionComponent } from '../../infra/region/region.component';
-import { InlineDashboardComponent } from '../inline-dashboard/inline-dashboard.component';
 import { buildFilterComponents } from '../../../_helpers/filter-utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
@@ -11,7 +9,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   templateUrl: './inline-dashboard-page.component.html',
   styleUrls: ['./inline-dashboard-page.component.scss'],
   standalone: true,
-  imports: [CommonModule, InlineDashboardComponent, RegionComponent, forwardRef(() => ComponentMapperComponent)]
+  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class InlineDashboardPageComponent implements OnInit, OnChanges {
   @Input() pConn$: any;

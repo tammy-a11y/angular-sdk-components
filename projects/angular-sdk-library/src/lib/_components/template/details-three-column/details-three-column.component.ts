@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
-import { MaterialDetailsComponent } from '../../designSystemExtension/material-details/material-details.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 declare const window: any;
@@ -11,7 +10,7 @@ declare const window: any;
   templateUrl: './details-three-column.component.html',
   styleUrls: ['./details-three-column.component.scss'],
   standalone: true,
-  imports: [MaterialDetailsComponent, forwardRef(() => ComponentMapperComponent)]
+  imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class DetailsThreeColumnComponent implements OnInit {
   constructor(private angularPConnect: AngularPConnectService) {}

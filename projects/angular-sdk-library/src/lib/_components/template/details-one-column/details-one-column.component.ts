@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { FormGroup } from '@angular/forms';
-import { MaterialDetailsComponent } from '../../designSystemExtension/material-details/material-details.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
@@ -9,7 +8,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   templateUrl: './details-one-column.component.html',
   styleUrls: ['./details-one-column.component.scss'],
   standalone: true,
-  imports: [MaterialDetailsComponent, forwardRef(() => ComponentMapperComponent)]
+  imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class DetailsOneColumnComponent implements OnInit {
   constructor(private angularPConnect: AngularPConnectService) {}

@@ -19,8 +19,8 @@ import { ProgressSpinnerService } from '../../../_messages/progress-spinner.serv
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { getCurrencyOptions } from '../../../_helpers/currency-utils';
-import Currency from '../../../_helpers/formatters/currency';
-import { getLocale } from '../../../_helpers/formatters/common';
+import { getLocale } from '../../../_helpers/common';
+import { formatters } from '../../../_helpers/formatters/format-utils';
 
 declare const window: any;
 
@@ -1140,7 +1140,7 @@ export class ListViewComponent implements OnInit {
             };
             // eslint-disable-next-line no-case-declarations
             const params = { ...defaultOptions, ...theCurrencyOptions };
-            rowData[fieldName] = Currency.Currency(rowData[fieldName], params);
+            rowData[fieldName] = formatters.Currency(rowData[fieldName], params);
             //val = format(value, column.type, theCurrencyOptions);
             break;
         }

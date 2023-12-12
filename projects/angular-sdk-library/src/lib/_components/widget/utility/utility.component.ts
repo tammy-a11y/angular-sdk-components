@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges, forwardRef } from '@angular/core';
 import { Utils } from '../../../_helpers/utils';
-import { MaterialUtilityComponent } from '../../designSystemExtension/material-utility/material-utility.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 declare const window: any;
@@ -10,7 +9,7 @@ declare const window: any;
   templateUrl: './utility.component.html',
   styleUrls: ['./utility.component.scss'],
   standalone: true,
-  imports: [MaterialUtilityComponent, forwardRef(() => ComponentMapperComponent)]
+  imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class UtilityComponent implements OnInit, OnChanges {
   @Input() pConn$: any;

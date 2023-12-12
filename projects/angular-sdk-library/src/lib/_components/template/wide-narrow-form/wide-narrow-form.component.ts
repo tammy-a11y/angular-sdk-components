@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, forwardRef, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
-import { RegionComponent } from '../../infra/region/region.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
@@ -9,7 +8,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   templateUrl: './wide-narrow-form.component.html',
   styleUrls: ['./wide-narrow-form.component.scss'],
   standalone: true,
-  imports: [CommonModule, RegionComponent, forwardRef(() => ComponentMapperComponent)]
+  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class WideNarrowFormComponent implements OnInit, OnChanges {
   @Input() pConn$: any;

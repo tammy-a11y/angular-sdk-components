@@ -1,4 +1,3 @@
-import { forwardRef } from '@angular/core';
 import { AutoCompleteComponent } from '../../_components/field/auto-complete/auto-complete.component';
 import { CancelAlertComponent } from '../../_components/field/cancel-alert/cancel-alert.component';
 import { CheckBoxComponent } from '../../_components/field/check-box/check-box.component';
