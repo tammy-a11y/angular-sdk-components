@@ -1,5 +1,5 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { FeedContainerComponent } from '../../widget/feed-container/feed-container.component';
+import { Component, OnInit, Input, forwardRef } from '@angular/core';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 declare const window: any;
 
@@ -8,7 +8,7 @@ declare const window: any;
   templateUrl: './pulse.component.html',
   styleUrls: ['./pulse.component.scss'],
   standalone: true,
-  imports: [FeedContainerComponent]
+  imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class PulseComponent implements OnInit {
   @Input() pConn$: any;

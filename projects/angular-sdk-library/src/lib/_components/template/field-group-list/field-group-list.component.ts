@@ -1,13 +1,13 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RegionComponent } from '../../infra/region/region.component';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
   selector: 'app-field-group-list',
   templateUrl: './field-group-list.component.html',
   styleUrls: ['./field-group-list.component.scss'],
   standalone: true,
-  imports: [CommonModule, forwardRef(() => RegionComponent)]
+  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class FieldGroupListComponent implements OnInit {
   @Input() item;

@@ -1,15 +1,14 @@
 import { Component, OnInit, Input, forwardRef, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
-import { RegionComponent } from '../../infra/region/region.component';
-import { ViewComponent } from '../../infra/view/view.component';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
   selector: 'app-two-column-tab',
   templateUrl: './two-column-tab.component.html',
   styleUrls: ['./two-column-tab.component.scss'],
   standalone: true,
-  imports: [CommonModule, RegionComponent, forwardRef(() => ViewComponent)]
+  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class TwoColumnTabComponent implements OnInit, OnChanges {
   @Input() pConn$: any;

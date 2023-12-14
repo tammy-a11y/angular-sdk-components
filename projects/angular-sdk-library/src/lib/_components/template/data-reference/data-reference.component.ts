@@ -2,8 +2,6 @@ import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
-import { MultiReferenceReadonlyComponent } from '../multi-reference-readonly/multi-reference-readonly.component';
-import { SingleReferenceReadonlyComponent } from '../single-reference-readonly/single-reference-readonly.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 declare const window: any;
@@ -15,7 +13,7 @@ const SELECTION_MODE = { SINGLE: 'single', MULTI: 'multi' };
   templateUrl: './data-reference.component.html',
   styleUrls: ['./data-reference.component.scss'],
   standalone: true,
-  imports: [CommonModule, SingleReferenceReadonlyComponent, MultiReferenceReadonlyComponent, forwardRef(() => ComponentMapperComponent)]
+  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class DataReferenceComponent implements OnInit {
   @Input() pConn$: any;

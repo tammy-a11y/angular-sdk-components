@@ -831,7 +831,7 @@ export class SimpleTableManualComponent implements OnInit {
     return bVisible;
   }
 
-  getDisplayColums(fields = []) {
+  getDisplayColumns(fields = []) {
     let arReturn = fields.map((field, colIndex) => {
       let theField = field.config.value.substring(field.config.value.indexOf(' ') + 1);
       if (theField.indexOf('.') == 0) {

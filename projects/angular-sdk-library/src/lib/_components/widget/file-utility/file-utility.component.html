@@ -1,13 +1,16 @@
 <div>
-  <app-list-utility
-    [name$]="lu_name$"
-    [icon$]="lu_icon$"
-    [bLoading$]="lu_bLoading$"
-    [count$]="lu_count$"
-    [arActions$]="lu_arActions$"
-    [arItems$]="lu_arItems$"
-    [onViewAll$]="lu_onViewAllFunction"
-  ></app-list-utility>
+  <component-mapper
+    name="ListUtility"
+    [props]="{
+      name$: lu_name$,
+      icon$: lu_icon$,
+      bLoading$: lu_bLoading$,
+      count$: lu_count$,
+      arActions$: lu_arActions$,
+      arItems$: lu_arItems$,
+      onViewAll$: lu_onViewAllFunction
+    }"
+  ></component-mapper>
 </div>
 
 <div *ngIf="bShowFileModal$" class="psdk-dialog-background">

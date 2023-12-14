@@ -8,7 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { debounceTime } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
-import { getFilterExpression, getFormattedDate, createFilter, combineFilters } from '../../../_helpers/filterUtils';
+import { getFilterExpression, getFormattedDate, createFilter, combineFilters } from '../../../_helpers/filter-utils';
 
 
 @Component({

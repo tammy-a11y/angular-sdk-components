@@ -29,7 +29,7 @@ const XPF = {
   currencyCode: 'XPF {#}'
 };
 
-export default {
+export const currencyMap = {
   AF: {
     name: 'Afghanistan Afghani (AFA)',
     symbolFormat: '{#} ؋',

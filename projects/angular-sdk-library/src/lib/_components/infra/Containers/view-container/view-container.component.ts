@@ -4,7 +4,6 @@ import { FormGroup } from '@angular/forms';
 import { AngularPConnectService } from '../../../../_bridge/angular-pconnect';
 import { ProgressSpinnerService } from '../../../../_messages/progress-spinner.service';
 import { ReferenceComponent } from '../../reference/reference.component';
-import { ViewComponent } from '../../view/view.component';
 import { ComponentMapperComponent } from '../../../../_bridge/component-mapper/component-mapper.component';
 
 /**
@@ -20,7 +19,7 @@ declare const window: any;
   templateUrl: './view-container.component.html',
   styleUrls: ['./view-container.component.scss'],
   standalone: true,
-  imports: [CommonModule, forwardRef(() => ViewComponent), ComponentMapperComponent]
+  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class ViewContainerComponent implements OnInit {
   @Input() pConn$: any;

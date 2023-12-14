@@ -49,7 +49,7 @@ export class CaseHistoryComponent implements OnInit {
 
       const tableDataResults = this.updateData(historyJSON['data'].data, this.fields$);
 
-      this.displayedColumns$ = this.getDisplayColums(this.fields$);
+      this.displayedColumns$ = this.getDisplayColumns(this.fields$);
 
       this.repeatList$ = new MatTableDataSource(tableDataResults);
 
@@ -96,7 +96,7 @@ export class CaseHistoryComponent implements OnInit {
     return returnList;
   }
 
-  getDisplayColums(fields = []) {
+  getDisplayColumns(fields = []) {
     let arReturn = fields.map((field, colIndex) => {
       let theField = field.fieldName;
 

@@ -2,7 +2,7 @@ import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatTabsModule } from '@angular/material/tabs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
-import { getTransientTabs, getVisibleTabs, tabClick } from '../../../_helpers/tabUtils';
+import { getTransientTabs, getVisibleTabs, tabClick } from '../../../_helpers/tab-utils';
 import { CommonModule } from '@angular/common';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 

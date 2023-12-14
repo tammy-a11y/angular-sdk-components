@@ -12,7 +12,7 @@ import { interval } from 'rxjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
-import { dateFormatInfoDefault, getDateFormatInfo } from '../../../_helpers/date-format.utls';
+import { dateFormatInfoDefault, getDateFormatInfo } from '../../../_helpers/date-format-utils';
 
 class MyFormat {
   constructor() {}

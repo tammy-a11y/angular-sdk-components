@@ -39,7 +39,8 @@ export class AlertComponent implements OnInit {
   }
 
   onCloseClick() {
-    this.onClose.emit();
+    alert("Close clicked");
+    this.onClose.emit({'Page': 'Page', 'target': 'target', 'type': 'type'});
   }
 
 }

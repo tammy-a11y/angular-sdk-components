@@ -1,6 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
-import { MaterialDetailsComponent } from '../../designSystemExtension/material-details/material-details.component';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 declare const window: any;
 
@@ -9,7 +9,7 @@ declare const window: any;
   templateUrl: './details.component.html',
   styleUrls: ['./details.component.scss'],
   standalone: true,
-  imports: [MaterialDetailsComponent]
+  imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class DetailsComponent implements OnInit {
   constructor(private angularPConnect: AngularPConnectService) {}

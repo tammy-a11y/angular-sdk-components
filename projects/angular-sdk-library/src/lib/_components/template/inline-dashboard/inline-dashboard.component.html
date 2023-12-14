@@ -9,13 +9,7 @@
   >
     <div class="psdk-inline-filter">
       <div id="filters">
-        <app-dashboard-filter
-          [children]="children[1]"
-          [filtersFormGroup$]="filtersFormGroup$"
-          [ngClass]="{
-            'psdk-block-style': inlineProps.filterPosition === 'block-start'
-          }"
-        ></app-dashboard-filter>
+        <component-mapper name="DashboardFilter" [props]="{ children: children[1], inlineProps, filtersFormGroup$ }"></component-mapper>
       </div>
     </div>
     <div class="psdk-inline-list">

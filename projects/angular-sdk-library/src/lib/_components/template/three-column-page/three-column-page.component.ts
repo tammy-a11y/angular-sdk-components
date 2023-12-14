@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-// import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
-import { ThreeColumnComponent } from '../three-column/three-column.component';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 
 @Component({
@@ -9,7 +8,7 @@ import { ThreeColumnComponent } from '../three-column/three-column.component';
   templateUrl: './three-column-page.component.html',
   styleUrls: ['./three-column-page.component.scss'],
   standalone: true,
-  imports: [ThreeColumnComponent]
+  imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class ThreeColumnPageComponent implements OnInit {
   @Input() pConn$: any;

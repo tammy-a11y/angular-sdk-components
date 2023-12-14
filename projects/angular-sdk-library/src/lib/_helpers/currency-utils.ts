@@ -1,13 +1,13 @@
 /* eslint-disable import/no-named-default */
-import { default as CurrencyAlias } from './formatters/currency';
-import { default as CurrencyMapAlias } from './formatters/currency-map';
+import { formatters } from './formatters/format-utils';
+import { currencyMap } from './formatters/currency-map';
 
 declare const PCore;
 
 export const getCurrencyOptions = (inISOCode: string) => {
   const operatorLocale = PCore.getEnvironmentInfo().getUseLocale() || PCore.getEnvironmentInfo().getLocale() || 'en-US';
 
-  let currMapToUse = CurrencyMapAlias.US;
+  let currMapToUse = currencyMap.US;
   let localeToUse = operatorLocale;
 
   // Determine CurrencyMap lookup based on ISO code (if specified).
@@ -15,25 +15,25 @@ export const getCurrencyOptions = (inISOCode: string) => {
   //  If no locale, default to US
   if (inISOCode) {
     if (inISOCode === 'EUR') {
-      currMapToUse = CurrencyMapAlias.NL;
+      currMapToUse = currencyMap.NL;
       localeToUse = 'nl-NL';
     } else {
       // For all other ISO codes, use first 2 characters as the lookup from CurrencyMap
       const countryCode = inISOCode.substring(0, 2);
-      currMapToUse = CurrencyMapAlias[countryCode];
+      currMapToUse = currencyMap[countryCode];
     }
   } else if (operatorLocale) {
     // No ISO Code so check for operator locale (and force upper case for lookup)
     const countryCode = operatorLocale.substring(3).toUpperCase();
-    currMapToUse = CurrencyMapAlias[countryCode];
+    currMapToUse = currencyMap[countryCode];
   } else {
     // no ISO code and no operator locale, default to US
-    currMapToUse = CurrencyMapAlias.US;
+    currMapToUse = currencyMap.US;
   }
 
   // If no currMapToUse at this point, default to US as a failsafe
   if (!currMapToUse) {
-    currMapToUse = CurrencyMapAlias['US'];
+    currMapToUse = currencyMap['US'];
   }
 
   const theCode = currMapToUse.currencyCode.substring(0, 3);
@@ -52,7 +52,7 @@ export const getCurrencyCharacters = (inISOCode: string) => {
   const theCurrencyOptions = getCurrencyOptions(inISOCode);
 
   const testValue = 1234.56;
-  const formattedString = CurrencyAlias.Currency(testValue, theCurrencyOptions);
+  const formattedString = formatters.Currency(testValue, theCurrencyOptions);
 
   // console.log(`formattedString: ${formattedString}`);
 
