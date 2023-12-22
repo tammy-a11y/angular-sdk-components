@@ -8,12 +8,11 @@
         <mat-label>{{ label$ }}</mat-label>
         <input
           matInput
-          [placeholder]=""
+          [placeholder]="placeholder"
           type="time"
           [value]="value$"
           [required]="bRequired$"
           [formControlName]="controlName$"
-          (click)="fieldOnClick($event)"
           (change)="fieldOnChange($event)"
           (blur)="fieldOnBlur($event)"
         />

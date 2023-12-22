@@ -5,9 +5,16 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { interval } from 'rxjs';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+
+interface CaseViewProps {
+  // If any, enter additional props that only exist on this component
+  icon: string;
+  subheader: string;
+  header: string;
+}
 
 @Component({
   selector: 'app-case-view',
@@ -18,13 +25,14 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   imports: [CommonModule, MatToolbarModule, MatButtonModule, MatMenuModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class CaseViewComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
   @Input() displayOnlyFA$: boolean;
 
-  PCore$: any;
+  // Used with AngularPConnect
+  angularPConnectData: AngularPConnectData = {};
+  configProps$: CaseViewProps;
 
-  configProps$: Object;
   arChildren$: Array<any>;
 
   heading$: string = '';
@@ -37,9 +45,6 @@ export class CaseViewComponent implements OnInit {
   mainTabs: any;
   mainTabData: any;
 
-  // Used with AngularPConnect
-  angularPConnectData: any = {};
-
   arAvailableActions$: Array<any> = [];
   arAvailabeProcesses$: Array<any> = [];
 
@@ -51,19 +56,19 @@ export class CaseViewComponent implements OnInit {
   localeCategory = 'CaseView';
   localeKey: string;
 
-  constructor(private cdRef: ChangeDetectorRef, private angularPConnect: AngularPConnectService, private utils: Utils) {}
+  constructor(
+    private cdRef: ChangeDetectorRef,
+    private angularPConnect: AngularPConnectService,
+    private utils: Utils
+  ) {}
 
   ngOnInit(): void {
-    if (!this.PCore$) {
-      this.PCore$ = window.PCore;
-    }
-
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
 
     // this.updateSelf();
     this.checkAndUpdate();
-    this.localizedVal = this.PCore$.getLocaleUtils().getLocaleValue;
+    this.localizedVal = PCore.getLocaleUtils().getLocaleValue;
   }
 
   ngOnDestroy(): void {
@@ -78,8 +83,6 @@ export class CaseViewComponent implements OnInit {
   }
 
   checkAndUpdate() {
-    const bLogging = false;
-
     // Should always check the bridge to see if the component should update itself (re-render)
     const bUpdateSelf = this.angularPConnect.shouldComponentUpdate(this);
 
@@ -103,7 +106,9 @@ export class CaseViewComponent implements OnInit {
   }
 
   hasCaseIDChanged(): boolean {
+    // @ts-ignore - parameter “contextName” for getDataObject method should be optional
     if (this.currentCaseID !== this.pConn$.getDataObject().caseInfo.ID) {
+      // @ts-ignore - parameter “contextName” for getDataObject method should be optional
       this.currentCaseID = this.pConn$.getDataObject().caseInfo.ID;
       return true;
     } else {
@@ -112,58 +117,62 @@ export class CaseViewComponent implements OnInit {
   }
 
   updateHeaderAndSummary() {
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
-    let hasNewAttachments = this.pConn$.getDataObject().caseInfo?.hasNewAttachments;
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as CaseViewProps;
+    // @ts-ignore - parameter “contextName” for getDataObject method should be optional
+    const hasNewAttachments = this.pConn$.getDataObject().caseInfo?.hasNewAttachments;
 
     if (hasNewAttachments !== this.bHasNewAttachments) {
       this.bHasNewAttachments = hasNewAttachments;
       if (this.bHasNewAttachments) {
-        this.PCore$.getPubSubUtils().publish(this.PCore$.getEvents().getCaseEvent().CASE_ATTACHMENTS_UPDATED_FROM_CASEVIEW, true);
+        // @ts-ignore - Argument of type 'boolean' is not assignable to parameter of type 'object'
+        PCore.getPubSubUtils().publish((PCore.getEvents().getCaseEvent() as any).CASE_ATTACHMENTS_UPDATED_FROM_CASEVIEW, true);
       }
     }
 
-    let kids = this.pConn$.getChildren();
-    for (let kid of kids) {
-      let meta = kid.getPConnect().getRawMetadata();
+    const kids = this.pConn$.getChildren() as Array<any>;
+    for (const kid of kids) {
+      const meta = kid.getPConnect().getRawMetadata();
       if (meta.type.toLowerCase() == 'region' && meta.name.toLowerCase() == 'summary') {
         this.caseSummaryPConn$ = kid.getPConnect().getChildren()[0].getPConnect();
       }
     }
 
     // have to put in a timeout, otherwise get an angular change event error
-    let timer = interval(100).subscribe(() => {
+    const timer = interval(100).subscribe(() => {
       timer.unsubscribe();
 
-      this.heading$ = this.PCore$.getLocaleUtils().getLocaleValue(this.configProps$['header'], '', this.localeKey);
-      this.id$ = this.configProps$['subheader'];
+      this.heading$ = PCore.getLocaleUtils().getLocaleValue(this.configProps$.header, '', this.localeKey);
+      this.id$ = this.configProps$.subheader;
+      // @ts-ignore - second parameter pageReference for getValue method should be optional
       this.status$ = this.pConn$.getValue('.pyStatusWork');
     });
   }
 
   fullUpdate() {
     this.caseTabs$ = [];
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
-    // let caseTypeID = this.configProps$['ruleClass'];
-    // let caseTypeName = this.configProps$['header'];
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as CaseViewProps;
+    // let caseTypeID = this.configProps$.ruleClass;
+    // let caseTypeName = this.configProps$.header;
     // this.localeKey = `${caseTypeID}!CASE!${caseTypeName}`.toUpperCase();
     this.localeKey = `${this.pConn$.getCaseInfo().getClassName()}!CASE!${this.pConn$.getCaseInfo().getName()}`.toUpperCase();
     this.updateHeaderAndSummary();
 
-    this.arChildren$ = this.pConn$.getChildren();
+    this.arChildren$ = this.pConn$.getChildren() as Array<any>;
 
-    let caseInfo = this.pConn$.getDataObject().caseInfo;
+    // @ts-ignore - parameter “contextName” for getDataObject method should be optional
+    const caseInfo = this.pConn$.getDataObject().caseInfo;
     this.currentCaseID = caseInfo.ID;
     this.arAvailableActions$ = caseInfo?.availableActions ? caseInfo.availableActions : [];
     this.editAction = this.arAvailableActions$.find((action) => action.ID === 'pyUpdateCaseDetails');
     this.arAvailabeProcesses$ = caseInfo?.availableProcesses ? caseInfo.availableProcesses : [];
 
-    this.svgCase$ = this.utils.getImageSrc(this.configProps$['icon'], this.utils.getSDKStaticContentUrl());
+    this.svgCase$ = this.utils.getImageSrc(this.configProps$.icon, this.utils.getSDKStaticContentUrl());
 
-    //this.utils.consoleKidDump(this.pConn$);
+    // this.utils.consoleKidDump(this.pConn$);
 
     if (!this.displayOnlyFA$) {
-      for (let kid of this.arChildren$) {
-        let kidPConn = kid.getPConnect();
+      for (const kid of this.arChildren$) {
+        const kidPConn = kid.getPConnect();
         if (kidPConn.getRawMetadata().name == 'Tabs') {
           this.mainTabs = kid;
           this.mainTabData = this.mainTabs.getPConnect().getChildren();
@@ -175,8 +184,9 @@ export class CaseViewComponent implements OnInit {
         .getChildren()
         ?.forEach((child, i) => {
           const config = child.getPConnect().resolveConfigProps(child.getPConnect().getRawMetadata()).config;
-          let { label, inheritedProps, visibility } = config;
-          //For some tabs, "label" property is not avaialable in theTabCompConfig, so will get them from inheritedProps
+          let { label } = config;
+          const { inheritedProps, visibility } = config;
+          // For some tabs, "label" property is not avaialable in theTabCompConfig, so will get them from inheritedProps
           if (!label) {
             inheritedProps.forEach((inheritedProp: any) => {
               if (inheritedProp.prop === 'label') {

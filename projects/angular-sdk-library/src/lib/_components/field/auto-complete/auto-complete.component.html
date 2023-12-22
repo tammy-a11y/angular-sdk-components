@@ -8,14 +8,13 @@
         <mat-label>{{ label$ }}</mat-label>
         <input
           matInput
-          [placeholder]=""
+          [placeholder]="placeholder"
           [formControlName]="controlName$"
           [attr.data-test-id]="testId"
           [value]="value$"
           [required]="bRequired$"
           [matAutocomplete]="auto"
           (change)="fieldOnChange($event)"
-          (click)="fieldOnClick($event)"
           (blur)="fieldOnBlur($event)"
         />
         <mat-autocomplete #auto="matAutocomplete" (optionSelected)="optionChanged($event)">

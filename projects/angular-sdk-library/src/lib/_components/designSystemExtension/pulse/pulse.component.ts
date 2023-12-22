@@ -1,7 +1,10 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
-declare const window: any;
+interface PulseProps {
+  // If any, enter additional props that only exist on this component
+  children?: Array<any>;
+}
 
 @Component({
   selector: 'app-pulse',
@@ -11,33 +14,25 @@ declare const window: any;
   imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class PulseComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
 
-  PCore$: any;
-
-  configProps$: Object;
+  configProps$: PulseProps;
   currentUser$: string;
   currentUserInitials$: string = '--';
 
-  constructor() {}
-
   ngOnInit() {
-    if (!this.PCore$) {
-      this.PCore$ = window.PCore;
-    }
-
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
-    //this.currentUser$ = this.configProps$["currentUser"];
-    this.currentUser$ = this.PCore$.getEnvironmentInfo().getOperatorName();
+    // this.currentUser$ = this.configProps$.currentUser;
+    this.currentUser$ = PCore.getEnvironmentInfo().getOperatorName();
 
     if (this.currentUser$ != '') {
       this.currentUserInitials$ = this.currentUser$.charAt(0);
 
       if (this.currentUser$.lastIndexOf(' ') > 0) {
-        let lastName = this.currentUser$.substring(this.currentUser$.lastIndexOf(' ') + 1);
+        const lastName = this.currentUser$.substring(this.currentUser$.lastIndexOf(' ') + 1);
         this.currentUserInitials$ += lastName.charAt(0);
       } else if (this.currentUser$.lastIndexOf('.') > 0) {
-        let lastName = this.currentUser$.substring(this.currentUser$.lastIndexOf('.') + 1);
+        const lastName = this.currentUser$.substring(this.currentUser$.lastIndexOf('.') + 1);
         this.currentUserInitials$ += lastName.charAt(0);
       }
     }

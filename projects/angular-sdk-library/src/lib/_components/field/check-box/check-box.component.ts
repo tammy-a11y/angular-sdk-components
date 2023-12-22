@@ -3,9 +3,17 @@ import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { PConnFieldProps } from '../../../_types/PConnProps.interface';
+
+interface CheckboxProps extends Omit<PConnFieldProps, 'value'> {
+  // If any, enter additional props that only exist on Checkbox here
+  // Everything from PConnFieldProps except value and change type of value to boolean
+  value: boolean;
+  caption?: string;
+}
 
 @Component({
   selector: 'app-check-box',
@@ -15,25 +23,24 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   imports: [CommonModule, ReactiveFormsModule, MatCheckboxModule, MatFormFieldModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class CheckBoxComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
   // Used with AngularPConnect
-  angularPConnectData: any = {};
-  configProps$: Object;
+  angularPConnectData: AngularPConnectData = {};
+  configProps$: CheckboxProps;
 
   label$: string = '';
   value$: any = '';
-  caption$: string = '';
+  caption$?: string = '';
   testId: string = '';
   showLabel$: boolean = false;
-  checkboxLabelPos$ = 'after';
   isChecked$: boolean = false;
   bRequired$: boolean = false;
   bReadonly$: boolean = false;
   bDisabled$: boolean = false;
   bVisible$: boolean = true;
-  displayMode$: string = '';
+  displayMode$?: string = '';
   controlName$: string;
   bHasForm$: boolean = true;
   componentReference: string = '';
@@ -55,7 +62,7 @@ export class CheckBoxComponent implements OnInit {
     // Then, continue on with other initialization
 
     // call updateSelf when initializing
-    //this.updateSelf();
+    // this.updateSelf();
     this.checkAndUpdate();
 
     if (this.formGroup$ != null) {
@@ -98,33 +105,33 @@ export class CheckBoxComponent implements OnInit {
   // updateSelf
   updateSelf(): void {
     // moved this from ngOnInit() and call this from there instead...
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as CheckboxProps;
 
-    if (this.configProps$['value'] != undefined) {
-      this.value$ = this.configProps$['value'];
+    if (this.configProps$.value != undefined) {
+      this.value$ = this.configProps$.value;
     }
-    this.testId = this.configProps$['testId'];
-    this.label$ = this.configProps$['label'];
-    this.displayMode$ = this.configProps$['displayMode'];
+    this.testId = this.configProps$.testId;
+    this.label$ = this.configProps$.label;
+    this.displayMode$ = this.configProps$.displayMode;
 
-    this.caption$ = this.configProps$['caption'];
-    this.helperText = this.configProps$['helperText'];
+    this.caption$ = this.configProps$.caption;
+    this.helperText = this.configProps$.helperText;
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
-      if (this.configProps$['required'] != null) {
-        this.bRequired$ = this.utils.getBooleanValue(this.configProps$['required']);
+      if (this.configProps$.required != null) {
+        this.bRequired$ = this.utils.getBooleanValue(this.configProps$.required);
       }
       this.cdRef.detectChanges();
     });
 
-    if (this.configProps$['visibility'] != null) {
-      this.bVisible$ = this.utils.getBooleanValue(this.configProps$['visibility']);
+    if (this.configProps$.visibility != null) {
+      this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
     }
 
     // disabled
-    if (this.configProps$['disabled'] != undefined) {
-      this.bDisabled$ = this.utils.getBooleanValue(this.configProps$['disabled']);
+    if (this.configProps$.disabled != undefined) {
+      this.bDisabled$ = this.utils.getBooleanValue(this.configProps$.disabled);
     }
 
     if (this.bDisabled$) {
@@ -133,11 +140,11 @@ export class CheckBoxComponent implements OnInit {
       this.fieldControl.enable();
     }
 
-    if (this.configProps$['readOnly'] != null) {
-      this.bReadonly$ = this.utils.getBooleanValue(this.configProps$['readOnly']);
+    if (this.configProps$.readOnly != null) {
+      this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
     }
 
-    this.componentReference = this.pConn$.getStateProps().value;
+    this.componentReference = (this.pConn$.getStateProps() as any).value;
 
     if (this.label$ != '') {
       this.showLabel$ = true;
@@ -153,14 +160,12 @@ export class CheckBoxComponent implements OnInit {
   fieldOnChange(event: any) {
     event.value = event.checked;
 
-    this.angularPConnectData.actions.onChange(this, event);
+    this.angularPConnectData.actions?.onChange(this, event);
   }
-
-  fieldOnClick(event: any) {}
 
   fieldOnBlur(event: any) {
     event.value = event.checked;
-    this.angularPConnectData.actions.onBlur(this, event);
+    this.angularPConnectData.actions?.onBlur(this, event);
   }
 
   getErrorMessage() {
@@ -168,7 +173,7 @@ export class CheckBoxComponent implements OnInit {
 
     // look for validation messages for json, pre-defined or just an error pushed from workitem (400)
     if (this.fieldControl.hasError('message')) {
-      errMessage = this.angularPConnectData.validateMessage;
+      errMessage = this.angularPConnectData.validateMessage ?? '';
       return errMessage;
     } else if (this.fieldControl.hasError('required')) {
       errMessage = 'You must enter a value';
@@ -179,4 +184,3 @@ export class CheckBoxComponent implements OnInit {
     return errMessage;
   }
 }
-

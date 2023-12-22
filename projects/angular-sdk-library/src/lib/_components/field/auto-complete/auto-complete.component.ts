@@ -2,16 +2,29 @@ import { Component, OnInit, Input, ChangeDetectorRef, forwardRef } from '@angula
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { interval, Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { DatapageService } from '../../../_services/datapage.service';
 import { handleEvent } from '../../../_helpers/event-util';
+import { PConnFieldProps } from '../../../_types/PConnProps.interface';
+
+interface AutoCompleteProps extends PConnFieldProps {
+  // If any, enter additional props that only exist on AutoComplete here
+  deferDatasource?: boolean;
+  datasourceMetadata?: any;
+  onRecordChange?: any;
+  additionalProps?: object;
+  listType: string;
+  parameters?: any;
+  datasource: any;
+  columns: Array<any>;
+}
 
 @Component({
   selector: 'app-auto-complete',
@@ -29,13 +42,12 @@ import { handleEvent } from '../../../_helpers/event-util';
   ]
 })
 export class AutoCompleteComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
   // Used with AngularPConnect
-  angularPConnectData: any = {};
-  PCore$: any;
-  configProps$: any;
+  angularPConnectData: AngularPConnectData = {};
+  configProps$: AutoCompleteProps;
 
   label$: string = '';
   value$: string = '';
@@ -43,7 +55,7 @@ export class AutoCompleteComponent implements OnInit {
   bReadonly$: boolean = false;
   bDisabled$: boolean = false;
   bVisible$: boolean = true;
-  displayMode$: string = '';
+  displayMode$?: string = '';
   controlName$: string;
   bHasForm$: boolean = true;
   options$: Array<any>;
@@ -51,12 +63,13 @@ export class AutoCompleteComponent implements OnInit {
   testId: string;
   listType: string;
   columns = [];
-
   helperText: string;
+  placeholder: string;
+
   fieldControl = new FormControl('', null);
   parameters: {};
-  hideLabel: any;
-  filteredOptions: Observable<Array<string>>;
+  hideLabel: boolean;
+  filteredOptions: Observable<Array<any>>;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -70,13 +83,10 @@ export class AutoCompleteComponent implements OnInit {
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
     this.controlName$ = this.angularPConnect.getComponentID(this);
 
-    if (!this.PCore$) {
-      this.PCore$ = window.PCore;
-    }
     // Then, continue on with other initialization
 
     // call updateSelf when initializing
-    //this.updateSelf();
+    // this.updateSelf();
     await this.checkAndUpdate();
 
     if (this.formGroup$ != null) {
@@ -131,24 +141,24 @@ export class AutoCompleteComponent implements OnInit {
     // starting very simple...
 
     // moved this from ngOnInit() and call this from there instead...
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as AutoCompleteProps;
 
-    if (this.configProps$['value'] != undefined) {
-      const index = this.options$?.findIndex((element) => element.key === this.configProps$['value']);
-      this.value$ = index > -1 ? this.options$[index].value : this.configProps$['value'];
+    if (this.configProps$.value != undefined) {
+      const index = this.options$?.findIndex((element) => element.key === this.configProps$.value);
+      this.value$ = index > -1 ? this.options$[index].value : this.configProps$.value;
     }
 
-    this.testId = this.configProps$['testId'];
-    this.label$ = this.configProps$['label'];
-    this.displayMode$ = this.configProps$['displayMode'];
-    this.listType = this.configProps$['listType'];
-    const displayMode = this.configProps$['displayMode'];
-    let datasource = this.configProps$['datasource'];
-    let columns = this.configProps$['columns'];
-    this.hideLabel = this.configProps$['hideLabel'];
-    //const { deferDatasource, datasourceMetadata } = this.configProps$;
-    const { deferDatasource, datasourceMetadata } = this.pConn$.getConfigProps();
-    this.helperText = this.configProps$['helperText'];
+    this.testId = this.configProps$.testId;
+    this.label$ = this.configProps$.label;
+    this.placeholder = this.configProps$.placeholder || '';
+    this.displayMode$ = this.configProps$.displayMode;
+    this.listType = this.configProps$.listType;
+    let datasource = this.configProps$.datasource;
+    let columns = this.configProps$.columns;
+    this.hideLabel = this.configProps$.hideLabel;
+    // const { deferDatasource, datasourceMetadata } = this.configProps$;
+    const { deferDatasource, datasourceMetadata }: any = this.pConn$.getConfigProps();
+    this.helperText = this.configProps$.helperText;
     this.parameters = this.configProps$?.parameters;
     const context = this.pConn$.getContextName();
     // convert associated to datapage listtype and transform props
@@ -182,19 +192,19 @@ export class AutoCompleteComponent implements OnInit {
     }
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
-      if (this.configProps$['required'] != null) {
-        this.bRequired$ = this.utils.getBooleanValue(this.configProps$['required']);
+      if (this.configProps$.required != null) {
+        this.bRequired$ = this.utils.getBooleanValue(this.configProps$.required);
       }
       this.cdRef.detectChanges();
     });
 
-    if (this.configProps$['visibility'] != null) {
-      this.bVisible$ = this.utils.getBooleanValue(this.configProps$['visibility']);
+    if (this.configProps$.visibility != null) {
+      this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
     }
 
     // disabled
-    if (this.configProps$['disabled'] != undefined) {
-      this.bDisabled$ = this.utils.getBooleanValue(this.configProps$['disabled']);
+    if (this.configProps$.disabled != undefined) {
+      this.bDisabled$ = this.utils.getBooleanValue(this.configProps$.disabled);
     }
 
     if (this.bDisabled$) {
@@ -203,23 +213,23 @@ export class AutoCompleteComponent implements OnInit {
       this.fieldControl.enable();
     }
 
-    if (this.configProps$['readOnly'] != null) {
-      this.bReadonly$ = this.utils.getBooleanValue(this.configProps$['readOnly']);
+    if (this.configProps$.readOnly != null) {
+      this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
     }
 
-    this.componentReference = this.pConn$.getStateProps().value;
+    this.componentReference = this.pConn$.getStateProps()['value'];
     if (this.listType === 'associated') {
-      this.options$ = this.utils.getOptionList(this.configProps$, this.pConn$.getDataObject());
+      this.options$ = this.utils.getOptionList(this.configProps$, this.pConn$.getDataObject('')); // 1st arg empty string until typedef marked correctly
     }
 
-    if (!displayMode && this.listType !== 'associated') {
+    if (!this.displayMode$ && this.listType !== 'associated') {
       const results = await this.dataPageService.getDataPageData(datasource, this.parameters, context);
       this.fillOptions(results);
     }
 
     // trigger display of error message with field control
     if (this.angularPConnectData.validateMessage != null && this.angularPConnectData.validateMessage != '') {
-      let timer = interval(100).subscribe(() => {
+      const timer = interval(100).subscribe(() => {
         this.fieldControl.setErrors({ message: true });
         this.fieldControl.markAsTouched();
 
@@ -275,40 +285,35 @@ export class AutoCompleteComponent implements OnInit {
   }
 
   isSelected(buttonValue: string): boolean {
-    if (this.value$ === buttonValue) {
-      return true;
-    }
-
-    return false;
+    return this.value$ === buttonValue;
   }
 
-  fieldOnChange(event: any) {
+  fieldOnChange(event: Event) {
     // this works - this.pConn$.setValue( this.componentReference, `property: ${this.componentReference}`);
     // this works - this.pConn$.setValue( this.componentReference, this.fieldControl.value);
     // PConnect wants to use changeHandler for onChange
     // this.angularPConnect.changeHandler( this, event);
-    this.angularPConnectData.actions.onChange(this, event);
+    this.angularPConnectData.actions?.onChange(this, event);
   }
 
-  optionChanged(event: any) {
-    this.angularPConnectData.actions.onChange(this, event);
+  optionChanged(event: MatAutocompleteSelectedEvent) {
+    this.angularPConnectData.actions?.onChange(this, event);
   }
 
-  fieldOnClick(event: any) {}
-
-  fieldOnBlur(event: any) {
+  fieldOnBlur(event: Event) {
     let key = '';
-    if (event?.target?.value) {
-      const index = this.options$?.findIndex((element) => element.value === event.target.value);
-      key = index > -1 ? (key = this.options$[index].key) : event.target.value;
+    const el = event?.target as HTMLInputElement;
+    if (el?.value) {
+      const index = this.options$?.findIndex((element) => element.value === el.value);
+      key = index > -1 ? (key = this.options$[index].key) : el.value;
     }
 
     const value = key;
     const actionsApi = this.pConn$?.getActionsApi();
-    const propName = this.pConn$?.getStateProps().value;
+    const propName = this.pConn$?.getStateProps()['value'];
     handleEvent(actionsApi, 'changeNblur', propName, value);
     if (this.configProps$?.onRecordChange) {
-      event.target.value = value;
+      el.value = value;
       this.configProps$.onRecordChange(event);
     }
   }
@@ -318,7 +323,7 @@ export class AutoCompleteComponent implements OnInit {
 
     // look for validation messages for json, pre-defined or just an error pushed from workitem (400)
     if (this.fieldControl.hasError('message')) {
-      errMessage = this.angularPConnectData.validateMessage;
+      errMessage = this.angularPConnectData.validateMessage ?? '';
       return errMessage;
     } else if (this.fieldControl.hasError('required')) {
       errMessage = 'You must enter a value';

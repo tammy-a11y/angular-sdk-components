@@ -1,7 +1,12 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+
+interface MultiReferenceReadOnlyProps {
+  label: string;
+  hideLabel: boolean;
+}
 
 @Component({
   selector: 'app-multi-reference-readonly',
@@ -11,14 +16,14 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class MultiReferenceReadonlyComponent implements OnInit {
-  constructor(private angularPConnect: AngularPConnectService) {}
-
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
-  angularPConnectData: any = {};
-  configProps$: any;
+  angularPConnectData: AngularPConnectData = {};
+  configProps$: MultiReferenceReadOnlyProps;
   label: string;
+
+  constructor(private angularPConnect: AngularPConnectService) {}
 
   ngOnInit(): void {
     // First thing in initialization is registering and subscribing to the AngularPConnect service
@@ -43,7 +48,7 @@ export class MultiReferenceReadonlyComponent implements OnInit {
   }
 
   updateSelf() {
-    this.configProps$ = this.pConn$.getConfigProps();
-    this.label = this.configProps$['label'];
+    this.configProps$ = this.pConn$.getConfigProps() as MultiReferenceReadOnlyProps;
+    this.label = this.configProps$.label;
   }
 }

@@ -1,11 +1,19 @@
 import { Component, OnInit, Input, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
+import { publicConstants } from '@pega/pcore-pconnect-typedefs/constants';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
 import { ErrorMessagesService } from '../../../_messages/error-messages.service';
 import { Utils } from '../../../_helpers/utils';
 
-declare const window: any;
+interface ToDoProps {
+  // If any, enter additional props that only exist on this component
+  datasource?: any;
+  headerText?: string;
+  myWorkList?: any;
+  label?: string;
+  readOnly?: boolean;
+}
 
 @Component({
   selector: 'app-todo',
@@ -16,11 +24,10 @@ declare const window: any;
   imports: [CommonModule, MatButtonModule]
 })
 export class TodoComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() caseInfoID$: string;
   @Input() datasource$: any;
-  @Input() headerText$: string;
-  @Input() itemKey$: string;
+  @Input() headerText$?: string;
   @Input() showTodoList$: boolean = true;
   @Input() target$: string;
   @Input() type$: string = 'worklist';
@@ -28,40 +35,40 @@ export class TodoComponent implements OnInit {
   @Input() myWorkList$: any;
   @Input() isConfirm;
 
-  PCore$: any;
-
-  configProps$: Object;
+  configProps$: ToDoProps;
   currentUser$: string;
   currentUserInitials$: string = '--';
   assignmentCount$: number;
   bShowMore$: boolean = true;
   arAssignments$: Array<any>;
   assignmentsSource$: any;
-  CONSTS: any;
+  CONSTS: typeof publicConstants;
   bLogging = true;
-  localizedVal = window.PCore.getLocaleUtils().getLocaleValue;
+  localizedVal = PCore.getLocaleUtils().getLocaleValue;
   localeCategory = 'Todo';
   showlessLocalizedValue = this.localizedVal('show_less', 'CosmosFields');
   showMoreLocalizedValue = this.localizedVal('show_more', 'CosmosFields');
 
-  constructor(private psService: ProgressSpinnerService, private erService: ErrorMessagesService, private ngZone: NgZone, private utils: Utils) {}
+  constructor(
+    private psService: ProgressSpinnerService,
+    private erService: ErrorMessagesService,
+    private ngZone: NgZone,
+    private utils: Utils
+  ) {}
 
   ngOnInit() {
-    if (!this.PCore$) {
-      this.PCore$ = window.PCore;
-    }
-    this.CONSTS = this.PCore$.getConstants();
-    const { CREATE_STAGE_SAVED, CREATE_STAGE_DELETED } = this.PCore$.getEvents().getCaseEvent();
+    this.CONSTS = PCore.getConstants();
+    const { CREATE_STAGE_SAVED, CREATE_STAGE_DELETED }: any = PCore.getEvents().getCaseEvent();
 
-    this.PCore$.getPubSubUtils().subscribe(
-      this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL,
+    PCore.getPubSubUtils().subscribe(
+      PCore.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL,
       () => {
         this.updateToDo();
       },
       'updateToDo'
     );
 
-    this.PCore$.getPubSubUtils().subscribe(
+    PCore.getPubSubUtils().subscribe(
       CREATE_STAGE_SAVED,
       () => {
         this.updateList();
@@ -69,7 +76,7 @@ export class TodoComponent implements OnInit {
       CREATE_STAGE_SAVED
     );
 
-    this.PCore$.getPubSubUtils().subscribe(
+    PCore.getPubSubUtils().subscribe(
       CREATE_STAGE_DELETED,
       () => {
         this.updateList();
@@ -81,25 +88,28 @@ export class TodoComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    const { CREATE_STAGE_SAVED, CREATE_STAGE_DELETED } = this.PCore$.getEvents().getCaseEvent();
+    const { CREATE_STAGE_SAVED, CREATE_STAGE_DELETED }: any = PCore.getEvents().getCaseEvent();
 
-    this.PCore$.getPubSubUtils().unsubscribe(this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL, 'updateToDo');
+    PCore.getPubSubUtils().unsubscribe(PCore.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL, 'updateToDo');
 
-    this.PCore$.getPubSubUtils().unsubscribe(CREATE_STAGE_SAVED, CREATE_STAGE_SAVED);
+    PCore.getPubSubUtils().unsubscribe(CREATE_STAGE_SAVED, CREATE_STAGE_SAVED);
 
-    this.PCore$.getPubSubUtils().unsubscribe(CREATE_STAGE_DELETED, CREATE_STAGE_DELETED);
+    PCore.getPubSubUtils().unsubscribe(CREATE_STAGE_DELETED, CREATE_STAGE_DELETED);
   }
 
-  ngOnChanges(data: any) {
+  ngOnChanges() {
     // don't update until we'va had an init
-    if (this.PCore$) {
+    if (PCore) {
       this.updateToDo();
     }
   }
 
   updateWorkList(key) {
-    this.PCore$.getDataApiUtils()
-      .getData(key)
+    (
+      PCore.getDataApiUtils()
+        // @ts-ignore - 2nd parameter "payload" and 3rd parameter "context" should be optional in getData method
+        .getData(key) as Promise<any>
+    )
       .then((responseData) => {
         const dataObject = {};
         dataObject[key] = {
@@ -119,14 +129,14 @@ export class TodoComponent implements OnInit {
   }
 
   updateToDo() {
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as ToDoProps;
 
     if (this.headerText$ == undefined) {
-      this.headerText$ = this.configProps$['headerText'];
+      this.headerText$ = this.configProps$.headerText;
     }
 
-    this.datasource$ = this.configProps$['datasource'] ? this.configProps$['datasource'] : this.datasource$;
-    this.myWorkList$ = this.configProps$['myWorkList'] ? this.configProps$['myWorkList'] : this.myWorkList$;
+    this.datasource$ = this.configProps$.datasource ? this.configProps$.datasource : this.datasource$;
+    this.myWorkList$ = this.configProps$.myWorkList ? this.configProps$.myWorkList : this.myWorkList$;
 
     this.assignmentsSource$ = this.datasource$?.source || this.myWorkList$?.source;
 
@@ -135,12 +145,13 @@ export class TodoComponent implements OnInit {
       this.arAssignments$ = this.topThreeAssignments(this.assignmentsSource$);
     } else {
       // get caseInfoId assignment.
+      // eslint-disable-next-line no-lonely-if
       if (this.caseInfoID$ != undefined) {
         this.arAssignments$ = this.getCaseInfoAssignment(this.assignmentsSource$, this.caseInfoID$);
       }
     }
 
-    this.currentUser$ = this.PCore$.getEnvironmentInfo().getOperatorName();
+    this.currentUser$ = PCore.getEnvironmentInfo().getOperatorName();
     this.currentUserInitials$ = this.utils.getInitials(this.currentUser$);
   }
 
@@ -221,7 +232,7 @@ export class TodoComponent implements OnInit {
     const sTarget = this.pConn$.getContainerName();
     const sTargetContainerName = sTarget;
 
-    const options = { containerName: sTargetContainerName };
+    const options: any = { containerName: sTargetContainerName };
 
     if (classname === null || classname === '') {
       classname = this.pConn$.getCaseInfo().getClassName();
@@ -249,8 +260,8 @@ export class TodoComponent implements OnInit {
         }
       })
       .catch(() => {
-      this.psService.sendMessage(false);
-      this.erService.sendMessage('show', "Failed to open");
+        this.psService.sendMessage(false);
+        this.erService.sendMessage('show', 'Failed to open');
       });
   }
 }

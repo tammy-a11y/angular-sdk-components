@@ -1,10 +1,13 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 
-declare const window: any;
+interface TextProps extends PConnFieldProps {
+  // If any, enter additional props that only exist on Text here
+}
 
 @Component({
   selector: 'app-text',
@@ -14,12 +17,12 @@ declare const window: any;
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class TextComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formatAs$: string;
 
   // Used with AngularPConnect
-  angularPConnectData: any = {};
-  configProps$: Object;
+  angularPConnectData: AngularPConnectData = {};
+  configProps$: TextProps;
 
   label$: string = '';
   value$: string = '';
@@ -27,14 +30,17 @@ export class TextComponent implements OnInit {
   bReadonly$: boolean = false;
   bDisabled$: boolean = false;
   bVisible$: boolean = true;
-  displayMode$: string = '';
+  displayMode$?: string = '';
   controlName$: string;
   componentReference: string = '';
   formattedValue$: string;
   format$: string = 'text';
   formattedUrl$: string = '';
 
-  constructor(private angularPConnect: AngularPConnectService, private utils: Utils) {}
+  constructor(
+    private angularPConnect: AngularPConnectService,
+    private utils: Utils
+  ) {}
 
   ngOnInit(): void {
     // First thing in initialization is registering and subscribing to the AngularPConnect service
@@ -66,17 +72,17 @@ export class TextComponent implements OnInit {
   // updateSelf
   updateSelf(): void {
     // moved this from ngOnInit() and call this from there instead...
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
-    if (this.configProps$['value'] != undefined) {
-      this.value$ = this.configProps$['value'];
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as TextProps;
+    if (this.configProps$.value != undefined) {
+      this.value$ = this.configProps$.value;
     }
 
-    if (this.configProps$['visibility'] != null) {
-      this.bVisible$ = this.utils.getBooleanValue(this.configProps$['visibility']);
+    if (this.configProps$.visibility != null) {
+      this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
     }
 
-    this.label$ = this.configProps$['label'];
-    this.displayMode$ = this.configProps$['displayMode'];
+    this.label$ = this.configProps$.label;
+    this.displayMode$ = this.configProps$.displayMode;
 
     // TDB - get formats
     switch (this.formatAs$) {
@@ -101,6 +107,8 @@ export class TextComponent implements OnInit {
         this.formattedUrl$ = this.generateUrl(this.value$);
         this.formattedValue$ = this.value$;
         break;
+      default:
+        break;
     }
   }
 
@@ -113,7 +121,7 @@ export class TextComponent implements OnInit {
     if (sVal.indexOf('https://') == 0 || sVal.indexOf('http://') == 0) {
     } else {
       // assume no http
-      sVal = 'http://' + sVal;
+      sVal = `http://${sVal}`;
     }
 
     return sVal;
@@ -133,7 +141,7 @@ export class TextComponent implements OnInit {
   generateDateTime(sVal): string {
     if (!sVal) return '';
     if (sVal.length === 10) return this.generateDate(sVal);
-    let value = sVal.substring(0, sVal.length - 1);
+    const value = sVal.substring(0, sVal.length - 1);
     // value = new Intl.DateTimeFormat('default', {
     //   year: 'numeric',
     //   month: 'numeric',

@@ -2,9 +2,30 @@ import { Component, OnInit, Input, NgZone, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ErrorMessagesService } from '../../../_messages/error-messages.service';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+
+interface IPage {
+  classID: string;
+  pxPageViewIcon: string;
+  pyClassName: string;
+  pyLabel: string;
+  pyRuleName: string;
+  pyURLContent: string;
+}
+
+interface AppShellProps {
+  // If any, enter additional props that only exist on this component
+  pages: Array<IPage>;
+  caseTypes?: Array<object>;
+  portalLogo: string;
+  portalName: string;
+  portalTemplate: string;
+  readOnly?: boolean;
+  showAppHeaderBar: boolean;
+  showAppName: boolean;
+}
 
 @Component({
   selector: 'app-app-shell',
@@ -14,18 +35,17 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   imports: [CommonModule, MatSnackBarModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class AppShellComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
 
   // For interaction with AngularPConnect
-  angularPConnectData: any = {};
-  configProps$: Object;
+  angularPConnectData: AngularPConnectData = {};
+  configProps$: AppShellProps;
 
-  pages$: Array<any>;
-  caseTypes$: Array<any>;
+  pages$: Array<IPage>;
+  caseTypes$?: Array<object>;
   arChildren$: Array<any>;
   bShowAppShell$: boolean = false;
   appName$: string = 'PEGA';
-  errorMessage: any;
   errorMessagesSubscription: Subscription;
   sErrorMessages: string = '';
   snackBarRef: any;
@@ -46,10 +66,10 @@ export class AppShellComponent implements OnInit {
 
     // Then, continue on with other initialization
 
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as AppShellProps;
 
     // making a copy, so can add info
-    this.pages$ = this.configProps$['pages'];
+    this.pages$ = this.configProps$.pages;
 
     this.links = this.pages$.filter((page, index) => {
       return index !== 0;
@@ -58,17 +78,15 @@ export class AppShellComponent implements OnInit {
     if (this.pages$) {
       this.bShowAppShell$ = true;
     }
-    this.caseTypes$ = this.configProps$['caseTypes'];
+    this.caseTypes$ = this.configProps$.caseTypes;
 
-    this.arChildren$ = this.pConn$.getChildren();
+    this.arChildren$ = this.pConn$.getChildren() as Array<any>;
 
-    this.portalTemplate = this.configProps$['portalTemplate'];
+    this.portalTemplate = this.configProps$.portalTemplate;
 
     // handle showing and hiding the progress spinner
     this.errorMessagesSubscription = this.erService.getMessage().subscribe((message) => {
-      this.errorMessage = message;
-
-      this.showDismissErrorMessages(this.errorMessage);
+      this.showDismissErrorMessages(message);
     });
 
     // cannot call checkAndUpdate becasue first time through, will call updateSelf and that is incorrect (causes issues).
@@ -100,18 +118,18 @@ export class AppShellComponent implements OnInit {
   }
 
   updateSelf() {
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as AppShellProps;
 
     this.ngZone.run(() => {
       // making a copy, so can add info
-      this.pages$ = this.configProps$['pages'];
+      this.pages$ = this.configProps$.pages;
 
       if (this.pages$) {
         this.bShowAppShell$ = true;
       }
 
-      this.caseTypes$ = this.configProps$['caseTypes'];
-      this.arChildren$ = this.pConn$.getChildren();
+      this.caseTypes$ = this.configProps$.caseTypes;
+      this.arChildren$ = this.pConn$.getChildren() as Array<any>;
     });
   }
 
@@ -125,7 +143,7 @@ export class AppShellComponent implements OnInit {
           this.sErrorMessages = this.sErrorMessages.concat(errorMessages.actionMessage).concat('\n');
 
           if (this.bOkDisplayError) {
-            let config = { panelClass: ['snackbar-newline'] };
+            const config = { panelClass: ['snackbar-newline'] };
             this.snackBarRef = this.snackBar.open(this.sErrorMessages, 'Ok', config);
           }
         }
@@ -141,7 +159,7 @@ export class AppShellComponent implements OnInit {
         this.bOkDisplayError = true;
 
         if (this.bOkDisplayError) {
-          let config = { panelClass: ['snackbar-newline'] };
+          const config = { panelClass: ['snackbar-newline'] };
           this.snackBarRef = this.snackBar.open(this.sErrorMessages, 'Ok', config);
         }
         // this.snackBarRef.afterDismissed().subscribe( info => {
@@ -166,7 +184,8 @@ export class AppShellComponent implements OnInit {
 
         this.bOkDisplayError = true;
         this.sErrorMessages = '';
-
+        break;
+      default:
         break;
     }
   }

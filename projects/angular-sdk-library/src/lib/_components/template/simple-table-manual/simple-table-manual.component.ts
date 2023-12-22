@@ -12,13 +12,30 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { DatapageService } from '../../../_services/datapage.service';
 import { FieldGroupUtils } from '../../../_helpers/field-group-utils';
-import { getContext, buildFieldsForTable } from './helpers';
+import { buildFieldsForTable } from './helpers';
 import { Utils } from '../../../_helpers/utils';
 
 declare const window: any;
+
+interface SimpleTableManualProps {
+  // If any, enter additional props that only exist on this component
+  visibility?: boolean;
+  grouping?: any;
+  referenceList?: Array<any>;
+  children?: Array<any>;
+  renderMode?: string;
+  presets?: Array<any>;
+  label?: string;
+  showLabel?: boolean;
+  dataPageName?: string;
+  contextClass?: string;
+  propertyLabel?: string;
+  fieldMetadata?: any;
+  allowTableEdit?: boolean;
+}
 
 class Group {
   level = 0;
@@ -52,13 +69,12 @@ class Group {
 export class SimpleTableManualComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
 
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
   // Used with AngularPConnect
-  angularPConnectData: any = {};
-  PCore$: any;
-  configProps$: any;
+  angularPConnectData: AngularPConnectData = {};
+  configProps$: SimpleTableManualProps;
   fields$: Array<any>;
 
   bVisible$: boolean = true;
@@ -78,7 +94,7 @@ export class SimpleTableManualComponent implements OnInit {
   prevRefLength: number;
   elementsData: MatTableDataSource<any>;
   rawFields: any;
-  label: string = '';
+  label?: string = '';
   searchIcon$: string;
 
   bShowSearch$: boolean = false;
@@ -135,10 +151,7 @@ export class SimpleTableManualComponent implements OnInit {
   ngOnInit(): void {
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
-    if (!this.PCore$) {
-      this.PCore$ = window.PCore;
-    }
-    this.configProps$ = this.pConn$.getConfigProps();
+    this.configProps$ = this.pConn$.getConfigProps() as SimpleTableManualProps;
     // Then, continue on with other initialization
     this.menuIconOverride$ = this.utils.getImageSrc('trash', this.utils.getSDKStaticContentUrl());
     // call checkAndUpdate when initializing
@@ -175,29 +188,27 @@ export class SimpleTableManualComponent implements OnInit {
   // updateSelf
   updateSelf(): void {
     // moved this from ngOnInit() and call this from there instead...
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as SimpleTableManualProps;
 
-    if (this.configProps$['visibility'] != null) {
+    if (this.configProps$.visibility != null) {
       // eslint-disable-next-line no-multi-assign
-      this.bVisible$ = this.bVisible$ = this.utils.getBooleanValue(this.configProps$['visibility']);
+      this.bVisible$ = this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
     }
 
     // NOTE: getConfigProps() has each child.config with datasource and value undefined
     //  but getRawMetadata() has each child.config with datasource and value showing their unresolved values (ex: "@P thePropName")
     //  We need to use the prop name as the "glue" to tie the Angular Material table dataSource, displayColumns and data together.
     //  So, in the code below, we'll use the unresolved config.value (but replacing the space with an underscore to keep things happy)
-    const rawMetadata = this.pConn$.getRawMetadata();
+    const rawMetadata: any = this.pConn$.getRawMetadata();
 
     // Adapted from Nebula
     const {
-      label,
-      showLabel,
       referenceList = [], // if referenceList not in configProps$, default to empy list
       renderMode,
       children, // destructure children into an array var: "resolvedFields"
       presets,
       allowTableEdit,
-      labelProp,
+      label: labelProp,
       propertyLabel,
       fieldMetadata
     } = this.configProps$;
@@ -205,13 +216,15 @@ export class SimpleTableManualComponent implements OnInit {
     this.label = labelProp || propertyLabel;
     this.parameters = fieldMetadata?.datasource?.parameters;
 
-    const hideAddRow = allowTableEdit === false ? true : false;
-    const hideDeleteRow = allowTableEdit === false ? true : false;
+    const hideAddRow = allowTableEdit === false;
+    const hideDeleteRow = allowTableEdit === false;
     let { contextClass } = this.configProps$;
     this.referenceList = referenceList;
     if (!contextClass) {
+      // @ts-ignore - Property 'getComponentConfig' is private and only accessible within class 'C11nEnv'
       let listName = this.pConn$.getComponentConfig().referenceList;
-      listName = this.PCore$.getAnnotationUtils().getPropertyName(listName);
+      listName = PCore.getAnnotationUtils().getPropertyName(listName);
+      // @ts-ignore - Property 'getFieldMetadata' is private and only accessible within class 'C11nEnv'
       contextClass = this.pConn$.getFieldMetadata(listName)?.pageClass;
     }
     this.contextClass = contextClass;
@@ -230,7 +243,7 @@ export class SimpleTableManualComponent implements OnInit {
 
     // start of from Nebula
     // get context name and referenceList which will be used to prepare config of PConnect
-    const { contextName, referenceListStr, pageReferenceForRows } = getContext(this.pConn$);
+    // const { contextName, referenceListStr, pageReferenceForRows } = getContext(this.pConn$);
 
     const resolvedList = this.fieldGroupUtils.getReferenceList(this.pConn$);
     this.pageReference = `${this.pConn$.getPageReference()}${resolvedList}`;
@@ -326,7 +339,6 @@ export class SimpleTableManualComponent implements OnInit {
             return 0;
           }
           return prefixX[1] - prefixY[1];
-          break;
         case 'down':
           if (prefixX[0] !== prefixY[0]) {
             if (prefixX[0] > prefixY[0]) return -1;
@@ -334,6 +346,7 @@ export class SimpleTableManualComponent implements OnInit {
             return 0;
           }
           return prefixY[1] - prefixX[1];
+        default:
           break;
       }
     }
@@ -352,6 +365,8 @@ export class SimpleTableManualComponent implements OnInit {
         } else if (aValue < bValue) {
           return 1;
         }
+        break;
+      default:
         break;
     }
 
@@ -412,11 +427,11 @@ export class SimpleTableManualComponent implements OnInit {
   }
 
   _clickAway(event: any) {
-    var bInPopUp = false;
+    let bInPopUp = false;
 
-    //run through list of elements in path, if menu not in th path, then want to
+    // run through list of elements in path, if menu not in th path, then want to
     // hide (toggle) the menu
-    for (let i in event.path) {
+    for (const i in event.path) {
       if (
         event.path[i].className == 'psdk-modal-file-top' ||
         event.path[i].tagName == 'BUTTON' ||
@@ -463,7 +478,8 @@ export class SimpleTableManualComponent implements OnInit {
       case 'submit':
         this.updateFilterWithInfo();
         this.filterSortGroupBy();
-
+        break;
+      default:
         break;
     }
 
@@ -474,7 +490,7 @@ export class SimpleTableManualComponent implements OnInit {
 
   updateFilterWithInfo() {
     let bFound = false;
-    for (let filterObj of this.filterByColumns) {
+    for (const filterObj of this.filterByColumns) {
       if (filterObj['ref'] === this.currentFilterRefData.config.name) {
         filterObj['type'] = this.currentFilterRefData.type;
         filterObj['containsFilter'] = this.filterContainsType$;
@@ -487,7 +503,7 @@ export class SimpleTableManualComponent implements OnInit {
 
     if (!bFound) {
       // add in
-      let filterObj: any = {};
+      const filterObj: any = {};
       filterObj.ref = this.currentFilterRefData.config.name;
       filterObj.type = this.currentFilterRefData.type;
       filterObj.containsFilter = this.filterContainsType$;
@@ -497,13 +513,13 @@ export class SimpleTableManualComponent implements OnInit {
     }
 
     // iterate through filters and update filterOn icon
-    for (let filterObj of this.filterByColumns) {
-      let containsFilterValue = filterObj['containsFilterValue'];
-      let containsFilter = filterObj['containsFilter'];
-      let filterRef = filterObj['ref'];
-      let filterIndex = this.displayedColumns.indexOf(filterRef);
-      let arFilterImg = document.getElementsByName('filterOnIcon');
-      let filterImg: any = arFilterImg[filterIndex];
+    for (const filterObj of this.filterByColumns) {
+      const containsFilterValue = filterObj['containsFilterValue'];
+      const containsFilter = filterObj['containsFilter'];
+      const filterRef = filterObj['ref'];
+      const filterIndex = this.displayedColumns.indexOf(filterRef);
+      const arFilterImg = document.getElementsByName('filterOnIcon');
+      const filterImg: any = arFilterImg[filterIndex];
       if (containsFilterValue == '' && containsFilter != 'null' && containsFilter != 'notnull') {
         // clear icon
         filterImg.src = '';
@@ -518,7 +534,7 @@ export class SimpleTableManualComponent implements OnInit {
     // find current ref, if exists, move data to variable to display
 
     let bFound = false;
-    for (let filterObj of this.filterByColumns) {
+    for (const filterObj of this.filterByColumns) {
       if (filterObj['ref'] === this.currentFilterRefData.config.name) {
         this.filterContainsType$ = filterObj['containsFilter'];
         this.filterContainsValue$ = filterObj['containsFilterValue'];
@@ -546,7 +562,7 @@ export class SimpleTableManualComponent implements OnInit {
 
   filterData(item: any) {
     let bKeep = true;
-    for (let filterObj of this.filterByColumns) {
+    for (const filterObj of this.filterByColumns) {
       if (filterObj.containsFilterValue != '' || filterObj.containsFilter == 'null' || filterObj.containsFilter == 'notnull') {
         let value: any;
         let filterValue: any;
@@ -561,16 +577,17 @@ export class SimpleTableManualComponent implements OnInit {
                 ? this.utils.getSeconds(filterObj.containsFilterValue)
                 : null;
 
+            // eslint-disable-next-line sonarjs/no-nested-switch
             switch (filterObj.containsFilter) {
               case 'notequal':
                 // becasue filterValue is in minutes, need to have a range of less than 60 secons
 
                 if (value != null && filterValue != null) {
                   // get rid of millisecons
-                  value = value / 1000;
-                  filterValue = filterValue / 1000;
+                  value /= 1000;
+                  filterValue /= 1000;
 
-                  let diff = value - filterValue;
+                  const diff = value - filterValue;
                   if (diff >= 0 && diff < 60) {
                     bKeep = false;
                   }
@@ -597,12 +614,15 @@ export class SimpleTableManualComponent implements OnInit {
                   bKeep = false;
                 }
                 break;
+              default:
+                break;
             }
             break;
           default:
             value = item[filterObj.ref].toLowerCase();
             filterValue = filterObj.containsFilterValue.toLowerCase();
 
+            // eslint-disable-next-line sonarjs/no-nested-switch
             switch (filterObj.containsFilter) {
               case 'contains':
                 if (value.indexOf(filterValue) < 0) {
@@ -618,6 +638,8 @@ export class SimpleTableManualComponent implements OnInit {
                 if (value.indexOf(filterValue) != 0) {
                   bKeep = false;
                 }
+                break;
+              default:
                 break;
             }
 
@@ -678,7 +700,7 @@ export class SimpleTableManualComponent implements OnInit {
   }
 
   _showUnGroupBy(columnData): boolean {
-    for (let val of this.groupByColumns$) {
+    for (const val of this.groupByColumns$) {
       if (val == columnData.config.name) {
         return true;
       }
@@ -694,14 +716,14 @@ export class SimpleTableManualComponent implements OnInit {
   }
 
   _unGroupBy(event, columnData) {
-    //event.stopPropagation();
+    // event.stopPropagation();
     this.checkGroupByColumn(columnData.config.name, false);
 
     this.filterSortGroupBy();
   }
 
   checkGroupByColumn(field, add) {
-    let found = null;
+    let found: number | null = null;
     for (const column of this.groupByColumns$) {
       if (column === field) {
         found = this.groupByColumns$.indexOf(column, 0);
@@ -711,16 +733,14 @@ export class SimpleTableManualComponent implements OnInit {
       if (!add) {
         this.groupByColumns$.splice(found, 1);
       }
-    } else {
-      if (add) {
-        this.groupByColumns$.push(field);
-      }
+    } else if (add) {
+      this.groupByColumns$.push(field);
     }
   }
 
   _getGroupName(fieldName) {
-    for (let i in this.fields$) {
-      let field = this.fields$[i];
+    for (const i in this.fields$) {
+      const field = this.fields$[i];
       if (field.config.name == fieldName) {
         return field.config.label;
       }
@@ -753,7 +773,7 @@ export class SimpleTableManualComponent implements OnInit {
     );
 
     const currentColumn = groupByColumns[level];
-    let subGroups = [];
+    let subGroups: any = [];
     groups.forEach((group) => {
       const rowsInGroup = data.filter((row) => group[currentColumn] === row[currentColumn]);
       group.totalCounts = rowsInGroup.length;
@@ -779,7 +799,7 @@ export class SimpleTableManualComponent implements OnInit {
 
   _groupHeaderClick(row) {
     row.expanded = !row.expanded;
-    //this.repeatList$.filter = "";
+    // this.repeatList$.filter = "";
     this.perfFilter = performance.now().toString();
     this.rowData.filter = this.perfFilter;
   }
@@ -819,7 +839,7 @@ export class SimpleTableManualComponent implements OnInit {
 
       // assume not there unless we find it
       bVisible = false;
-      for (let col of this.displayedColumns) {
+      for (const col of this.displayedColumns) {
         // filter is lower case
         if (data[col] && data[col].toString().toLowerCase().indexOf(filter) >= 0) {
           bVisible = true;
@@ -832,7 +852,7 @@ export class SimpleTableManualComponent implements OnInit {
   }
 
   getDisplayColumns(fields = []) {
-    let arReturn = fields.map((field, colIndex) => {
+    const arReturn = fields.map((field: any) => {
       let theField = field.config.value.substring(field.config.value.indexOf(' ') + 1);
       if (theField.indexOf('.') == 0) {
         theField = theField.substring(1);
@@ -845,10 +865,10 @@ export class SimpleTableManualComponent implements OnInit {
 
   _getIconStyle(level): string {
     let sReturn = '';
-    let nLevel = parseInt(level);
+    let nLevel = parseInt(level, 10);
     nLevel--;
-    nLevel = nLevel * 15;
-    sReturn = 'padding-left: ' + nLevel + 'px; vertical-align: middle';
+    nLevel *= 15;
+    sReturn = `padding-left: ${nLevel}px; vertical-align: middle`;
 
     return sReturn;
   }
@@ -864,7 +884,7 @@ export class SimpleTableManualComponent implements OnInit {
     // See what data (if any) we have to display
     const refKeys: Array<string> = inColKey.split('.');
     let valBuilder = inRowData;
-    for (var key of refKeys) {
+    for (const key of refKeys) {
       valBuilder = valBuilder[key];
     }
     return valBuilder;
@@ -900,17 +920,19 @@ export class SimpleTableManualComponent implements OnInit {
   }
 
   addRecord() {
-    if (this.PCore$.getPCoreVersion()?.includes('8.7')) {
+    if (PCore.getPCoreVersion()?.includes('8.7')) {
       this.pConn$.getListActions().insert({ classID: this.contextClass }, this.referenceList.length, this.pageReference);
     } else {
+      // @ts-ignore - second parameter "pageRef" is optional for insert method
       this.pConn$.getListActions().insert({ classID: this.contextClass }, this.referenceList.length);
     }
   }
 
   deleteRecord(index) {
-    if (this.PCore$.getPCoreVersion()?.includes('8.7')) {
+    if (PCore.getPCoreVersion()?.includes('8.7')) {
       this.pConn$.getListActions().deleteEntry(index, this.pageReference);
     } else {
+      // @ts-ignore - second parameter "pageRef" is optional for deleteEntry method
       this.pConn$.getListActions().deleteEntry(index);
     }
   }
@@ -935,7 +957,7 @@ export class SimpleTableManualComponent implements OnInit {
             hasForm: true
           }
         };
-        const view = this.PCore$.createPConnect(config);
+        const view = PCore.createPConnect(config);
         data.push(view);
       });
       eleData.push(data);

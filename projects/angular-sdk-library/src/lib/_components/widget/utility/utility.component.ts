@@ -2,7 +2,12 @@ import { Component, OnInit, Input, OnChanges, SimpleChanges, forwardRef } from '
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
-declare const window: any;
+interface UtilityProps {
+  // If any, enter additional props that only exist on this component
+  headerIcon?: string;
+  headerText?: string;
+  noItemsMessage?: string;
+}
 
 @Component({
   selector: 'app-utility',
@@ -12,23 +17,17 @@ declare const window: any;
   imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class UtilityComponent implements OnInit, OnChanges {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
 
-  PCore$: any;
-
-  configProps$: any;
-  headerIcon$: string;
-  headerText$: string;
-  headerIconUrl$: string;
-  noItemsMessage$: string;
+  configProps$: UtilityProps;
+  headerIcon$?: string;
+  headerText$?: string;
+  headerIconUrl$?: string;
+  noItemsMessage$?: string;
 
   constructor(private utils: Utils) {}
 
   ngOnInit(): void {
-    if (!this.PCore$) {
-      this.PCore$ = window.PCore;
-    }
-
     this.updateSelf();
   }
 
@@ -41,11 +40,11 @@ export class UtilityComponent implements OnInit, OnChanges {
   }
 
   updateSelf() {
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as UtilityProps;
 
-    this.headerIcon$ = this.configProps$['headerIcon'];
+    this.headerIcon$ = this.configProps$.headerIcon;
     this.headerIconUrl$ = this.utils.getSDKStaticContentUrl();
-    this.headerText$ = this.configProps$['headerText'];
-    this.noItemsMessage$ = this.configProps$['noItemsMessage'];
+    this.headerText$ = this.configProps$.headerText;
+    this.noItemsMessage$ = this.configProps$.noItemsMessage;
   }
 }

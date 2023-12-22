@@ -4,9 +4,15 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { interval } from 'rxjs';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectService, AngularPConnectData } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { PConnFieldProps } from '../../../_types/PConnProps.interface';
+
+interface TextInputProps extends PConnFieldProps {
+  // If any, enter additional props that only exist on TextInput here
+  fieldMetadata?: any;
+}
 
 @Component({
   selector: 'app-text-input',
@@ -16,12 +22,12 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class TextInputComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
   // For interaction with AngularPConnect
-  angularPConnectData: any = {};
-  configProps$: Object;
+  angularPConnectData: AngularPConnectData = {};
+  configProps$: TextInputProps;
 
   label$: string = '';
   value$: string = '';
@@ -29,12 +35,13 @@ export class TextInputComponent implements OnInit {
   bReadonly$: boolean = false;
   bDisabled$: boolean = false;
   bVisible$: boolean = true;
-  displayMode$: string = '';
+  displayMode$?: string = '';
   controlName$: string;
   testId: string = '';
   bHasForm$: boolean = true;
   componentReference: string = '';
   helperText: string;
+  placeholder: string;
 
   fieldControl = new FormControl('', null);
 
@@ -95,35 +102,36 @@ export class TextInputComponent implements OnInit {
   // updateSelf
   updateSelf(): void {
     // moved this from ngOnInit() and call this from there instead...
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as TextInputProps;
 
-    if (this.configProps$['value'] != undefined) {
-      this.value$ = this.configProps$['value'];
+    if (this.configProps$.value != undefined) {
+      this.value$ = this.configProps$.value;
     }
 
-    this.testId = this.configProps$['testId'];
+    this.testId = this.configProps$.testId;
 
-    this.label$ = this.configProps$['label'];
-    this.displayMode$ = this.configProps$['displayMode'];
-    
-    this.componentReference = this.pConn$.getStateProps().value;
+    this.label$ = this.configProps$.label;
+    this.displayMode$ = this.configProps$.displayMode;
 
-    if (this.configProps$['visibility'] != null) {
-      this.bVisible$ = this.utils.getBooleanValue(this.configProps$['visibility']);
+    this.componentReference = this.pConn$.getStateProps()['value'];
+
+    if (this.configProps$.visibility != null) {
+      this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
     }
-    this.helperText = this.configProps$['helperText'];
+    this.helperText = this.configProps$.helperText;
+    this.placeholder = this.configProps$.placeholder || '';
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
-      if (this.configProps$['required'] != null) {
-        this.bRequired$ = this.utils.getBooleanValue(this.configProps$['required']);
+      if (this.configProps$.required != null) {
+        this.bRequired$ = this.utils.getBooleanValue(this.configProps$.required);
       }
       this.cdRef.detectChanges();
     });
 
     // disabled
-    if (this.configProps$['disabled'] != undefined) {
-      this.bDisabled$ = this.utils.getBooleanValue(this.configProps$['disabled']);
+    if (this.configProps$.disabled != undefined) {
+      this.bDisabled$ = this.utils.getBooleanValue(this.configProps$.disabled);
     }
 
     if (this.bDisabled$) {
@@ -132,13 +140,13 @@ export class TextInputComponent implements OnInit {
       this.fieldControl.enable();
     }
 
-    if (this.configProps$['readOnly'] != null) {
-      this.bReadonly$ = this.utils.getBooleanValue(this.configProps$['readOnly']);
+    if (this.configProps$.readOnly != null) {
+      this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
     }
 
     // trigger display of error message with field control
     if (this.angularPConnectData.validateMessage != null && this.angularPConnectData.validateMessage != '') {
-      let timer = interval(100).subscribe(() => {
+      const timer = interval(100).subscribe(() => {
         this.fieldControl.setErrors({ message: true });
         this.fieldControl.markAsTouched();
 
@@ -148,14 +156,12 @@ export class TextInputComponent implements OnInit {
   }
 
   fieldOnChange(event: any) {
-    this.angularPConnectData.actions.onChange(this, event);
+    this.angularPConnectData.actions?.onChange(this, event);
   }
-
-  fieldOnClick(event: any) {}
 
   fieldOnBlur(event: any) {
     // PConnect wants to use eventHandler for onBlur
-    this.angularPConnectData.actions.onBlur(this, event);
+    this.angularPConnectData.actions?.onBlur(this, event);
   }
 
   getErrorMessage() {
@@ -163,7 +169,7 @@ export class TextInputComponent implements OnInit {
 
     // look for validation messages for json, pre-defined or just an error pushed from workitem (400)
     if (this.fieldControl.hasError('message')) {
-      errMessage = this.angularPConnectData.validateMessage;
+      errMessage = this.angularPConnectData.validateMessage ?? '';
       return errMessage;
     } else if (this.fieldControl.hasError('required')) {
       errMessage = 'You must enter a value';
@@ -174,4 +180,3 @@ export class TextInputComponent implements OnInit {
     return errMessage;
   }
 }
-

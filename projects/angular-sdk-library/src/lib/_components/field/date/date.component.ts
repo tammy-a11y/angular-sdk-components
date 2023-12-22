@@ -9,13 +9,17 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MAT_DATE_FORMATS } from '@angular/material/core';
 import { MomentDateModule } from '@angular/material-moment-adapter';
 import { interval } from 'rxjs';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { dateFormatInfoDefault, getDateFormatInfo } from '../../../_helpers/date-format-utils';
+import { PConnFieldProps } from '../../../_types/PConnProps.interface';
+
+interface DateProps extends PConnFieldProps {
+  // If any, enter additional props that only exist on Date here
+}
 
 class MyFormat {
-  constructor() {}
   theDateFormat: any = getDateFormatInfo();
 
   get display() {
@@ -52,24 +56,26 @@ class MyFormat {
   providers: [{ provide: MAT_DATE_FORMATS, useClass: MyFormat }]
 })
 export class DateComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
   // Used with AngularPConnect
-  angularPConnectData: any = {};
-  configProps$: Object;
+  angularPConnectData: AngularPConnectData = {};
+  configProps$: DateProps;
+
   label$: string = '';
   value$: any;
   bRequired$: boolean = false;
   bReadonly$: boolean = false;
   bDisabled$: boolean = false;
   bVisible$: boolean = true;
-  displayMode$: string = '';
+  displayMode$?: string = '';
   controlName$: string;
   bHasForm$: boolean = true;
   componentReference: string = '';
   testId: string = '';
   helperText: string;
+  placeholder: string;
 
   fieldControl = new FormControl('', null);
 
@@ -93,7 +99,7 @@ export class DateComponent implements OnInit {
 
     // Then, continue on with other initialization
     // call updateSelf when initializing
-    //this.updateSelf();
+    // this.updateSelf();
     this.checkAndUpdate();
 
     if (this.formGroup$ != null) {
@@ -137,11 +143,11 @@ export class DateComponent implements OnInit {
   updateSelf(): void {
     // starting very simple...
     // moved this from ngOnInit() and call this from there instead...
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as DateProps;
 
-    if (this.configProps$['value'] != undefined) {
+    if (this.configProps$.value != undefined) {
       let sDateValue: any = '';
-      sDateValue = this.configProps$['value'];
+      sDateValue = this.configProps$.value;
 
       if (sDateValue != '') {
         if (typeof sDateValue == 'object') {
@@ -154,26 +160,27 @@ export class DateComponent implements OnInit {
         this.value$ = new Date(sDateValue);
       }
     }
-    this.testId = this.configProps$['testId'];
-    this.label$ = this.configProps$['label'];
-    this.displayMode$ = this.configProps$['displayMode'];
-    this.helperText = this.configProps$['helperText'];
+    this.testId = this.configProps$.testId;
+    this.label$ = this.configProps$.label;
+    this.displayMode$ = this.configProps$.displayMode;
+    this.helperText = this.configProps$.helperText;
+    this.placeholder = this.configProps$.placeholder || '';
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
-      if (this.configProps$['required'] != null) {
-        this.bRequired$ = this.utils.getBooleanValue(this.configProps$['required']);
+      if (this.configProps$.required != null) {
+        this.bRequired$ = this.utils.getBooleanValue(this.configProps$.required);
       }
       this.cdRef.detectChanges();
     });
 
-    if (this.configProps$['visibility'] != null) {
-      this.bVisible$ = this.utils.getBooleanValue(this.configProps$['visibility']);
+    if (this.configProps$.visibility != null) {
+      this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
     }
 
     // disabled
-    if (this.configProps$['disabled'] != undefined) {
-      this.bDisabled$ = this.utils.getBooleanValue(this.configProps$['disabled']);
+    if (this.configProps$.disabled != undefined) {
+      this.bDisabled$ = this.utils.getBooleanValue(this.configProps$.disabled);
     }
 
     if (this.bDisabled$) {
@@ -182,15 +189,15 @@ export class DateComponent implements OnInit {
       this.fieldControl.enable();
     }
 
-    if (this.configProps$['readOnly'] != null) {
-      this.bReadonly$ = this.utils.getBooleanValue(this.configProps$['readOnly']);
+    if (this.configProps$.readOnly != null) {
+      this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
     }
 
-    this.componentReference = this.pConn$.getStateProps().value;
+    this.componentReference = (this.pConn$.getStateProps() as any).value;
 
     // trigger display of error message with field control
     if (this.angularPConnectData.validateMessage != null && this.angularPConnectData.validateMessage != '') {
-      let timer = interval(100).subscribe(() => {
+      const timer = interval(100).subscribe(() => {
         this.fieldControl.setErrors({ message: true });
         this.fieldControl.markAsTouched();
 
@@ -199,16 +206,14 @@ export class DateComponent implements OnInit {
     }
   }
 
-  fieldOnDateChange(event: any, sValue: string) {
+  fieldOnDateChange(event: any) {
     // this comes from the date pop up
     if (typeof event.value == 'object') {
       // convert date to pega "date" format
       event.value = event.value?.toISOString();
     }
-    this.angularPConnectData.actions.onChange(this, { value: event.value });
+    this.angularPConnectData.actions?.onChange(this, { value: event.value });
   }
-
-  fieldOnClick(event: any) {}
 
   fieldOnBlur(event: any) {
     // PConnect wants to use eventHandler for onBlur
@@ -216,7 +221,7 @@ export class DateComponent implements OnInit {
       // convert date to pega "date" format
       event.value = event.value?.toISOString();
     }
-    this.angularPConnectData.actions.onBlur(this, { value: event.value });
+    this.angularPConnectData.actions?.onBlur(this, { value: event.value });
   }
 
   hasErrors() {
@@ -227,12 +232,12 @@ export class DateComponent implements OnInit {
     let errMessage: string = '';
     // look for validation messages for json, pre-defined or just an error pushed from workitem (400)
     if (this.fieldControl.hasError('message')) {
-      errMessage = this.angularPConnectData.validateMessage;
+      errMessage = this.angularPConnectData.validateMessage ?? '';
       return errMessage;
     } else if (this.fieldControl.hasError('required')) {
       errMessage = 'You must enter a value';
     } else if (this.fieldControl.errors) {
-      errMessage = `${this.fieldControl.errors.matDatepickerParse.text} is not a valid date value`;
+      errMessage = `${this.fieldControl.errors['matDatepickerParse'].text} is not a valid date value`;
     }
     return errMessage;
   }

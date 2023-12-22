@@ -9,14 +9,18 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { interval } from 'rxjs';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { dateFormatInfoDefault, getDateFormatInfo } from '../../../_helpers/date-format-utils';
 import { handleEvent } from '../../../_helpers/event-util';
+import { PConnFieldProps } from '../../../_types/PConnProps.interface';
+
+interface DateTimeProps extends PConnFieldProps {
+  // If any, enter additional props that only exist on DateTime here
+}
 
 class MyFormat {
-  constructor() {}
   theDateFormat: any = getDateFormatInfo();
 
   get display() {
@@ -55,20 +59,20 @@ class MyFormat {
   providers: [{ provide: NGX_MAT_DATE_FORMATS, useClass: MyFormat }]
 })
 export class DateTimeComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
   // Used with AngularPConnect
-  angularPConnectData: any = {};
-  configProps$: Object;
+  angularPConnectData: AngularPConnectData = {};
+  configProps$: DateTimeProps;
 
   label$: string = '';
-  value$: any;
+  value$: string;
   bRequired$: boolean = false;
   bReadonly$: boolean = false;
   bDisabled$: boolean = false;
   bVisible$: boolean = true;
-  displayMode$: string = '';
+  displayMode$?: string = '';
   controlName$: string;
   bHasForm$: boolean = true;
   componentReference: string = '';
@@ -84,9 +88,13 @@ export class DateTimeComponent implements OnInit {
   dateFormatInfo = dateFormatInfoDefault;
   // and then update, as needed, based on locale, etc.
   theDateFormat: any = getDateFormatInfo();
-  placeholder: any;
+  placeholder: string;
 
-  constructor(private angularPConnect: AngularPConnectService, private cdRef: ChangeDetectorRef, private utils: Utils) {}
+  constructor(
+    private angularPConnect: AngularPConnectService,
+    private cdRef: ChangeDetectorRef,
+    private utils: Utils
+  ) {}
 
   ngOnInit(): void {
     this.placeholder = `${this.theDateFormat.dateFormatStringLC}, hh:mm a`;
@@ -95,7 +103,7 @@ export class DateTimeComponent implements OnInit {
     this.controlName$ = this.angularPConnect.getComponentID(this);
     // Then, continue on with other initialization
     // call updateSelf when initializing
-    //this.updateSelf();
+    // this.updateSelf();
     this.checkAndUpdate();
 
     if (this.formGroup$ != null) {
@@ -138,28 +146,28 @@ export class DateTimeComponent implements OnInit {
   updateSelf(): void {
     // starting very simple...
     // moved this from ngOnInit() and call this from there instead...
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as DateTimeProps;
 
-    this.label$ = this.configProps$['label'];
-    this.displayMode$ = this.configProps$['displayMode'];
-    this.testId = this.configProps$['testId'];
-    this.helperText = this.configProps$['helperText'];
+    this.label$ = this.configProps$.label;
+    this.displayMode$ = this.configProps$.displayMode;
+    this.testId = this.configProps$.testId;
+    this.helperText = this.configProps$.helperText;
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
-      if (this.configProps$['required'] != null) {
-        this.bRequired$ = this.utils.getBooleanValue(this.configProps$['required']);
+      if (this.configProps$.required != null) {
+        this.bRequired$ = this.utils.getBooleanValue(this.configProps$.required);
       }
       this.cdRef.detectChanges();
     });
 
-    if (this.configProps$['visibility'] != null) {
-      this.bVisible$ = this.utils.getBooleanValue(this.configProps$['visibility']);
+    if (this.configProps$.visibility != null) {
+      this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
     }
 
     // disabled
-    if (this.configProps$['disabled'] != undefined) {
-      this.bDisabled$ = this.utils.getBooleanValue(this.configProps$['disabled']);
+    if (this.configProps$.disabled != undefined) {
+      this.bDisabled$ = this.utils.getBooleanValue(this.configProps$.disabled);
     }
 
     if (this.bDisabled$) {
@@ -168,15 +176,15 @@ export class DateTimeComponent implements OnInit {
       this.fieldControl.enable();
     }
 
-    if (this.configProps$['readOnly'] != null) {
-      this.bReadonly$ = this.utils.getBooleanValue(this.configProps$['readOnly']);
+    if (this.configProps$.readOnly != null) {
+      this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
     }
 
-    this.componentReference = this.pConn$.getStateProps().value;
+    this.componentReference = (this.pConn$.getStateProps() as any).value;
 
     // trigger display of error message with field control
     if (this.angularPConnectData.validateMessage != null && this.angularPConnectData.validateMessage != '') {
-      let timer = interval(100).subscribe(() => {
+      const timer = interval(100).subscribe(() => {
         this.fieldControl.setErrors({ message: true });
         this.fieldControl.markAsTouched();
 
@@ -188,24 +196,22 @@ export class DateTimeComponent implements OnInit {
   fieldOnChange(event: any) {
     const value = event.value && event.value.isValid() ? event.value : null;
     const actionsApi = this.pConn$?.getActionsApi();
-    const propName = this.pConn$?.getStateProps().value;
+    const propName = (this.pConn$?.getStateProps() as any).value;
     handleEvent(actionsApi, 'changeNblur', propName, value?.toISOString());
   }
-
-  fieldOnClick(event: any) {}
 
   fieldOnBlur(event: any) {
     // PConnect wants to use eventHandler for onBlur
     if (event.target.value) event.value = event.target.value;
 
-    this.angularPConnectData.actions.onBlur(this, event);
+    this.angularPConnectData.actions?.onBlur(this, event);
   }
 
   getErrorMessage() {
     let errMessage: string = '';
     // look for validation messages for json, pre-defined or just an error pushed from workitem (400)
     if (this.fieldControl.hasError('message')) {
-      errMessage = this.angularPConnectData.validateMessage;
+      errMessage = this.angularPConnectData.validateMessage ?? '';
       return errMessage;
     } else if (this.fieldControl.hasError('required')) {
       errMessage = 'You must enter a value';

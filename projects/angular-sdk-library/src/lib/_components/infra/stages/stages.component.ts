@@ -1,10 +1,13 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { interval } from 'rxjs';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 
-declare const window: any;
+interface StagesProps {
+  // If any, enter additional props that only exist on this component
+  stages: Array<any>;
+}
 
 @Component({
   selector: 'app-stages',
@@ -14,29 +17,28 @@ declare const window: any;
   imports: [CommonModule]
 })
 export class StagesComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
 
   // Used with AngularPConnect
-  angularPConnectData: any = {};
-  PCore$: any;
-  configProps$: Object;
+  angularPConnectData: AngularPConnectData = {};
+  PCore$: typeof PCore = PCore;
+  configProps$: StagesProps;
 
   arStageResults$: Array<any>;
   lastStage$: any;
   checkSvgIcon$: string;
   key: string;
 
-  constructor(private angularPConnect: AngularPConnectService, private utils: Utils) {}
+  constructor(
+    private angularPConnect: AngularPConnectService,
+    private utils: Utils
+  ) {}
 
   ngOnInit(): void {
-    if (!this.PCore$) {
-      this.PCore$ = window.PCore;
-    }
-
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
 
-    const imagePath = this.utils.getIconPath(this.utils.getSDKStaticContentUrl());
+    // const imagePath = this.utils.getIconPath(this.utils.getSDKStaticContentUrl());
     this.checkSvgIcon$ = this.utils.getImageSrc('check', this.utils.getSDKStaticContentUrl());
     this.key = `${this.pConn$.getCaseInfo().getClassName()}!CASE!${this.pConn$.getCaseInfo().getName()}`.toUpperCase();
   }
@@ -64,14 +66,14 @@ export class StagesComponent implements OnInit {
   }
 
   updateSelf() {
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as StagesProps;
 
-    let timer = interval(50).subscribe(() => {
+    const timer = interval(50).subscribe(() => {
       timer.unsubscribe();
 
-      let arStages = this.angularPConnect.getComponentProp(this, 'stages');
+      const arStages = this.angularPConnect.getComponentProp(this, 'stages');
 
-      //this.stageResults$ = this.configProps$["stages"];
+      // this.stageResults$ = this.configProps$.stages;
       if (arStages != null) {
         this.arStageResults$ = arStages;
         this.lastStage$ = this.arStageResults$[this.arStageResults$.length - 1];

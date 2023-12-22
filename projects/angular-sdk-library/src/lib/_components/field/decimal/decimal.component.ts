@@ -3,11 +3,20 @@ import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { handleEvent } from '../../../_helpers/event-util';
 import { ThousandSeparatorDirective } from '../../../_directives/thousand-seperator.directive';
+import { PConnFieldProps } from '../../../_types/PConnProps.interface';
+
+interface DecimalProps extends PConnFieldProps {
+  // If any, enter additional props that only exist on Decimal here
+  currencyISOCode?: string;
+  decimalPrecision?: number;
+  showGroupSeparators?: string;
+}
+
 @Component({
   selector: 'app-decimal',
   templateUrl: './decimal.component.html',
@@ -24,12 +33,12 @@ import { ThousandSeparatorDirective } from '../../../_directives/thousand-sepera
   ]
 })
 export class DecimalComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
   // Used with AngularPConnect
-  angularPConnectData: any = {};
-  configProps$: Object;
+  angularPConnectData: AngularPConnectData = {};
+  configProps$: DecimalProps;
 
   label$: string = '';
   value$: number;
@@ -37,16 +46,21 @@ export class DecimalComponent implements OnInit {
   bReadonly$: boolean = false;
   bDisabled$: boolean = false;
   bVisible$: boolean = true;
-  displayMode$: string = '';
+  displayMode$?: string = '';
   controlName$: string;
   bHasForm$: boolean = true;
   componentReference: string = '';
   testId: string;
   helperText: string;
+  placeholder: string;
 
   fieldControl = new FormControl<number | null>(null, null);
 
-  constructor(private angularPConnect: AngularPConnectService, private cdRef: ChangeDetectorRef, private utils: Utils) {}
+  constructor(
+    private angularPConnect: AngularPConnectService,
+    private cdRef: ChangeDetectorRef,
+    private utils: Utils
+  ) {}
 
   ngOnInit(): void {
     // First thing in initialization is registering and subscribing to the AngularPConnect service
@@ -56,7 +70,7 @@ export class DecimalComponent implements OnInit {
     // Then, continue on with other initialization
 
     // call updateSelf when initializing
-    //this.updateSelf();
+    // this.updateSelf();
     this.checkAndUpdate();
 
     if (this.formGroup$ != null) {
@@ -101,38 +115,39 @@ export class DecimalComponent implements OnInit {
     // starting very simple...
 
     // moved this from ngOnInit() and call this from there instead...
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
-    this.testId = this.configProps$['testId'];
-    this.label$ = this.configProps$['label'];
-    this.displayMode$ = this.configProps$['displayMode'];
-    let nValue = this.configProps$['value'];
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as DecimalProps;
+    this.testId = this.configProps$.testId;
+    this.label$ = this.configProps$.label;
+    this.displayMode$ = this.configProps$.displayMode;
+    let nValue: any = this.configProps$.value;
     if (nValue) {
-      if (typeof nValue == 'string') {
+      if (typeof nValue === 'string') {
         nValue = parseFloat(nValue);
       }
       this.value$ = nValue;
     }
-    this.helperText = this.configProps$['helperText'];
+    this.helperText = this.configProps$.helperText;
+    this.placeholder = this.configProps$.placeholder || '';
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
-      if (this.configProps$['required'] != null) {
-        this.bRequired$ = this.utils.getBooleanValue(this.configProps$['required']);
+      if (this.configProps$.required != null) {
+        this.bRequired$ = this.utils.getBooleanValue(this.configProps$.required);
       }
       this.cdRef.detectChanges();
     });
 
-    if (this.configProps$['visibility'] != null) {
-      this.bVisible$ = this.utils.getBooleanValue(this.configProps$['visibility']);
+    if (this.configProps$.visibility != null) {
+      this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
     }
 
-    if (this.configProps$['readOnly'] != null) {
-      this.bReadonly$ = this.utils.getBooleanValue(this.configProps$['readOnly']);
+    if (this.configProps$.readOnly != null) {
+      this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
     }
 
     // disabled
-    if (this.configProps$['disabled'] != undefined) {
-      this.bDisabled$ = this.utils.getBooleanValue(this.configProps$['disabled']);
+    if (this.configProps$.disabled != undefined) {
+      this.bDisabled$ = this.utils.getBooleanValue(this.configProps$.disabled);
     }
 
     if (this.bDisabled$) {
@@ -141,19 +156,15 @@ export class DecimalComponent implements OnInit {
       this.fieldControl.enable();
     }
 
-    this.componentReference = this.pConn$.getStateProps().value;
+    this.componentReference = (this.pConn$.getStateProps() as any).value;
   }
-
-  fieldOnChange(event: any) {}
-
-  fieldOnClick(event: any) {}
 
   fieldOnBlur(event: any) {
     const actionsApi = this.pConn$?.getActionsApi();
-    const propName = this.pConn$?.getStateProps().value;
+    const propName = (this.pConn$?.getStateProps() as any).value;
     let value = event?.target?.value;
     value = value.replace(/,/g, '');
-    value !== '' ? Number(value) : value;
+    value = value !== '' ? Number(value) : value;
     handleEvent(actionsApi, 'changeNblur', propName, value);
   }
 
@@ -162,7 +173,7 @@ export class DecimalComponent implements OnInit {
 
     // look for validation messages for json, pre-defined or just an error pushed from workitem (400)
     if (this.fieldControl.hasError('message')) {
-      errMessage = this.angularPConnectData.validateMessage;
+      errMessage = this.angularPConnectData.validateMessage ?? '';
       return errMessage;
     } else if (this.fieldControl.hasError('required')) {
       errMessage = 'You must enter a value';

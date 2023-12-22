@@ -11,13 +11,10 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class NarrowWideFormComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
-  configProps$: Object;
   arChildren$: Array<any>;
-
-  constructor() {}
 
   ngOnInit() {
     this.updateSelf();
@@ -32,7 +29,6 @@ export class NarrowWideFormComponent implements OnInit {
   }
 
   updateSelf() {
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
-    this.arChildren$ = this.pConn$.getChildren();
+    this.arChildren$ = this.pConn$.getChildren() as Array<any>;
   }
 }

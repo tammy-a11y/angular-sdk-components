@@ -1,8 +1,17 @@
 import { CommonModule } from '@angular/common';
 import { Component, forwardRef, Input } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { PConnFieldProps } from '../../../_types/PConnProps.interface';
+
+interface ScalarListProps extends Omit<PConnFieldProps, 'value'> {
+  // If any, enter additional props that only exist on ScalarList here
+  displayInModal: boolean;
+  value: Array<any>;
+  componentType: string;
+  restProps?: object;
+}
 
 @Component({
   selector: 'app-scalar-list',
@@ -12,16 +21,17 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class ScalarListComponent {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
-  configProps$: Object;
+  angularPConnectData: AngularPConnectData = {};
+  configProps$: ScalarListProps;
+
   label$: string = '';
   value$: any;
-  displayMode$: string = '';
+  displayMode$?: string = '';
   items: Array<any>;
   isDisplayModeEnabled: Boolean = false;
-  angularPConnectData: any = {};
   controlName$: string;
   fieldControl = new FormControl('', null);
   bHasForm$: boolean = true;
@@ -36,7 +46,7 @@ export class ScalarListComponent {
     // Then, continue on with other initialization
 
     // call updateSelf when initializing
-    //this.updateSelf();
+    // this.updateSelf();
     this.checkAndUpdate();
 
     if (this.formGroup$ != null) {
@@ -78,12 +88,12 @@ export class ScalarListComponent {
 
   // updateSelf
   updateSelf(): void {
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
-    this.label$ = this.configProps$['label'];
-    const componentType = this.configProps$['componentType'];
-    const scalarValues = this.configProps$['value'];
-    this.displayMode$ = this.configProps$['displayMode'];
-    const restProps = this.configProps$['restProps'];
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as ScalarListProps;
+    this.label$ = this.configProps$.label;
+    const componentType = this.configProps$.componentType;
+    const scalarValues = this.configProps$.value;
+    this.displayMode$ = this.configProps$.displayMode;
+    const restProps = this.configProps$.restProps;
     console.log('scalar values: ', scalarValues);
     this.items = scalarValues?.map((scalarValue) => {
       console.log('scalar value: ', scalarValue);
@@ -103,7 +113,7 @@ export class ScalarListComponent {
         {}
       ); // 2nd, 3rd, and 4th args empty string/object/null until typedef marked correctly as optional;
     });
-    this.isDisplayModeEnabled = ['LABELS_LEFT', 'STACKED_LARGE_VAL', 'DISPLAY_ONLY'].includes(this.displayMode$);
+    this.isDisplayModeEnabled = ['LABELS_LEFT', 'STACKED_LARGE_VAL', 'DISPLAY_ONLY'].includes(this.displayMode$ as string);
     this.value$ = this.items;
   }
 }

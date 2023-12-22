@@ -9,24 +9,22 @@
           <label class="mat-form-field-label psdk-label-readonly">{{ label$ }}</label>
         </span>
         <mat-checkbox
-          [labelPosition]="checkboxLabelPos$"
+          [labelPosition]="'after'"
           [checked]="isChecked$"
           [disabled]="bDisabled$"
           [attr.data-test-id]="testId"
           (change)="fieldOnChange($event)"
-          (click)="fieldOnClick($event)"
           (blur)="fieldOnBlur($event)"
           >{{ caption$ }}</mat-checkbox
         >
       </div>
       <div class="mat-form-field-infix" *ngIf="!bReadonly$ && !showLabel$">
         <mat-checkbox
-          [labelPosition]="checkboxLabelPos$"
+          [labelPosition]="'after'"
           [checked]="isChecked$"
           [disabled]="bDisabled$"
           [attr.data-test-id]="testId"
           (change)="fieldOnChange($event)"
-          (click)="fieldOnClick($event)"
           (blur)="fieldOnBlur($event)"
           >{{ caption$ }}</mat-checkbox
         >

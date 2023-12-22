@@ -9,7 +9,7 @@
         <!-- <span matPrefix>% &nbsp;</span> -->
         <input
           matInput
-          [placeholder]=""
+          [placeholder]="placeholder"
           type="number"
           step=".01"
           [value]="value$"
@@ -17,7 +17,6 @@
           [formControlName]="controlName$"
           [attr.data-test-id]="testId"
           (change)="fieldOnChange($event)"
-          (click)="fieldOnClick($event)"
           (blur)="fieldOnBlur($event)"
         />
         <mat-error *ngIf="fieldControl.invalid">{{ getErrorMessage() }}</mat-error>

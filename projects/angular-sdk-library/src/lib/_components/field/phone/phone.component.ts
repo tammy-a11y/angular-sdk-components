@@ -5,9 +5,15 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { interval } from 'rxjs';
 import { NgxMatIntlTelInputComponent } from 'ngx-mat-intl-tel-input';
 import { Utils } from '../../../_helpers/utils';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { handleEvent } from '../../../_helpers/event-util';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { PConnFieldProps } from '../../../_types/PConnProps.interface';
+
+interface PhoneProps extends PConnFieldProps {
+  // If any, enter additional props that only exist on Phone here
+}
+
 @Component({
   selector: 'app-phone',
   templateUrl: './phone.component.html',
@@ -16,12 +22,12 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, NgxMatIntlTelInputComponent, forwardRef(() => ComponentMapperComponent)]
 })
 export class PhoneComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
   // Used with AngularPConnect
-  angularPConnectData: any = {};
-  configProps$: Object;
+  angularPConnectData: AngularPConnectData = {};
+  configProps$: PhoneProps;
 
   label$: string = '';
   value$: string;
@@ -29,7 +35,7 @@ export class PhoneComponent implements OnInit {
   bReadonly$: boolean = false;
   bDisabled$: boolean = false;
   bVisible$: boolean = true;
-  displayMode$: string = '';
+  displayMode$?: string = '';
   controlName$: string;
   bHasForm$: boolean = true;
   componentReference: string = '';
@@ -41,7 +47,7 @@ export class PhoneComponent implements OnInit {
   fieldControl = new FormControl('', null);
 
   phoneForm = new FormGroup({
-    phone: new FormControl(undefined)
+    phone: new FormControl<string | null>(null)
   });
 
   constructor(
@@ -58,7 +64,7 @@ export class PhoneComponent implements OnInit {
     // Then, continue on with other initialization
 
     // call updateSelf when initializing
-    //this.updateSelf();
+    // this.updateSelf();
     this.checkAndUpdate();
 
     if (this.formGroup$ != null) {
@@ -101,31 +107,31 @@ export class PhoneComponent implements OnInit {
   // updateSelf
   updateSelf(): void {
     // moved this from ngOnInit() and call this from there instead...
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as PhoneProps;
 
-    this.label$ = this.configProps$['label'];
-    this.displayMode$ = this.configProps$['displayMode'];
-    this.testId = this.configProps$['testId'];
-    if (this.configProps$['value'] != undefined) {
-      this.value$ = this.configProps$['value'];
+    this.label$ = this.configProps$.label;
+    this.displayMode$ = this.configProps$.displayMode;
+    this.testId = this.configProps$.testId;
+    if (this.configProps$.value != undefined) {
+      this.value$ = this.configProps$.value;
     }
-    this.helperText = this.configProps$['helperText'];
+    this.helperText = this.configProps$.helperText;
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
-      if (this.configProps$['required'] != null) {
-        this.bRequired$ = this.utils.getBooleanValue(this.configProps$['required']);
+      if (this.configProps$.required != null) {
+        this.bRequired$ = this.utils.getBooleanValue(this.configProps$.required);
       }
       this.cdRef.detectChanges();
     });
 
-    if (this.configProps$['visibility'] != null) {
-      this.bVisible$ = this.utils.getBooleanValue(this.configProps$['visibility']);
+    if (this.configProps$.visibility != null) {
+      this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
     }
 
     // disabled
-    if (this.configProps$['disabled'] != undefined) {
-      this.bDisabled$ = this.utils.getBooleanValue(this.configProps$['disabled']);
+    if (this.configProps$.disabled != undefined) {
+      this.bDisabled$ = this.utils.getBooleanValue(this.configProps$.disabled);
     }
 
     if (this.bDisabled$) {
@@ -134,8 +140,8 @@ export class PhoneComponent implements OnInit {
       this.fieldControl.enable();
     }
 
-    if (this.configProps$['readOnly'] != null) {
-      this.bReadonly$ = this.utils.getBooleanValue(this.configProps$['readOnly']);
+    if (this.configProps$.readOnly != null) {
+      this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
     }
 
     if (this.bReadonly$) {
@@ -144,7 +150,7 @@ export class PhoneComponent implements OnInit {
 
     // trigger display of error message with field control
     if (this.angularPConnectData.validateMessage != null && this.angularPConnectData.validateMessage != '') {
-      let timer = interval(100).subscribe(() => {
+      const timer = interval(100).subscribe(() => {
         this.fieldControl.setErrors({ message: true });
         this.fieldControl.markAsTouched();
 
@@ -153,10 +159,10 @@ export class PhoneComponent implements OnInit {
     }
   }
 
-  fieldOnChange(event: any) {
+  fieldOnChange() {
     if (this.formGroup$.controls[this.controlName$].value) {
       const actionsApi = this.pConn$?.getActionsApi();
-      const propName = this.pConn$?.getStateProps().value;
+      const propName = (this.pConn$?.getStateProps() as any).value;
       const value = this.formGroup$.controls[this.controlName$].value;
       const eventObj = {
         target: {
@@ -164,14 +170,14 @@ export class PhoneComponent implements OnInit {
         }
       };
       this.afterBlur = true;
-      this.angularPConnectData.actions.onChange(this, eventObj);
+      this.angularPConnectData.actions?.onChange(this, eventObj);
       handleEvent(actionsApi, 'blur', propName, value);
     }
   }
 
   fieldOnBlur(event: any) {
     // PConnect wants to use eventHandler for onBlur
-    this.angularPConnectData.actions.onBlur(this, event);
+    this.angularPConnectData.actions?.onBlur(this, event);
   }
 
   getErrorMessage() {
@@ -179,7 +185,7 @@ export class PhoneComponent implements OnInit {
 
     // look for validation messages for json, pre-defined or just an error pushed from workitem (400)
     if (this.fieldControl.hasError('message')) {
-      errMessage = this.angularPConnectData.validateMessage;
+      errMessage = this.angularPConnectData.validateMessage ?? '';
       return errMessage;
     } else if (this.fieldControl.hasError('required')) {
       errMessage = 'You must enter a value';
@@ -190,4 +196,3 @@ export class PhoneComponent implements OnInit {
     return errMessage;
   }
 }
-

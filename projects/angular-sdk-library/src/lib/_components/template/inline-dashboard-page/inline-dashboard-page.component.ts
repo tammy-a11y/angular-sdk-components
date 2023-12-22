@@ -4,6 +4,13 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { buildFilterComponents } from '../../../_helpers/filter-utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
+interface InlineDashboardPageProps {
+  // If any, enter additional props that only exist on this component
+  title: string;
+  icon?: string;
+  filterPosition?: string;
+}
+
 @Component({
   selector: 'app-inline-dashboard-page',
   templateUrl: './inline-dashboard-page.component.html',
@@ -12,13 +19,14 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class InlineDashboardPageComponent implements OnInit, OnChanges {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
 
-  configProps$: Object;
+  configProps$: InlineDashboardPageProps;
   filterComponents: any;
   inlineProps: any;
   children: any = [];
   filtersFormGroup$: FormGroup;
+
   constructor(private fb: FormBuilder) {
     this.filtersFormGroup$ = this.fb.group({ hideRequired: false });
   }
@@ -36,9 +44,9 @@ export class InlineDashboardPageComponent implements OnInit, OnChanges {
   }
 
   updateSelf() {
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
-    const arChildren$ = this.pConn$.getChildren();
-    const allFilters = this.pConn$.getRawMetadata().children[1];
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as InlineDashboardPageProps;
+    const arChildren$ = this.pConn$.getChildren() as Array<any>;
+    const allFilters = (this.pConn$.getRawMetadata() as any).children[1];
     const filterComponents = buildFilterComponents(this.pConn$, allFilters);
     this.inlineProps = this.configProps$;
     this.children[0] = arChildren$[0];

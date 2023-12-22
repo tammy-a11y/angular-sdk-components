@@ -1,11 +1,7 @@
-declare const PCore;
-
-declare const window: any;
-
 const FeedApi = (pConnect) => {
   const { invokeRestApi, getCancelTokenSource, isRequestCanceled } = PCore.getRestClient();
-  const appName = window.PCore.getEnvironmentInfo().getApplicationName();
-  let mentionsTagsCancelTokenSource = [];
+  const appName = PCore.getEnvironmentInfo().getApplicationName();
+  let mentionsTagsCancelTokenSource: any = [];
 
   const getPulseContext = (pulseContext) => {
     if (pulseContext && pulseContext.indexOf('DATA-PORTAL') !== -1) {
@@ -27,7 +23,7 @@ const FeedApi = (pConnect) => {
       filterForContext: pulseContext,
       feedID,
       feedClass,
-      filterBy,
+      filterBy
     };
 
     for (let i = 0; i < fetchMessagesCancelTokenSource.length; i += 1) {
@@ -38,9 +34,10 @@ const FeedApi = (pConnect) => {
 
     return invokeRestApi(
       'getFeedMessages',
+      // @ts-ignore -  PCore.getRestClient().invokeRestApi(): 2nd parameter missing the following properties from type 'RestApiOptionsObject': body, headers
       {
         queryPayload,
-        cancelTokenSource: newCancelTokenSource,
+        cancelTokenSource: newCancelTokenSource
       },
       pConnect.getContextName()
     )
@@ -48,7 +45,7 @@ const FeedApi = (pConnect) => {
         if (response.status === 200 && response.data) {
           fetchMessagesCancelTokenSource.pop();
 
-          const respMessageIDs = [];
+          const respMessageIDs: Array<string> = [];
           const respMessages = {};
           const feedViewResponse = response.data;
           if (response.data) {
@@ -73,7 +70,7 @@ const FeedApi = (pConnect) => {
                       id: feedFilter.pyFeedSourceReference,
                       label: feedFilter.pyLabel,
                       disabled: false,
-                      on: feedFilter.pySelected,
+                      on: feedFilter.pySelected
                     };
                     if (!feedFilterItem.on) allFilter = false;
                     feedFilters.push(feedFilterItem);
@@ -90,19 +87,19 @@ const FeedApi = (pConnect) => {
               pulse: {
                 messages: respMessages,
                 messageIDs: respMessageIDs,
-                feedViewResponse,
-              },
+                feedViewResponse
+              }
             });
           else
             pConnect.updateState({
               pulse: {
                 messages: {
                   ...pConnect.getValue(`pulse.messages`),
-                  ...respMessages,
+                  ...respMessages
                 },
                 messageIDs: [...pConnect.getValue(`pulse.messageIDs`), ...respMessageIDs],
-                feedViewResponse,
-              },
+                feedViewResponse
+              }
             });
           return feedFilters;
         }
@@ -122,9 +119,10 @@ const FeedApi = (pConnect) => {
     const reqBody = JSON.stringify({
       context: pulseContext,
       message,
-      attachments: attachmentIDs,
+      attachments: attachmentIDs
     });
 
+    // @ts-ignore - Type 'string' is not assignable to type 'object': The expected type comes from property 'body' which is declared here on type 'RestApiOptionsObject'
     invokeRestApi('postFeedMessages', { body: reqBody }, pConnect.getContextName())
       .then((response) => {
         if (response.status === 201 && response.data) {
@@ -137,7 +135,7 @@ const FeedApi = (pConnect) => {
               pyFeedTitle: messageData.postedByUser.name,
               pyCommentContext: 'pzInsKey',
               pyIconType: 'user',
-              pyIconReference: 'pi pi-case',
+              pyIconReference: 'pi pi-case'
             },
             postedByUser: messageData.postedByUser,
             pyMessage: messageData.message,
@@ -145,7 +143,7 @@ const FeedApi = (pConnect) => {
             pyMessageViewReference: 'pzPostDetails',
             pxIcon: 'globe',
             pxResults: [],
-            tags: messageData.tags || [],
+            tags: messageData.tags || []
           };
 
           if (isReply) {
@@ -160,15 +158,15 @@ const FeedApi = (pConnect) => {
               pConnect.updateState({
                 pulse: {
                   messages: { ...messages, [messageObject.ID]: messageObject },
-                  messageIDs: [messageObject.ID, ...messageIDs],
-                },
+                  messageIDs: [messageObject.ID, ...messageIDs]
+                }
               });
             } else {
               pConnect.updateState({
                 pulse: {
                   messages: { [messageObject.ID]: messageObject },
-                  messageIDs: [messageObject.ID],
-                },
+                  messageIDs: [messageObject.ID]
+                }
               });
             }
           }
@@ -185,12 +183,13 @@ const FeedApi = (pConnect) => {
     pulseContext = getPulseContext(pulseContext);
     const routeKey = unLiked ? 'unlikeFeedMessages' : 'likeFeedMessages';
     const body = JSON.stringify({
-      ContextClass: pulseContext,
+      ContextClass: pulseContext
     });
     const queryPayload = {
-      pulseContext,
+      pulseContext
     };
 
+    // @ts-ignore - Type 'string' is not assignable to type 'object': The expected type comes from property 'body' which is declared here on type 'RestApiOptionsObject'
     invokeRestApi(routeKey, { body, queryPayload }, pConnect.getContextName())
       .then((response) => {
         if (response.status === 200) {
@@ -212,7 +211,7 @@ const FeedApi = (pConnect) => {
                 }
                 reply.pyLikes = {
                   pxLikeCount: updatedLikeCount,
-                  pxIsLiked: updatedLikedFlag,
+                  pxIsLiked: updatedLikedFlag
                 };
               }
               return reply;
@@ -222,10 +221,10 @@ const FeedApi = (pConnect) => {
               pulse: {
                 messages: {
                   [messageID]: {
-                    pxResults,
-                  },
-                },
-              },
+                    pxResults
+                  }
+                }
+              }
             });
           } else {
             const msg = { ...pConnect.getValue(`pulse.messages.${messageID}`) };
@@ -243,15 +242,15 @@ const FeedApi = (pConnect) => {
 
             msg.pyLikes = {
               pxLikeCount: updatedLikeCount,
-              pxIsLiked: updatedLikedFlag,
+              pxIsLiked: updatedLikedFlag
             };
 
             pConnect.updateState({
               pulse: {
                 messages: {
-                  [pulseContext]: msg,
-                },
-              },
+                  [pulseContext]: msg
+                }
+              }
             });
           }
         } else {
@@ -269,9 +268,10 @@ const FeedApi = (pConnect) => {
       messageKey = replyID;
     }
     const queryPayload = {
-      messageID: messageKey,
+      messageID: messageKey
     };
 
+    // @ts-ignore -  PCore.getRestClient().invokeRestApi(): 2nd parameter missing the following properties from type 'RestApiOptionsObject': body, headers, cancelTokenSource
     invokeRestApi('deleteFeedMessage', { queryPayload }, pConnect.getContextName())
       .then((response) => {
         if (response.status === 200) {
@@ -283,10 +283,10 @@ const FeedApi = (pConnect) => {
               pulse: {
                 messages: {
                   [messageID]: {
-                    pxResults,
-                  },
-                },
-              },
+                    pxResults
+                  }
+                }
+              }
             });
           } else {
             const msgIDs = pConnect.getValue(`pulse.messageIDs`);
@@ -298,8 +298,8 @@ const FeedApi = (pConnect) => {
             pConnect.updateState({
               pulse: {
                 messageIDs: newMsgIDs,
-                messages: msgs,
-              },
+                messages: msgs
+              }
             });
           }
         } else {
@@ -318,7 +318,7 @@ const FeedApi = (pConnect) => {
       pulseContext,
       searchFor,
       mentionsType,
-      listSize,
+      listSize
     };
 
     for (let i = 0; i < mentionsTagsCancelTokenSource.length; i += 1) {
@@ -329,9 +329,10 @@ const FeedApi = (pConnect) => {
 
     return invokeRestApi(
       'getMentionSuggestions',
+      // @ts-ignore -  PCore.getRestClient().invokeRestApi(): 2nd parameter missing the following properties from type 'RestApiOptionsObject': body, headers
       {
         queryPayload,
-        cancelTokenSource: newCancelTokenSource,
+        cancelTokenSource: newCancelTokenSource
       },
       pConnect.getContextName()
     )
@@ -342,7 +343,7 @@ const FeedApi = (pConnect) => {
           mentionSuggestions = response.data.map((mentionSuggestion) => {
             return {
               fullname: mentionSuggestion.caption,
-              id: mentionSuggestion.mentionsID,
+              id: mentionSuggestion.mentionsID
             };
           });
         } else {
@@ -361,7 +362,7 @@ const FeedApi = (pConnect) => {
     const { searchFor, listSize = 5 } = mentionProps;
     const queryPayload = {
       searchFor,
-      listSize,
+      listSize
     };
 
     for (let i = 0; i < mentionsTagsCancelTokenSource.length; i += 1) {
@@ -372,9 +373,10 @@ const FeedApi = (pConnect) => {
 
     return invokeRestApi(
       'getTagSuggestions',
+      // @ts-ignore -  PCore.getRestClient().invokeRestApi(): 2nd parameter missing the following properties from type 'RestApiOptionsObject': body, headers
       {
         queryPayload,
-        cancelTokenSource: newCancelTokenSource,
+        cancelTokenSource: newCancelTokenSource
       },
       pConnect.getContextName()
     )
@@ -401,7 +403,7 @@ const FeedApi = (pConnect) => {
     likeMessage,
     deleteMessage,
     getMentionSuggestions,
-    getTagSuggestions,
+    getTagSuggestions
   };
 };
 

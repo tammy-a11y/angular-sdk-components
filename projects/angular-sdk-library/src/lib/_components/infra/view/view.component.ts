@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, forwardRef, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { getAllFields } from '../../template/utils';
 import { ReferenceComponent } from '../reference/reference.component';
@@ -13,6 +13,15 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
  * is totally at your own risk.
  */
 
+interface ViewProps {
+  // If any, enter additional props that only exist on this component
+  template?: string;
+  label?: string;
+  showLabel: boolean;
+  title?: string;
+  visibility?: boolean;
+}
+
 @Component({
   selector: 'app-view',
   templateUrl: './view.component.html',
@@ -21,14 +30,14 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class ViewComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
   @Input() displayOnlyFA$: boolean;
-  //@Input() updateToken$: number;
+  // @Input() updateToken$: number;
 
-  angularPConnectData: any = {};
+  angularPConnectData: AngularPConnectData = {};
 
-  configProps$: Object;
+  configProps$: ViewProps;
   inheritedProps$: Object;
   arChildren$: Array<any>;
   templateName$: string;
@@ -36,7 +45,10 @@ export class ViewComponent implements OnInit {
   label$: string = '';
   showLabel$: boolean = true;
 
-  constructor(private angularPConnect: AngularPConnectService, private utils: Utils) {}
+  constructor(
+    private angularPConnect: AngularPConnectService,
+    private utils: Utils
+  ) {}
 
   ngOnInit() {
     // First thing in initialization is registering and subscribing to the AngularPConnect service
@@ -74,35 +86,35 @@ export class ViewComponent implements OnInit {
       return;
     }
 
-    //debugger;
+    // debugger;
 
     // normalize this.pConn$ in case it contains a 'reference'
     this.pConn$ = ReferenceComponent.normalizePConn(this.pConn$);
 
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as ViewProps;
     this.inheritedProps$ = this.pConn$.getInheritedProps();
 
-    // NOTE: this.configProps$['visibility'] is used in view.component.ts such that
-    //  the View will only be rendered when this.configProps$['visibility'] is false.
+    // NOTE: this.configProps$.visibility'] is used in view.component.ts such that
+    //  the View will only be rendered when this.configProps$.visibility'] is false.
     //  It WILL render if true or undefined.
 
-    this.templateName$ = 'template' in this.configProps$ ? (this.configProps$['template'] as string) : '';
-    this.title$ = 'title' in this.configProps$ ? (this.configProps$['title'] as string) : '';
-    this.label$ = 'label' in this.configProps$ ? (this.configProps$['label'] as string) : '';
-    this.showLabel$ = 'showLabel' in this.configProps$ ? (this.configProps$['showLabel'] as boolean) : this.showLabel$;
+    this.templateName$ = this.configProps$.template || '';
+    this.title$ = this.configProps$.title || '';
+    this.label$ = this.configProps$.label || '';
+    this.showLabel$ = this.configProps$.showLabel || this.showLabel$;
     // label & showLabel within inheritedProps takes precedence over configProps
-    this.label$ = 'label' in this.inheritedProps$ ? (this.inheritedProps$['label'] as string) : this.label$;
-    this.showLabel$ = 'showLabel' in this.inheritedProps$ ? (this.inheritedProps$['showLabel'] as boolean) : this.showLabel$;
+    this.label$ = this.inheritedProps$['label'] || this.label$;
+    this.showLabel$ = this.inheritedProps$['showLabel'] || this.showLabel$;
     // children may have a 'reference' so normalize the children array
     this.arChildren$ = ReferenceComponent.normalizePConnArray(this.pConn$.getChildren());
-    // was:  this.arChildren$ = this.pConn$.getChildren();
+    // was:  this.arChildren$ = this.pConn$.getChildren() as Array<any>;
 
     // debug
     // let  kidList: string = "";
     // for (let i in this.arChildren$) {
     //   kidList = kidList.concat(this.arChildren$[i].getPConnect().getComponentName()).concat(",");
     // }
-    //console.log("-->view update: " + this.angularPConnect.getComponentID(this) + ", template: " + this.templateName$ + ", kids: " + kidList);
+    // console.log("-->view update: " + this.angularPConnect.getComponentID(this) + ", template: " + this.templateName$ + ", kids: " + kidList);
   }
 
   // JA - adapting additionalProps from Nebula/Constellation version which uses static methods
@@ -129,6 +141,8 @@ export class ViewComponent implements OnInit {
         case 'Details':
           allFields = getAllFields(getPConnect);
           propObj = { fields: allFields[0] };
+          break;
+        default:
           break;
       }
     }

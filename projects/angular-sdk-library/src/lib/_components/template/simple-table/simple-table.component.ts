@@ -1,11 +1,16 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
-declare const window: any;
+interface SimpleTableProps {
+  // If any, enter additional props that only exist on this component
+  multiRecordDisplayAs: string;
+  contextClass: any;
+  visibility: boolean;
+}
 
 @Component({
   selector: 'app-simple-table',
@@ -15,24 +20,23 @@ declare const window: any;
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class SimpleTableComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
-  angularPConnectData: any = {};
-  PCore$: any;
+  angularPConnectData: AngularPConnectData = {};
 
   bVisible$: boolean = true;
-  configProps$: any;
+  configProps$: SimpleTableProps;
   fieldGroupProps: any;
 
-  constructor(private angularPConnect: AngularPConnectService, private utils: Utils) {}
+  constructor(
+    private angularPConnect: AngularPConnectService,
+    private utils: Utils
+  ) {}
 
   ngOnInit(): void {
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
-    if (!this.PCore$) {
-      this.PCore$ = window.PCore;
-    }
     // Then, continue on with other initialization
 
     // call checkAndUpdate when initializing
@@ -59,18 +63,20 @@ export class SimpleTableComponent implements OnInit {
   // updateSelf
   updateSelf(): void {
     // moved this from ngOnInit() and call this from there instead...
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as SimpleTableProps;
 
-    if (this.configProps$['visibility'] != null) {
+    if (this.configProps$.visibility != null) {
       // eslint-disable-next-line no-multi-assign
-      this.bVisible$ = this.bVisible$ = this.utils.getBooleanValue(this.configProps$['visibility']);
+      this.bVisible$ = this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
     }
 
     const { multiRecordDisplayAs } = this.configProps$;
     let { contextClass } = this.configProps$;
     if (!contextClass) {
+      // @ts-ignore - Property 'getComponentConfig' is private and only accessible within class 'C11nEnv'
       let listName = this.pConn$.getComponentConfig().referenceList;
-      listName = this.PCore$.getAnnotationUtils().getPropertyName(listName);
+      listName = PCore.getAnnotationUtils().getPropertyName(listName);
+      // @ts-ignore - Property 'getFieldMetadata' is private and only accessible within class 'C11nEnv'
       contextClass = this.pConn$.getFieldMetadata(listName)?.pageClass;
     }
     if (multiRecordDisplayAs === 'fieldGroup') {
@@ -83,4 +89,3 @@ export class SimpleTableComponent implements OnInit {
     this.checkAndUpdate();
   }
 }
-

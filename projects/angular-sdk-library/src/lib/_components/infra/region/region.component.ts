@@ -12,13 +12,10 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class RegionComponent implements OnInit, OnChanges {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
-  configProps$: Object;
   arChildren$: Array<any>;
-
-  constructor() {}
 
   ngOnInit() {
     // console.log(`ngOnInit (no registerAndSubscribe!): Region`);
@@ -34,8 +31,6 @@ export class RegionComponent implements OnInit, OnChanges {
   }
 
   updateSelf() {
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
-
     // The children may contain 'reference' components, so normalize the children...
     this.arChildren$ = ReferenceComponent.normalizePConnArray(this.pConn$.getChildren());
   }

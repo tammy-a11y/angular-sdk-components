@@ -12,7 +12,7 @@
         <label class="psdk-label-readonly">{{ label$ }}</label>
       </span>
       <!-- <mat-label>{{label$}}</mat-label> -->
-      <input matInput [placeholder]="" style="display: none" />
+      <input matInput [placeholder]="placeholder" style="display: none" />
       <mat-radio-group
         [value]="value$"
         [required]="bRequired$"
@@ -28,7 +28,7 @@
           [value]="opt.key"
           class="psdk-radio-button"
         >
-          {{ pConn$.getLocalizedValue(opt.value, localePath, pConn$.getLocaleRuleNameFromKeys(localeClass, localeContext, localeName)) }}
+          {{ getLocalizedOptionValue(opt) }}
         </mat-radio-button>
       </mat-radio-group>
       <mat-error *ngIf="fieldControl.invalid">{{ getErrorMessage() }}</mat-error>
