@@ -1,14 +1,11 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { EditorModule } from '@tinymce/tinymce-angular';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import handleEvent from '../../../_helpers/event-util';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
-
-declare let tinymce: any;
 
 interface RichTextProps extends PConnFieldProps {
   // If any, enter additional props that only exist on RichText here
@@ -19,7 +16,7 @@ interface RichTextProps extends PConnFieldProps {
   templateUrl: './rich-text.component.html',
   styleUrls: ['./rich-text.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, EditorModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [CommonModule, ReactiveFormsModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class RichTextComponent implements OnInit {
   @Input() pConn$: typeof PConnect;
