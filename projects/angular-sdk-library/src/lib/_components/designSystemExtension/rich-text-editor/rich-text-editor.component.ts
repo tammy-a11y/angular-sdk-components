@@ -24,7 +24,7 @@ export class RichTextEditorComponent implements OnInit {
   @Input() info;
   @Input() error;
   @Input() testId;
-  
+
   @Output() onBlur: EventEmitter<any> = new EventEmitter();
   @Output() onChange: EventEmitter<any> = new EventEmitter();
 
@@ -36,10 +36,15 @@ export class RichTextEditorComponent implements OnInit {
     if (this.required) {
       this.richText.addValidators(Validators.required);
     }
+
     if (this.disabled) {
       this.richText.disable();
     } else {
       this.richText.enable();
+    }
+
+    if (this.value) {
+      this.richText.setValue(this.value);
     }
   }
 
@@ -74,8 +79,11 @@ export class RichTextEditorComponent implements OnInit {
     input.click();
   };
 
-  blur(event) {
-    this.onBlur.emit(event);
+  blur() {
+    if (tinymce.activeEditor) {
+      const editorValue = tinymce.activeEditor.getContent({ format: 'html' });
+      this.onBlur.emit(editorValue);
+    }
   }
 
   change(event) {

@@ -22,7 +22,7 @@
         file_picker_types: 'image',
         file_picker_callback: filePickerCallback
       }"
-      (onBlur)="blur($event)"
+      (onBlur)="blur()"
       (onChange)="change($event)"
     ></editor>
     <p *ngIf="richText.invalid" [ngClass]="'text-editor-error'">{{ info }}</p>

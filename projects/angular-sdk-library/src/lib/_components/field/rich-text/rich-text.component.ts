@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
+import { EditorModule } from '@tinymce/tinymce-angular';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
@@ -19,8 +19,7 @@ interface RichTextProps extends PConnFieldProps {
   templateUrl: './rich-text.component.html',
   styleUrls: ['./rich-text.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, EditorModule, forwardRef(() => ComponentMapperComponent)],
-  providers: [{ provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' }]
+  imports: [CommonModule, ReactiveFormsModule, EditorModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class RichTextComponent implements OnInit {
   @Input() pConn$: typeof PConnect;
@@ -126,14 +125,10 @@ export class RichTextComponent implements OnInit {
     }
   }
 
-  fieldOnBlur(event: any) {
+  fieldOnBlur(editorValue: any) {
     // PConnect wants to use eventHandler for onBlur
-    if (tinymce.activeEditor) {
-      const editorValue = tinymce.activeEditor.getContent({ format: 'html' });
-      const actionsApi = this.pConn$?.getActionsApi();
-      this.angularPConnectData.actions?.onBlur(this, event);
-      const propName = (this.pConn$?.getStateProps() as any).value;
-      handleEvent(actionsApi, 'changeNblur', propName, editorValue);
-    }
+    const actionsApi = this.pConn$?.getActionsApi();
+    const propName = (this.pConn$?.getStateProps() as any).value;
+    handleEvent(actionsApi, 'changeNblur', propName, editorValue);
   }
 }
