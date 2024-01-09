@@ -101,6 +101,7 @@ import { ListUtilityComponent } from '../../_components/widget/list-utility/list
 import { MaterialUtilityComponent } from '../../_components/designSystemExtension/material-utility/material-utility.component';
 import { RichTextComponent } from '../../_components/field/rich-text/rich-text.component';
 import { RichTextEditorComponent } from '../../_components/designSystemExtension/rich-text-editor/rich-text-editor.component';
+import { ListViewActionButtonsComponent } from '../../_components/field/list-view-action-buttons/list-view-action-buttons.component';
 
 // pegaSdkComponentMap is the JSON object where we'll store the components that are
 // the default implementations provided by the SDK. These will be used if there isn't
@@ -164,6 +165,7 @@ const pegaSdkComponentMap = {
   ListPage: ListPageComponent,
   ListUtility: ListUtilityComponent,
   ListView: ListViewComponent,
+  ListViewActionButtons: ListViewActionButtonsComponent,
   MaterialDetails: MaterialDetailsComponent,
   MaterialUtility: MaterialUtilityComponent,
   ModalViewContainer: ModalViewContainerComponent,
