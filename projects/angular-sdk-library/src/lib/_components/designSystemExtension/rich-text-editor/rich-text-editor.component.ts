@@ -2,7 +2,6 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
-import { MatFormFieldModule } from '@angular/material/form-field';
 
 declare let tinymce: any;
 
@@ -11,7 +10,7 @@ declare let tinymce: any;
   templateUrl: './rich-text-editor.component.html',
   styleUrls: ['./rich-text-editor.component.scss'],
   standalone: true,
-  imports: [CommonModule, EditorModule, MatFormFieldModule, ReactiveFormsModule],
+  imports: [CommonModule, EditorModule, ReactiveFormsModule],
   providers: [{ provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' }]
 })
 export class RichTextEditorComponent implements OnInit {
