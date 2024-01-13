@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, forwardRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -22,7 +22,7 @@ interface CheckboxProps extends Omit<PConnFieldProps, 'value'> {
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, MatCheckboxModule, MatFormFieldModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class CheckBoxComponent implements OnInit {
+export class CheckBoxComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
@@ -30,20 +30,20 @@ export class CheckBoxComponent implements OnInit {
   angularPConnectData: AngularPConnectData = {};
   configProps$: CheckboxProps;
 
-  label$: string = '';
+  label$ = '';
   value$: any = '';
   caption$?: string = '';
-  testId: string = '';
-  showLabel$: boolean = false;
-  isChecked$: boolean = false;
-  bRequired$: boolean = false;
-  bReadonly$: boolean = false;
-  bDisabled$: boolean = false;
-  bVisible$: boolean = true;
+  testId = '';
+  showLabel$ = false;
+  isChecked$ = false;
+  bRequired$ = false;
+  bReadonly$ = false;
+  bDisabled$ = false;
+  bVisible$ = true;
   displayMode$?: string = '';
   controlName$: string;
-  bHasForm$: boolean = true;
-  componentReference: string = '';
+  bHasForm$ = true;
+  componentReference = '';
   helperText: string;
 
   fieldControl = new FormControl('', null);
@@ -150,6 +150,7 @@ export class CheckBoxComponent implements OnInit {
       this.showLabel$ = true;
     }
 
+    // eslint-disable-next-line sonarjs/no-redundant-boolean
     if (this.value$ === 'true' || this.value$ == true) {
       this.isChecked$ = true;
     } else {
@@ -169,13 +170,14 @@ export class CheckBoxComponent implements OnInit {
   }
 
   getErrorMessage() {
-    let errMessage: string = '';
+    let errMessage = '';
 
     // look for validation messages for json, pre-defined or just an error pushed from workitem (400)
     if (this.fieldControl.hasError('message')) {
       errMessage = this.angularPConnectData.validateMessage ?? '';
       return errMessage;
-    } else if (this.fieldControl.hasError('required')) {
+    }
+    if (this.fieldControl.hasError('required')) {
       errMessage = 'You must enter a value';
     } else if (this.fieldControl.errors) {
       errMessage = this.fieldControl.errors.toString();

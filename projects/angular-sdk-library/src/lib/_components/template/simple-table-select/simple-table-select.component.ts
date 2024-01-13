@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
@@ -11,7 +11,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class SimpleTableSelectComponent implements OnInit {
+export class SimpleTableSelectComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
@@ -93,7 +93,7 @@ export class SimpleTableSelectComponent implements OnInit {
       const { datasource: { parameters: fieldParameters = {} } = {}, pageClass } = metadata;
 
       this.pageClass = pageClass;
-      const compositeKeys: Array<any> = [];
+      const compositeKeys: any[] = [];
       Object.values(fieldParameters).forEach((param: any) => {
         if (this.isSelfReferencedProperty(param, referenceProp)) {
           compositeKeys.push(param.substring(param.lastIndexOf('.') + 1));

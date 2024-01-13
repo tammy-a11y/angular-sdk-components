@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, NgZone, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, NgZone, forwardRef, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -21,7 +21,7 @@ interface AttachmentProps extends Omit<PConnFieldProps, 'value'> {
   standalone: true,
   imports: [CommonModule, MatProgressSpinnerModule, MatButtonModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class AttachmentComponent implements OnInit {
+export class AttachmentComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
@@ -29,19 +29,19 @@ export class AttachmentComponent implements OnInit {
   angularPConnectData: AngularPConnectData = {};
   PCoreVersion: string;
 
-  label$: string = '';
+  label$ = '';
   value$: any;
-  bRequired$: boolean = false;
-  bReadonly$: boolean = false;
-  bDisabled$: boolean = false;
-  bVisible$: boolean = true;
-  bLoading$: boolean = false;
-  arFiles$: Array<any> = [];
-  arFileList$: Array<any> = [];
+  bRequired$ = false;
+  bReadonly$ = false;
+  bDisabled$ = false;
+  bVisible$ = true;
+  bLoading$ = false;
+  arFiles$: any[] = [];
+  arFileList$: any[] = [];
   removeFileFromList$: any;
-  arMenuList$: Array<any> = [];
-  bShowSelector$: boolean = true;
-  bShowJustDelete$: boolean = false;
+  arMenuList$: any[] = [];
+  bShowSelector$ = true;
+  bShowJustDelete$ = false;
   att_valueRef: any;
   att_categoryName: string;
   att_id: string;
@@ -157,7 +157,7 @@ export class AttachmentComponent implements OnInit {
           this.fileTemp.props.ID = this.fileTemp.responseProps.pzInsKey;
 
           // create the actions for the "more" menu on the attachment
-          const arMenuList: Array<any> = [];
+          const arMenuList: any[] = [];
           let oMenu: any = {};
 
           oMenu.icon = 'download';
@@ -518,7 +518,7 @@ export class AttachmentComponent implements OnInit {
 
   onUploadProgress() {}
 
-  getFiles(arFiles: Array<any>): Array<any> {
+  getFiles(arFiles: any[]): any[] {
     return this.setNewFiles(arFiles);
   }
 

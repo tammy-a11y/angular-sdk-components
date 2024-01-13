@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, OnDestroy, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,7 +11,7 @@ interface FieldGroupTemplateProps {
   // If any, enter additional props that only exist on this component
   label?: string;
   showLabel?: boolean;
-  referenceList?: Array<any>;
+  referenceList?: any[];
   contextClass: string;
   renderMode?: string;
   heading?: string;
@@ -28,7 +28,7 @@ interface FieldGroupTemplateProps {
   standalone: true,
   imports: [CommonModule, MatButtonModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class FieldGroupTemplateComponent implements OnInit {
+export class FieldGroupTemplateComponent implements OnInit, OnDestroy, OnChanges {
   @Input() configProps$: FieldGroupTemplateProps;
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
@@ -98,8 +98,8 @@ export class FieldGroupTemplateComponent implements OnInit {
     this.label$ = this.configProps$.label;
     this.showLabel$ = this.configProps$.showLabel;
     // label & showLabel within inheritedProps takes precedence over configProps
-    this.label$ = this.inheritedProps$['label'] || this.label$;
-    this.showLabel$ = this.inheritedProps$['showLabel'] || this.showLabel$;
+    this.label$ = (this.inheritedProps$ as any).label || this.label$;
+    this.showLabel$ = (this.inheritedProps$ as any).showLabel || this.showLabel$;
 
     this.allowAddEdit = this.configProps$.allowTableEdit;
 

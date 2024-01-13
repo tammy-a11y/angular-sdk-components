@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, SimpleChanges, OnDestroy, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
@@ -66,7 +66,7 @@ interface ViewProps {
   standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class ViewComponent implements OnInit {
+export class ViewComponent implements OnInit, OnDestroy, OnChanges {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
   @Input() displayOnlyFA$: boolean;
@@ -75,13 +75,13 @@ export class ViewComponent implements OnInit {
   angularPConnectData: AngularPConnectData = {};
 
   configProps$: ViewProps;
-  inheritedProps$: Object;
-  arChildren$: Array<any>;
+  inheritedProps$: any;
+  arChildren$: any[];
   templateName$: string;
-  title$: string = '';
-  label$: string = '';
-  showLabel$: boolean = true;
-  visibility$: boolean = true;
+  title$ = '';
+  label$ = '';
+  showLabel$ = true;
+  visibility$ = true;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -141,8 +141,8 @@ export class ViewComponent implements OnInit {
     this.label$ = this.configProps$.label || '';
     this.showLabel$ = this.configProps$.showLabel || this.showLabel$;
     // label & showLabel within inheritedProps takes precedence over configProps
-    this.label$ = this.inheritedProps$['label'] || this.label$;
-    this.showLabel$ = this.inheritedProps$['showLabel'] || this.showLabel$;
+    this.label$ = this.inheritedProps$.label || this.label$;
+    this.showLabel$ = this.inheritedProps$.showLabel || this.showLabel$;
     // children may have a 'reference' so normalize the children array
     this.arChildren$ = ReferenceComponent.normalizePConnArray(this.pConn$.getChildren());
 

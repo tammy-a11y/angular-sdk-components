@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
@@ -18,7 +18,7 @@ interface RichTextProps extends PConnFieldProps {
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class RichTextComponent implements OnInit {
+export class RichTextComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
@@ -26,12 +26,12 @@ export class RichTextComponent implements OnInit {
   angularPConnectData: AngularPConnectData = {};
   configProps$: RichTextProps;
 
-  label$: string = '';
-  value$: string = '';
-  bRequired$: boolean = false;
-  bReadonly$: boolean = false;
-  bDisabled$: boolean = false;
-  bVisible$: boolean = true;
+  label$ = '';
+  value$ = '';
+  bRequired$ = false;
+  bReadonly$ = false;
+  bDisabled$ = false;
+  bVisible$ = true;
   displayMode$?: string = '';
   controlName$: string;
   testId: string;
@@ -113,7 +113,7 @@ export class RichTextComponent implements OnInit {
 
   fieldOnChange() {
     if (this.status === 'error') {
-      const property = this.pConn$.getStateProps()['value'];
+      const property = (this.pConn$.getStateProps() as any).value;
       this.pConn$.clearErrorMessages({
         property,
         category: '',

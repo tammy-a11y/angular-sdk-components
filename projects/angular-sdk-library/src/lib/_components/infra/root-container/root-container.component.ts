@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, NgZone, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, NgZone, forwardRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { interval, Subscription } from 'rxjs';
@@ -32,7 +32,7 @@ const options = { context: 'app' };
     forwardRef(() => ComponentMapperComponent)
   ]
 })
-export class RootContainerComponent implements OnInit {
+export class RootContainerComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
   @Input() displayOnlyFA$: boolean;
   @Input() isMashup$: boolean;
@@ -40,14 +40,14 @@ export class RootContainerComponent implements OnInit {
   // For interaction with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
 
-  componentName$: string = '';
-  bIsProgress$: boolean = false;
+  componentName$ = '';
+  bIsProgress$ = false;
 
   // preview and modalview pConn
   pvConn$: any = null;
   mConn$: any = null;
 
-  bShowRoot$: boolean = true;
+  bShowRoot$ = true;
 
   progressSpinnerSubscription: Subscription;
   spinnerTimer: any = null;
@@ -186,7 +186,7 @@ export class RootContainerComponent implements OnInit {
 
       // bootstrap loadMashup resolves to here
 
-      const arChildren = this.pConn$.getChildren() as Array<any>;
+      const arChildren = this.pConn$.getChildren() as any[];
       if (arChildren && arChildren.length == 1) {
         // have to have a quick timeout or get an "expressions changed" angular error
         setTimeout(() => {
@@ -227,7 +227,9 @@ export class RootContainerComponent implements OnInit {
           this.spinnerTimer = interval(500).subscribe(() => {
             try {
               this.spinnerTimer.unsubscribe();
-            } catch (ex) {}
+            } catch (ex) {
+              /* empty */
+            }
 
             this.ngZone.run(() => {
               this.bIsProgress$ = true;

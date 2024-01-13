@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
@@ -10,7 +10,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   standalone: true,
   imports: [forwardRef(() => ComponentMapperComponent)]
 })
-export class DetailsThreeColumnComponent implements OnInit {
+export class DetailsThreeColumnComponent implements OnInit, OnDestroy {
   constructor(private angularPConnect: AngularPConnectService) {}
 
   @Input() pConn$: typeof PConnect;
@@ -19,9 +19,9 @@ export class DetailsThreeColumnComponent implements OnInit {
   showHighlightedData: boolean;
   highlightedDataArr: any;
 
-  arFields$: Array<any> = [];
-  arFields2$: Array<any> = [];
-  arFields3$: Array<any> = [];
+  arFields$: any[] = [];
+  arFields2$: any[] = [];
+  arFields3$: any[] = [];
 
   propsToUse: any = {};
 
@@ -78,7 +78,7 @@ export class DetailsThreeColumnComponent implements OnInit {
     this.pConn$.setInheritedProp('displayMode', 'LABELS_LEFT');
     this.pConn$.setInheritedProp('readOnly', true);
 
-    const kids = this.pConn$.getChildren() as Array<any>;
+    const kids = this.pConn$.getChildren() as any[];
     for (const kid of kids) {
       const pKid = kid.getPConnect();
       const pKidData = pKid.resolveConfigProps(pKid.getRawMetadata());

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
@@ -16,7 +16,7 @@ interface TextProps extends PConnFieldProps {
   standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class TextComponent implements OnInit {
+export class TextComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
   @Input() formatAs$: string;
 
@@ -24,18 +24,18 @@ export class TextComponent implements OnInit {
   angularPConnectData: AngularPConnectData = {};
   configProps$: TextProps;
 
-  label$: string = '';
-  value$: string = '';
-  bRequired$: boolean = false;
-  bReadonly$: boolean = false;
-  bDisabled$: boolean = false;
-  bVisible$: boolean = true;
+  label$ = '';
+  value$ = '';
+  bRequired$ = false;
+  bReadonly$ = false;
+  bDisabled$ = false;
+  bVisible$ = true;
   displayMode$?: string = '';
   controlName$: string;
-  componentReference: string = '';
+  componentReference = '';
   formattedValue$: string;
-  format$: string = 'text';
-  formattedUrl$: string = '';
+  format$ = 'text';
+  formattedUrl$ = '';
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -119,6 +119,7 @@ export class TextComponent implements OnInit {
 
   generateUrl(sVal): string {
     if (sVal.indexOf('https://') == 0 || sVal.indexOf('http://') == 0) {
+      /* empty */
     } else {
       // assume no http
       sVal = `http://${sVal}`;

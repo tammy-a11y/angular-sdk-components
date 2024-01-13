@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, forwardRef, Input } from '@angular/core';
+import { Component, forwardRef, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
@@ -8,7 +8,7 @@ import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 interface ScalarListProps extends Omit<PConnFieldProps, 'value'> {
   // If any, enter additional props that only exist on ScalarList here
   displayInModal: boolean;
-  value: Array<any>;
+  value: any[];
   componentType: string;
   restProps?: object;
 }
@@ -20,22 +20,22 @@ interface ScalarListProps extends Omit<PConnFieldProps, 'value'> {
   standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class ScalarListComponent {
+export class ScalarListComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
   angularPConnectData: AngularPConnectData = {};
   configProps$: ScalarListProps;
 
-  label$: string = '';
+  label$ = '';
   value$: any;
   displayMode$?: string = '';
-  items: Array<any>;
-  isDisplayModeEnabled: Boolean = false;
+  items: any[];
+  isDisplayModeEnabled = false;
   controlName$: string;
   fieldControl = new FormControl('', null);
-  bHasForm$: boolean = true;
-  bReadonly$: boolean = false;
+  bHasForm$ = true;
+  bReadonly$ = false;
 
   constructor(private angularPConnect: AngularPConnectService) {}
 

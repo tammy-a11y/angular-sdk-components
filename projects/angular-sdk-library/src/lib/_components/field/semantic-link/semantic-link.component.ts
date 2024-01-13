@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
@@ -18,17 +18,17 @@ interface SemanticLinkProps extends PConnFieldProps {
   standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class SemanticLinkComponent implements OnInit {
+export class SemanticLinkComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
   angularPConnectData: AngularPConnectData = {};
   configProps$: SemanticLinkProps;
 
-  label$: string = '';
-  value$: string = '';
+  label$ = '';
+  value$ = '';
   displayMode$?: string = '';
-  bVisible$: boolean = true;
+  bVisible$ = true;
 
   constructor(
     private angularPConnect: AngularPConnectService,

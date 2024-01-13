@@ -1,9 +1,9 @@
-import { Component, ComponentRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ComponentRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild, ViewContainerRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { getComponentFromMap } from '../helpers/sdk_component_map';
 import { ErrorBoundaryComponent } from '../../_components/infra/error-boundary/error-boundary.component';
 
-const componentsRequireDisplayOnlyFAProp: Array<string> = [
+const componentsRequireDisplayOnlyFAProp: string[] = [
   'HybridViewContainer',
   'ModalViewContainer',
   'ViewContainer',
@@ -19,16 +19,16 @@ const componentsRequireDisplayOnlyFAProp: Array<string> = [
   standalone: true,
   imports: [CommonModule, ErrorBoundaryComponent]
 })
-export class ComponentMapperComponent implements OnInit, OnChanges {
+export class ComponentMapperComponent implements OnInit, OnDestroy, OnChanges {
   @ViewChild('dynamicComponent', { read: ViewContainerRef, static: true })
   public dynamicComponent: ViewContainerRef | undefined;
 
   public componentRef: ComponentRef<any> | undefined;
-  public isInitialized: boolean = false;
+  public isInitialized = false;
 
-  @Input() name: string = '';
+  @Input() name = '';
   @Input() props: any;
-  @Input() errorMsg: string = '';
+  @Input() errorMsg = '';
   @Input() outputEvents: any;
   // parent prop is compulsory when outputEvents is present
   @Input() parent: any;

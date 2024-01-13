@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
@@ -39,14 +39,14 @@ declare global {
     MainContentComponent
   ]
 })
-export class NavigationComponent implements OnInit {
+export class NavigationComponent implements OnInit, OnDestroy {
   pConn$: typeof PConnect;
 
-  bLoggedIn$: boolean = false;
-  bPConnectLoaded$: boolean = false;
-  bHasPConnect$: boolean = false;
-  userName$: string = '';
-  isProgress$: boolean = false;
+  bLoggedIn$ = false;
+  bPConnectLoaded$ = false;
+  bHasPConnect$ = false;
+  userName$ = '';
+  isProgress$ = false;
   progressSpinnerSubscription: Subscription;
   resetPConnectSubscription: Subscription;
 
@@ -113,6 +113,7 @@ export class NavigationComponent implements OnInit {
     });
   }
 
+  // eslint-disable-next-line sonarjs/no-identical-functions
   assignmentFinished() {
     setTimeout(() => {
       // update the worklist

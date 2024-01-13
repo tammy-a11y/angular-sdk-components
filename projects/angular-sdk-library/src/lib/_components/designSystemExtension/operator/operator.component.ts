@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, Input, Renderer2, ChangeDetectorRef } from '@angular/core';
+import { Component, ElementRef, OnInit, Input, Renderer2, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { Utils } from '../../../_helpers/utils';
@@ -10,14 +10,14 @@ import { Utils } from '../../../_helpers/utils';
   standalone: true,
   imports: [CommonModule, MatButtonModule]
 })
-export class OperatorComponent implements OnInit {
+export class OperatorComponent implements OnInit, OnDestroy {
   @Input() date$: string;
   @Input() name$: string;
 
   @Input() label$: string;
   @Input() id$: string;
 
-  fields$: Array<any> = [];
+  fields$: any[] = [];
   bShowPopover$: boolean;
 
   constructor(

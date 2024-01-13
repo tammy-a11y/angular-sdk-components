@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, NgZone, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, NgZone, forwardRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../../_bridge/angular-pconnect';
@@ -30,7 +30,7 @@ interface ViewContainerProps {
   standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class ViewContainerComponent implements OnInit {
+export class ViewContainerComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
   @Input() displayOnlyFA$: boolean;
@@ -39,15 +39,15 @@ export class ViewContainerComponent implements OnInit {
   angularPConnectData: AngularPConnectData = {};
   configProps$: ViewContainerProps;
 
-  arChildren$: Array<any>;
+  arChildren$: any[];
   templateName$: string;
   buildName$: string;
   context$: string;
-  title$: string = '';
+  title$ = '';
 
   viewPConn$: any;
 
-  isViewContainer$: boolean = true;
+  isViewContainer$ = true;
 
   // JA - created object is now a View with a Template
   //  Use its PConnect to render the CaseView; DON'T replace this.pConn$
@@ -122,7 +122,7 @@ export class ViewContainerComponent implements OnInit {
 
     if (sessionStorage.getItem('hasViewContainer') == 'false') {
       // @ts-ignore - Property 'getMetadata' is private and only accessible within class
-      if (this.pConn$.getMetadata()['children']) {
+      if (this.pConn$.getMetadata().children) {
         containerMgr.addContainerItem(this.dispatchObject);
       }
 
@@ -174,7 +174,9 @@ export class ViewContainerComponent implements OnInit {
       loadingInfo = this.pConn$.getLoadingStatus();
 
       this.psService.sendMessage(loadingInfo);
-    } catch (ex) {}
+    } catch (ex) {
+      /* empty */
+    }
 
     // const buildName = this.buildName();
     const { CREATE_DETAILS_VIEW_NAME } = PCore.getConstants();
@@ -190,8 +192,8 @@ export class ViewContainerComponent implements OnInit {
           const latestItem = items[key];
           const rootView = latestItem.view;
           const { context, name: viewName } = rootView.config;
-          const config = { meta: rootView };
-          config['options'] = {
+          const config: any = { meta: rootView };
+          config.options = {
             context: latestItem.context,
             pageReference: context || this.pConn$.getPageReference(),
             containerName: this.pConn$.getContainerName(),
@@ -253,9 +255,9 @@ export class ViewContainerComponent implements OnInit {
               console.error(`ViewContainer has a newComp that is NOT a reference!`);
 
               this.createdViewPConn$ = newComp;
-              const newConfigProps = newComp.getConfigProps();
-              this.templateName$ = newConfigProps['template'] || '';
-              this.title$ = newConfigProps['title'] || '';
+              const newConfigProps: any = newComp.getConfigProps();
+              this.templateName$ = newConfigProps.template || '';
+              this.title$ = newConfigProps.title || '';
               // update children with new view's children
               // children may have a 'reference' so normalize the children array
               this.arChildren$ = ReferenceComponent.normalizePConnArray(newComp.getChildren());

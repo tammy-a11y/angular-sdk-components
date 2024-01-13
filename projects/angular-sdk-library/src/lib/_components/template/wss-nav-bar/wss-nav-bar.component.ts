@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, NgZone } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatListModule } from '@angular/material/list';
@@ -22,24 +22,24 @@ interface WssNavBarProps {
   standalone: true,
   imports: [CommonModule, MatListModule, MatMenuModule, MatIconModule, MatToolbarModule]
 })
-export class WssNavBarComponent {
+export class WssNavBarComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
   @Input() appName$: string;
-  @Input() pages$: Array<any>;
-  @Input() caseTypes$: Array<any>;
+  @Input() pages$: any[];
+  @Input() caseTypes$: any[];
   @Input() homePage: any;
 
   // For interaction with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
   configProps$: WssNavBarProps;
 
-  navPages$: Array<any>;
+  navPages$: any[];
   navExpandCollapse$: string;
-  bShowCaseTypes$: boolean = false;
+  bShowCaseTypes$ = false;
 
-  portalApp$: string = '';
+  portalApp$ = '';
   portalLogoImage$: string;
-  showAppName$: boolean = false;
+  showAppName$ = false;
 
   portalOperator$: string;
   portalOperatorInitials$: string;
@@ -115,7 +115,7 @@ export class WssNavBarComponent {
       this.navPages$ = JSON.parse(JSON.stringify(this.pages$));
 
       for (const page in this.navPages$) {
-        this.navPages$[page]['iconName'] = this.utils.getImageSrc(this.navPages$[page]['pxPageViewIcon'], this.utils.getSDKStaticContentUrl());
+        this.navPages$[page].iconName = this.utils.getImageSrc(this.navPages$[page].pxPageViewIcon, this.utils.getSDKStaticContentUrl());
       }
 
       this.actionsAPI = this.pConn$.getActionsApi();

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, OnDestroy } from '@angular/core';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
@@ -9,14 +9,14 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   standalone: true,
   imports: [forwardRef(() => ComponentMapperComponent)]
 })
-export class DetailsNarrowWideComponent implements OnInit {
+export class DetailsNarrowWideComponent implements OnInit, OnDestroy {
   constructor(private angularPConnect: AngularPConnectService) {}
 
   @Input() pConn$: typeof PConnect;
 
-  arFields$: Array<any> = [];
-  arFields2$: Array<any> = [];
-  highlightedDataArr: Array<any> = [];
+  arFields$: any[] = [];
+  arFields2$: any[] = [];
+  highlightedDataArr: any[] = [];
   showHighlightedData: boolean;
   // Used with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
@@ -68,7 +68,7 @@ export class DetailsNarrowWideComponent implements OnInit {
       });
     }
 
-    const kids = this.pConn$.getChildren() as Array<any>;
+    const kids = this.pConn$.getChildren() as any[];
     for (const kid of kids) {
       const pKid = kid.getPConnect();
       const pKidData = pKid.resolveConfigProps(pKid.getRawMetadata());

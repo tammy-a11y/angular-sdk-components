@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Title } from '@angular/platform-browser';
 import { MatButtonModule } from '@angular/material/button';
@@ -34,15 +34,15 @@ declare global {
   standalone: true,
   imports: [CommonModule, MatProgressSpinnerModule, MatToolbarModule, MatIconModule, MatButtonModule, MainScreenComponent]
 })
-export class MCNavComponent implements OnInit {
+export class MCNavComponent implements OnInit, OnDestroy {
   starterPackVersion$: string = endpoints.SP_VERSION;
   pConn$: typeof PConnect;
 
-  applicationLabel: string = '';
-  bLoggedIn$: boolean = false;
-  bPConnectLoaded$: boolean = false;
-  bHasPConnect$: boolean = false;
-  isProgress$: boolean = false;
+  applicationLabel = '';
+  bLoggedIn$ = false;
+  bPConnectLoaded$ = false;
+  bHasPConnect$ = false;
+  isProgress$ = false;
 
   progressSpinnerSubscription: Subscription;
   resetPConnectSubscription: Subscription;
@@ -131,7 +131,7 @@ export class MCNavComponent implements OnInit {
     // Login if needed, without doing an initial main window redirect
     // eslint-disable-next-line no-restricted-globals
     const sAppName = location.pathname.substring(location.pathname.indexOf('/') + 1);
-    loginIfNecessary({appName: sAppName, mainRedirect: false});
+    loginIfNecessary({ appName: sAppName, mainRedirect: false });
   }
 
   startMashup() {

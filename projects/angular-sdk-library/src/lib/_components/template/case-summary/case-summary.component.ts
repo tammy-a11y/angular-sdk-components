@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, OnDestroy, OnChanges } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ReferenceComponent } from '../../infra/reference/reference.component';
@@ -19,19 +19,19 @@ interface CaseSummaryProps {
   standalone: true,
   imports: [forwardRef(() => ComponentMapperComponent)]
 })
-export class CaseSummaryComponent implements OnInit {
+export class CaseSummaryComponent implements OnInit, OnDestroy, OnChanges {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
   angularPConnectData: AngularPConnectData = {};
   configProps$: CaseSummaryProps;
 
-  arChildren$: Array<any>;
+  arChildren$: any[];
 
   status$?: string;
   bShowStatus$?: boolean;
-  primaryFields$: Array<any> = [];
-  secondaryFields$: Array<any> = [];
+  primaryFields$: any[] = [];
+  secondaryFields$: any[] = [];
 
   constructor(private angularPConnect: AngularPConnectService) {}
 
@@ -55,7 +55,7 @@ export class CaseSummaryComponent implements OnInit {
     // Then, continue on with other initialization
 
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as CaseSummaryProps;
-    this.arChildren$ = this.pConn$.getChildren() as Array<any>;
+    this.arChildren$ = this.pConn$.getChildren() as any[];
 
     this.generatePrimaryAndSecondaryFields();
 

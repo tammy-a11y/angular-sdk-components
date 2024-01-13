@@ -1,5 +1,5 @@
 /* eslint-disable max-classes-per-file */
-import { Component, OnInit, Input, ChangeDetectorRef, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, forwardRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { NgxMatDatetimePickerModule, NgxMatTimepickerModule, NGX_MAT_DATE_FORMATS } from '@angular-material-components/datetime-picker';
@@ -58,7 +58,7 @@ class MyFormat {
   ],
   providers: [{ provide: NGX_MAT_DATE_FORMATS, useClass: MyFormat }]
 })
-export class DateTimeComponent implements OnInit {
+export class DateTimeComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
@@ -66,17 +66,17 @@ export class DateTimeComponent implements OnInit {
   angularPConnectData: AngularPConnectData = {};
   configProps$: DateTimeProps;
 
-  label$: string = '';
+  label$ = '';
   value$: string;
-  bRequired$: boolean = false;
-  bReadonly$: boolean = false;
-  bDisabled$: boolean = false;
-  bVisible$: boolean = true;
+  bRequired$ = false;
+  bReadonly$ = false;
+  bDisabled$ = false;
+  bVisible$ = true;
   displayMode$?: string = '';
   controlName$: string;
-  bHasForm$: boolean = true;
-  componentReference: string = '';
-  testId: string = '';
+  bHasForm$ = true;
+  componentReference = '';
+  testId = '';
   helperText: string;
 
   fieldControl = new FormControl('', null);
@@ -208,12 +208,13 @@ export class DateTimeComponent implements OnInit {
   }
 
   getErrorMessage() {
-    let errMessage: string = '';
+    let errMessage = '';
     // look for validation messages for json, pre-defined or just an error pushed from workitem (400)
     if (this.fieldControl.hasError('message')) {
       errMessage = this.angularPConnectData.validateMessage ?? '';
       return errMessage;
-    } else if (this.fieldControl.hasError('required')) {
+    }
+    if (this.fieldControl.hasError('required')) {
       errMessage = 'You must enter a value';
     } else if (this.fieldControl.errors) {
       errMessage = this.fieldControl.errors.toString();

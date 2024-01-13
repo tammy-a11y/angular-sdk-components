@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -39,7 +39,7 @@ interface UserReferenceProps extends Omit<PConnFieldProps, 'value'> {
     forwardRef(() => ComponentMapperComponent)
   ]
 })
-export class UserReferenceComponent implements OnInit {
+export class UserReferenceComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
@@ -122,7 +122,7 @@ export class UserReferenceComponent implements OnInit {
 
   updateSelf() {
     const props = this.pConn$.getConfigProps() as UserReferenceProps;
-    this.testId = props['testId'];
+    this.testId = props.testId;
 
     const { label, displayAs, value, showAsFormattedText, helperText, placeholder } = props;
 
@@ -195,13 +195,14 @@ export class UserReferenceComponent implements OnInit {
   }
 
   getErrorMessage() {
-    let errMessage: string = '';
+    let errMessage = '';
 
     // look for validation messages for json, pre-defined or just an error pushed from workitem (400)
     if (this.fieldControl.hasError('message')) {
       errMessage = this.angularPConnectData.validateMessage ?? '';
       return errMessage;
-    } else if (this.fieldControl.hasError('required')) {
+    }
+    if (this.fieldControl.hasError('required')) {
       errMessage = 'You must enter a value';
     } else if (this.fieldControl.errors) {
       errMessage = this.fieldControl.errors.toString();

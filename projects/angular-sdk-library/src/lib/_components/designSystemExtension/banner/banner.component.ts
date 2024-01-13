@@ -4,7 +4,7 @@ import { Component, Input, forwardRef } from '@angular/core';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
-  selector: 'lib-banner',
+  selector: 'app-banner',
   templateUrl: './banner.component.html',
   styleUrls: ['./banner.component.scss'],
   standalone: true,
@@ -14,13 +14,11 @@ export class BannerComponent {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
-  @Input() arChildren$: Array<any>;
+  @Input() arChildren$: any[];
   @Input() title: string;
   @Input() message: any;
   @Input() backgroundImage: string;
   @Input() layout$: string;
-
-  ngOnInit(): void {}
 
   getUrl() {
     return `url(${this.backgroundImage})`;

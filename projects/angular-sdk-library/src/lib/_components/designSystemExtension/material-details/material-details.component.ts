@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef } from '@angular/core';
+import { Component, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
@@ -10,23 +10,20 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class MaterialDetailsComponent implements OnInit {
+export class MaterialDetailsComponent {
   constructor(private utils: Utils) {}
 
-  @Input() arFields$: Array<any>;
-  @Input() arFields2$: Array<any>;
-  @Input() arFields3$: Array<any>;
-  @Input() arHighlightedFields: Array<any>;
+  @Input() arFields$: any[];
+  @Input() arFields2$: any[];
+  @Input() arFields3$: any[];
+  @Input() arHighlightedFields: any[];
   @Input() layout: any;
-
-  ngOnInit(): void {}
 
   _getValue(configValue) {
     if (configValue && configValue != '') {
       return configValue;
-    } else {
-      return '---';
     }
+    return '---';
   }
 
   _formatDate(dateValue: string, dateFormat: string): string {

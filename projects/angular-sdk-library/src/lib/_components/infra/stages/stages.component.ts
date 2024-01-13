@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { interval } from 'rxjs';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
@@ -6,7 +6,7 @@ import { Utils } from '../../../_helpers/utils';
 
 interface StagesProps {
   // If any, enter additional props that only exist on this component
-  stages: Array<any>;
+  stages: any[];
 }
 
 @Component({
@@ -16,7 +16,7 @@ interface StagesProps {
   standalone: true,
   imports: [CommonModule]
 })
-export class StagesComponent implements OnInit {
+export class StagesComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
 
   // Used with AngularPConnect
@@ -24,7 +24,7 @@ export class StagesComponent implements OnInit {
   PCore$: typeof PCore = PCore;
   configProps$: StagesProps;
 
-  arStageResults$: Array<any>;
+  arStageResults$: any[];
   lastStage$: any;
   checkSvgIcon$: string;
   key: string;
