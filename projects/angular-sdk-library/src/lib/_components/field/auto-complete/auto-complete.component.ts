@@ -70,6 +70,7 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
   parameters: {};
   hideLabel: boolean;
   filteredOptions: Observable<any[]>;
+  filterValue = '';
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -116,8 +117,8 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
   }
 
   private _filter(value: string): string[] {
-    const filterValue = value.toLowerCase();
-    return this.options$?.filter(option => option.value.toLowerCase().includes(filterValue));
+    const filterVal = (value || this.filterValue).toLowerCase();
+    return this.options$?.filter(option => option.value.toLowerCase().includes(filterVal));
   }
 
   // Callback passed when subscribing to store change
@@ -284,15 +285,13 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
     });
   }
 
-  isSelected(buttonValue: string): boolean {
-    return this.value$ === buttonValue;
-  }
-
   fieldOnChange(event: Event) {
     // this works - this.pConn$.setValue( this.componentReference, `property: ${this.componentReference}`);
     // this works - this.pConn$.setValue( this.componentReference, this.fieldControl.value);
     // PConnect wants to use changeHandler for onChange
     // this.angularPConnect.changeHandler( this, event);
+    this.filterValue = (event.target as HTMLInputElement).value;
+
     this.angularPConnectData.actions?.onChange(this, event);
   }
 
