@@ -19,7 +19,7 @@ import { ProgressSpinnerService } from '../../../_messages/progress-spinner.serv
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { getCurrencyOptions } from '../../../_helpers/currency-utils';
-import { getLocale } from '../../../_helpers/common';
+import { getLocale, getSeconds } from '../../../_helpers/common';
 import { formatters } from '../../../_helpers/formatters/format-utils';
 
 import { useInit } from './listViewHelpers';
@@ -273,8 +273,10 @@ export class ListViewComponent implements OnInit, OnDestroy {
 
     let index = 1;
     // Iterating over the current filters list to create filter data which will be POSTed
-    for (const filterExp in this.filters) {
-      const filter = this.filters[filterExp];
+    const filterKeys: any[] = Object.keys(this.filters);
+    const filterValues: any[] = Object.values(this.filters);
+    for (let filterIndex = 0; filterIndex < filterKeys.length; filterIndex++) {
+      const filter = filterValues[filterIndex];
       // If the filter is null then we can skip this iteration
       if (filter === null) {
         // eslint-disable-next-line no-continue
@@ -295,21 +297,7 @@ export class ListViewComponent implements OnInit, OnDestroy {
        * In Constellation DX Components, through Repeating Structures they might be using several APIs to do it. We're doing it here
        */
       if (isDateRange) {
-        const dateRelationalOp = filter?.AND ? 'AND' : 'OR';
-        dashboardFilterPayload.query.filter.filterConditions = {
-          ...dashboardFilterPayload.query.filter.filterConditions,
-          [`T${index++}`]: { ...filter[relationalOp][0].condition },
-          [`T${index++}`]: { ...filter[relationalOp][1].condition }
-        };
-        if (dashboardFilterPayload.query.filter.logic) {
-          dashboardFilterPayload.query.filter.logic = `${dashboardFilterPayload.query.filter.logic} ${relationalOp} (T${
-            index - 2
-          } ${dateRelationalOp} T${index - 1})`;
-        } else {
-          dashboardFilterPayload.query.filter.logic = `(T${index - 2} ${relationalOp} T${index - 1})`;
-        }
-
-        dashboardFilterPayload.query.select = selectParam;
+        dashboardFilterPayload = this.filterBasedOnDateRange(dashboardFilterPayload, filter, relationalOp, selectParam, index);
       } else {
         dashboardFilterPayload.query.filter.filterConditions = {
           ...dashboardFilterPayload.query.filter.filterConditions,
@@ -332,6 +320,26 @@ export class ListViewComponent implements OnInit, OnDestroy {
     }
     this.filterPayload = dashboardFilterPayload;
     this.getListData();
+  }
+
+  filterBasedOnDateRange(dashboardFilterPayload, filter, relationalOp, selectParam, index) {
+    const dateRelationalOp = filter?.AND ? 'AND' : 'OR';
+    dashboardFilterPayload.query.filter.filterConditions = {
+      ...dashboardFilterPayload.query.filter.filterConditions,
+      [`T${index++}`]: { ...filter[relationalOp][0].condition },
+      [`T${index++}`]: { ...filter[relationalOp][1].condition }
+    };
+    if (dashboardFilterPayload.query.filter.logic) {
+      dashboardFilterPayload.query.filter.logic = `${dashboardFilterPayload.query.filter.logic} ${relationalOp} (T${index - 2} ${dateRelationalOp} T${
+        index - 1
+      })`;
+    } else {
+      dashboardFilterPayload.query.filter.logic = `(T${index - 2} ${relationalOp} T${index - 1})`;
+    }
+
+    dashboardFilterPayload.query.select = selectParam;
+
+    return dashboardFilterPayload;
   }
 
   processFilterClear() {
@@ -468,12 +476,11 @@ export class ListViewComponent implements OnInit, OnDestroy {
     moveItemInArray(this.displayedColumns$, event.previousIndex, event.currentIndex);
   }
 
-  updateFields(arFields, arColumns, fields): any[] {
+  updateFields(arFields: any[], arColumns, fields): any[] {
     const arReturn = arFields;
-    for (const i in arReturn) {
-      arReturn[i].config = { ...arReturn[i].config, ...fields[i], name: fields[i].id };
-    }
-
+    arReturn.forEach((field, i) => {
+      field.config = { ...field.config, ...fields[i], name: fields[i].id };
+    });
     return arReturn;
   }
 
@@ -551,13 +558,12 @@ export class ListViewComponent implements OnInit, OnDestroy {
   }
 
   _getGroupName(fieldName) {
-    for (const i in this.fields$) {
-      const field = this.fields$[i];
+    for (let fieldIndex = 0; fieldIndex < this.fields$.length; fieldIndex++) {
+      const field = this.fields$[fieldIndex];
       if (field.config.name == fieldName) {
         return field.config.label;
       }
     }
-
     return '';
   }
 
@@ -670,30 +676,14 @@ export class ListViewComponent implements OnInit, OnDestroy {
     let bValue = b[this.compareRef];
 
     if (this.compareType == 'Date' || this.compareType == 'DateTime') {
-      aValue = this.utils.getSeconds(aValue);
-      bValue = this.utils.getSeconds(bValue);
+      aValue = getSeconds(aValue);
+      bValue = getSeconds(bValue);
     }
 
     if (this.compareRef == 'pxRefObjectInsName') {
-      const prefixX = aValue.split('-');
-      const prefixY = bValue.split('-');
-      switch (this.arrowDirection) {
-        case 'up':
-          if (prefixX[0] !== prefixY[0]) {
-            if (prefixX[0] < prefixY[0]) return -1;
-            if (prefixX[0] > prefixY[0]) return 1;
-            return 0;
-          }
-          return prefixX[1] - prefixY[1];
-        case 'down':
-          if (prefixX[0] !== prefixY[0]) {
-            if (prefixX[0] > prefixY[0]) return -1;
-            if (prefixX[0] < prefixY[0]) return 1;
-            return 0;
-          }
-          return prefixY[1] - prefixX[1];
-        default:
-          break;
+      const result = this.compareByColumnPxRefObjectInsName(aValue, bValue);
+      if (result !== undefined) {
+        return result;
       }
     }
 
@@ -719,6 +709,31 @@ export class ListViewComponent implements OnInit, OnDestroy {
     }
 
     return 0;
+  }
+
+  compareByColumnPxRefObjectInsName(aValue, bValue) {
+    const prefixX = aValue.split('-');
+    const prefixY = bValue.split('-');
+    switch (this.arrowDirection) {
+      case 'up':
+        if (prefixX[0] !== prefixY[0]) {
+          if (prefixX[0] < prefixY[0]) return -1;
+          if (prefixX[0] > prefixY[0]) return 1;
+          return 0;
+        }
+        return prefixX[1] - prefixY[1];
+      case 'down':
+        if (prefixX[0] !== prefixY[0]) {
+          if (prefixX[0] > prefixY[0]) return -1;
+          if (prefixX[0] < prefixY[0]) return 1;
+          return 0;
+        }
+        return prefixY[1] - prefixX[1];
+      default:
+        break;
+    }
+
+    return undefined;
   }
 
   updateFilterDisplay(type) {
@@ -779,12 +794,13 @@ export class ListViewComponent implements OnInit, OnDestroy {
 
     // run through list of elements in path, if menu not in th path, then want to
     // hide (toggle) the menu
-    for (const i in event.path) {
+    const eventPath = event.path;
+    for (let pathIndex = 0; pathIndex < eventPath.length; pathIndex++) {
       if (
-        event.path[i].className == 'psdk-modal-file-top' ||
-        event.path[i].tagName == 'BUTTON' ||
-        event.path[i].tagName == 'MAT-OPTION' ||
-        event.path[i].tagName == 'MAT-INPUT'
+        eventPath[pathIndex].className == 'psdk-modal-file-top' ||
+        eventPath[pathIndex].tagName == 'BUTTON' ||
+        eventPath[pathIndex].tagName == 'MAT-OPTION' ||
+        eventPath[pathIndex].tagName == 'MAT-INPUT'
       ) {
         bInPopUp = true;
         break;
@@ -912,84 +928,16 @@ export class ListViewComponent implements OnInit, OnDestroy {
     let bKeep = true;
     for (const filterObj of this.filterByColumns) {
       if (filterObj.containsFilterValue != '' || filterObj.containsFilter == 'null' || filterObj.containsFilter == 'notnull') {
-        let value: any;
         let filterValue: any;
 
         switch (filterObj.type) {
           case 'Date':
           case 'DateTime':
           case 'Time':
-            value = item[filterObj.ref] != null ?? item[filterObj.ref] != '' ? this.utils.getSeconds(item[filterObj.ref]) : null;
-            filterValue =
-              filterObj.containsFilterValue != null && filterObj.containsFilterValue != ''
-                ? this.utils.getSeconds(filterObj.containsFilterValue)
-                : null;
-
-            // eslint-disable-next-line sonarjs/no-nested-switch
-            switch (filterObj.containsFilter) {
-              case 'notequal':
-                // becasue filterValue is in minutes, need to have a range of less than 60 secons
-
-                if (value != null && filterValue != null) {
-                  // get rid of millisecons
-                  value /= 1000;
-                  filterValue /= 1000;
-
-                  const diff = value - filterValue;
-                  if (diff >= 0 && diff < 60) {
-                    bKeep = false;
-                  }
-                }
-
-                break;
-              case 'after':
-                if (value < filterValue) {
-                  bKeep = false;
-                }
-                break;
-              case 'before':
-                if (value > filterValue) {
-                  bKeep = false;
-                }
-                break;
-              case 'null':
-                if (value != null) {
-                  bKeep = false;
-                }
-                break;
-              case 'notnull':
-                if (value == null) {
-                  bKeep = false;
-                }
-                break;
-              default:
-                break;
-            }
+            bKeep = this.filterDataWithDate(item, filterObj, filterValue);
             break;
           default:
-            value = item[filterObj.ref].toLowerCase();
-            filterValue = filterObj.containsFilterValue.toLowerCase();
-
-            // eslint-disable-next-line sonarjs/no-nested-switch
-            switch (filterObj.containsFilter) {
-              case 'contains':
-                if (value.indexOf(filterValue) < 0) {
-                  bKeep = false;
-                }
-                break;
-              case 'equals':
-                if (value != filterValue) {
-                  bKeep = false;
-                }
-                break;
-              case 'startswith':
-                if (value.indexOf(filterValue) != 0) {
-                  bKeep = false;
-                }
-                break;
-              default:
-                break;
-            }
+            bKeep = this.filterDataWithCommonTypes(item, filterObj, filterValue);
             break;
         }
       }
@@ -998,6 +946,80 @@ export class ListViewComponent implements OnInit, OnDestroy {
       if (!bKeep) {
         break;
       }
+    }
+
+    return bKeep;
+  }
+
+  filterDataWithDate(item, filterObj, filterValue) {
+    let bKeep;
+    let value = item[filterObj.ref] != null ?? item[filterObj.ref] != '' ? getSeconds(item[filterObj.ref]) : null;
+    filterValue = filterObj.containsFilterValue != null && filterObj.containsFilterValue != '' ? getSeconds(filterObj.containsFilterValue) : null;
+
+    switch (filterObj.containsFilter) {
+      case 'notequal':
+        // becasue filterValue is in minutes, need to have a range of less than 60 secons
+        if (value != null && filterValue != null) {
+          // get rid of millisecons
+          value /= 1000;
+          filterValue /= 1000;
+
+          const diff = value - filterValue;
+          if (diff >= 0 && diff < 60) {
+            bKeep = false;
+          }
+        }
+        break;
+      case 'after':
+        if (value < filterValue) {
+          bKeep = false;
+        }
+        break;
+      case 'before':
+        if (value > filterValue) {
+          bKeep = false;
+        }
+        break;
+      case 'null':
+        if (value != null) {
+          bKeep = false;
+        }
+        break;
+      case 'notnull':
+        if (value == null) {
+          bKeep = false;
+        }
+        break;
+      default:
+        break;
+    }
+
+    return bKeep;
+  }
+
+  filterDataWithCommonTypes(item, filterObj, filterValue) {
+    let bKeep;
+    const value = item[filterObj.ref].toLowerCase();
+    filterValue = filterObj.containsFilterValue.toLowerCase();
+
+    switch (filterObj.containsFilter) {
+      case 'contains':
+        if (value.indexOf(filterValue) < 0) {
+          bKeep = false;
+        }
+        break;
+      case 'equals':
+        if (value != filterValue) {
+          bKeep = false;
+        }
+        break;
+      case 'startswith':
+        if (value.indexOf(filterValue) != 0) {
+          bKeep = false;
+        }
+        break;
+      default:
+        break;
     }
 
     return bKeep;
@@ -1179,18 +1201,18 @@ export class ListViewComponent implements OnInit, OnDestroy {
 
   updateData(listData: any[], fieldData: any[]): any[] {
     const returnList: any[] = new Array<any>();
-    for (const row in listData) {
+    listData.forEach(row => {
       // copy
-      const rowData = JSON.parse(JSON.stringify(listData[row]));
+      const rowData = JSON.parse(JSON.stringify(row));
 
-      for (const field in fieldData) {
-        const config = fieldData[field].config;
+      for (let fieldIndex = 0; fieldIndex < fieldData.length; fieldIndex++) {
+        const config = fieldData[fieldIndex].config;
         let fieldName;
         let formattedDate;
         let myFormat;
         let theCurrencyOptions;
 
-        switch (fieldData[field].type) {
+        switch (fieldData[fieldIndex].type) {
           case 'Date':
             fieldName = config.name;
             myFormat = config.formatter;
@@ -1229,9 +1251,8 @@ export class ListViewComponent implements OnInit, OnDestroy {
             break;
         }
       }
-
       returnList.push(rowData);
-    }
+    });
 
     return returnList;
   }
