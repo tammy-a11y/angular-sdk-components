@@ -1,12 +1,12 @@
 /* eslint-disable import/export */
 
 /*
- * Public API Surface of angular-sdk-library
+ * Public API Surface of angular-sdk-components
  */
 
-export * from './lib/angular-sdk-library.service';
-export * from './lib/angular-sdk-library.component';
-export * from './lib/angular-sdk-library.module';
+export * from './lib/angular-sdk-components.service';
+export * from './lib/angular-sdk-components.component';
+export * from './lib/angular-sdk-components.module';
 
 export * from './lib/_bridge/component-mapper/component-mapper.component';
 export * from './lib/_bridge/helpers/sdk_component_map';
@@ -96,6 +96,7 @@ export * from './lib/_components/template/two-column-tab/two-column-tab.componen
 export * from './lib/_components/template/wide-narrow-form/wide-narrow-form.component';
 export * from './lib/_components/template/wide-narrow-page/wide-narrow-page.component';
 export * from './lib/_components/template/utils';
+export * from './lib/_components/template/simple-table-manual/helpers';
 
 export * from './lib/_components/widget/app-announcement/app-announcement.component';
 export * from './lib/_components/widget/attachment/attachment.component';
