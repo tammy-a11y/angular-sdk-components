@@ -158,6 +158,7 @@ export class ListViewComponent implements OnInit, OnDestroy {
   fieldDefs: any;
   xRayApis = PCore.getDebugger().getXRayRuntime();
   xRayUid = this.xRayApis.startXRay();
+  checkBoxValue: string;
 
   constructor(
     private psService: ProgressSpinnerService,
@@ -185,6 +186,8 @@ export class ListViewComponent implements OnInit, OnDestroy {
     this.groupBySvgIcon$ = this.utils.getImageSrc('row', this.utils.getSDKStaticContentUrl());
 
     this.selectionMode = this.configProps$.selectionMode;
+
+    this.checkBoxValue = this.configProps$.value;
 
     this.arFilterMainButtons$.push({ actionID: 'submit', jsAction: 'submit', name: 'Submit' });
     this.arFilterSecondaryButtons$.push({ actionID: 'cancel', jsAction: 'cancel', name: 'Cancel' });
@@ -526,6 +529,7 @@ export class ListViewComponent implements OnInit, OnDestroy {
     } else {
       reqObj[this.rowID] = value;
     }
+    this.checkBoxValue = value;
     this.pConn$?.getListActions?.()?.setSelectedRows([reqObj]);
   }
 
