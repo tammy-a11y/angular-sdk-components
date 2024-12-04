@@ -1,9 +1,10 @@
-import { Component, OnInit, Input, forwardRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { ReferenceComponent } from '../../infra/reference/reference.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { TemplateUtils } from '../../../_helpers/template-utils';
+import { FormTemplateBaseComponent } from '../form-template-base/form-template-base.component';
 
 interface DefaultFormProps {
   // If any, enter additional props that only exist on this component
@@ -19,8 +20,8 @@ interface DefaultFormProps {
   standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class DefaultFormComponent implements OnInit, OnDestroy {
-  @Input() pConn$: typeof PConnect;
+export class DefaultFormComponent extends FormTemplateBaseComponent implements OnInit {
+  @Input() override pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
   arChildren$: any[];
@@ -41,7 +42,9 @@ export class DefaultFormComponent implements OnInit, OnDestroy {
     'Confirmation'
   ];
 
-  constructor(private templateUtils: TemplateUtils) {}
+  constructor(private templateUtils: TemplateUtils) {
+    super();
+  }
 
   ngOnInit(): void {
     const configProps = this.pConn$.getConfigProps() as DefaultFormProps;
@@ -72,10 +75,5 @@ export class DefaultFormComponent implements OnInit, OnDestroy {
     // Children may contain 'reference' component, so we need to
     //  normalize them
     this.arChildren$ = ReferenceComponent.normalizePConnArray(kids[0].getPConnect().getChildren());
-  }
-
-  ngOnDestroy(): void {
-    // Clean up
-    PCore.getContextTreeManager().removeContextTreeNode(this.pConn$.getContextName());
   }
 }
