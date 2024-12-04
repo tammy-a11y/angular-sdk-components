@@ -113,11 +113,8 @@ export class PercentageComponent implements OnInit, OnDestroy {
     this.label$ = this.configProps$.label;
     this.displayMode$ = this.configProps$.displayMode;
     this.inputMode = NgxCurrencyInputMode.Natural;
-    let nValue: any = this.configProps$.value;
+    const nValue: any = this.configProps$.value;
     if (nValue) {
-      if (typeof nValue === 'string') {
-        nValue = parseInt(nValue, 10);
-      }
       this.value$ = nValue;
     }
     this.helperText = this.configProps$.helperText;
@@ -178,11 +175,11 @@ export class PercentageComponent implements OnInit, OnDestroy {
     const propName = this.pConn$?.getStateProps()?.value;
     let value = event?.target?.value;
     value = value ? value.replace(/%/g, '') : '';
-    if (this.currSep === ',') {
-      value = value.replace(/,/g, '');
-    } else {
+    if (this.currSep === '.') {
       value = value?.replace(/\./g, '');
       value = value?.replace(/,/g, '.');
+    } else {
+      value = value.replace(/,/g, '');
     }
     handleEvent(actionsApi, 'changeNblur', propName, value);
   }
