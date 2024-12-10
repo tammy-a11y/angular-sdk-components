@@ -7,6 +7,8 @@ import { getAllFields } from '../../template/utils';
 import { ReferenceComponent } from '../reference/reference.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
+const NO_HEADER_TEMPLATES = ['SubTabs', 'SimpleTable', 'Confirmation', 'DynamicTabs', 'DetailsSubTabs'];
+
 /**
  * WARNING:  It is not expected that this file should be modified.  It is part of infrastructure code that works with
  * Redux and creation/update of Redux containers and PConnect.  Modifying this code could have undesireable results and
@@ -76,6 +78,8 @@ export class ViewComponent implements OnInit, OnDestroy, OnChanges {
   // @Input() updateToken$: number;
 
   angularPConnectData: AngularPConnectData = {};
+
+  noHeaderTemplates = NO_HEADER_TEMPLATES;
 
   configProps$: ViewProps;
   inheritedProps$: any;
