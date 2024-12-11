@@ -121,6 +121,7 @@ export class PercentageComponent implements OnInit, OnDestroy {
     const nValue: any = this.configProps$.value;
     if (nValue) {
       this.value$ = nValue;
+      this.fieldControl.setValue(nValue);
     }
     this.helperText = this.configProps$.helperText;
     this.placeholder = this.configProps$.placeholder || '';
