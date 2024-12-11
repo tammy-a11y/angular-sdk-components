@@ -121,6 +121,7 @@ export class PercentageComponent implements OnInit, OnDestroy {
     const nValue: any = this.configProps$.value;
     if (nValue) {
       this.value$ = nValue;
+      this.fieldControl.setValue(nValue);
     }
     this.helperText = this.configProps$.helperText;
     this.placeholder = this.configProps$.placeholder || '';
@@ -187,11 +188,19 @@ export class PercentageComponent implements OnInit, OnDestroy {
   fieldOnBlur(event: any) {
     let value = event?.target?.value;
     value = value ? value.replace(/%/g, '') : '';
-    if (this.currSep === '.') {
-      value = value?.replace(/\./g, '');
-      value = value?.replace(/,/g, '.');
-    } else {
-      value = value.replace(/,/g, '');
+    // replacing thousand seperator with empty string as not required in api call
+    if (this.configProps$.showGroupSeparators) {
+      if (this.currSep === '.') {
+        value = value?.replace(/\./g, '');
+      } else {
+        const regExp = new RegExp(String.raw`${this.currSep}`, 'g');
+        value = value.replace(regExp, '');
+      }
+    }
+    // replacing decimal seperator with '.'
+    if (this.currDec !== '.') {
+      const regExp = new RegExp(String.raw`${this.currDec}`, 'g');
+      value = value.replace(regExp, '.');
     }
     handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
   }

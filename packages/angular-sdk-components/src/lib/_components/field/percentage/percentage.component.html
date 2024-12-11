@@ -29,7 +29,6 @@
           (change)="fieldOnChange()"
           (blur)="fieldOnBlur($event)"
           [readonly]="bReadonly$"
-          [value]="value$"
         />
         <mat-error *ngIf="fieldControl.invalid">{{ getErrorMessage() }}</mat-error>
       </mat-form-field>
