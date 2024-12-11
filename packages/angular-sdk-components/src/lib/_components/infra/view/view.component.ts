@@ -87,7 +87,7 @@ export class ViewComponent implements OnInit, OnDestroy, OnChanges {
   templateName$: string;
   title$ = '';
   label$ = '';
-  showLabel$ = true;
+  showLabel$ = false;
   visibility$ = true;
 
   constructor(
