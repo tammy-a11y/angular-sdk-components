@@ -201,11 +201,17 @@ export class CurrencyComponent implements OnInit, OnDestroy {
     const propName = this.pConn$?.getStateProps().value;
     let value = event?.target?.value;
     value = value?.substring(1);
-    if (this.currSep === ',') {
-      value = value.replace(/,/g, '');
-    } else {
+    // replacing thousand seperator with empty string as not required in api call
+    if (this.currSep === '.') {
       value = value?.replace(/\./g, '');
-      value = value?.replace(/,/g, '.');
+    } else {
+      const regExp = new RegExp(String.raw`${this.currSep}`, 'g');
+      value = value.replace(regExp, '');
+    }
+    // replacing decimal seperator with '.'
+    if (this.currDec !== '.') {
+      const regExp = new RegExp(String.raw`${this.currDec}`, 'g');
+      value = value.replace(regExp, '.');
     }
     handleEvent(actionsApi, 'changeNblur', propName, value);
   }
