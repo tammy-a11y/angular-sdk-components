@@ -58,9 +58,9 @@ export class DecimalComponent implements OnInit, OnDestroy {
   placeholder: string;
 
   fieldControl = new FormControl<number | null>(null, null);
-  currDec: string;
-  currSep: string;
-  currSym: string;
+  decimalSeparator: string;
+  thousandSeparator: string;
+  currencySymbol = '';
   decimalPrecision: number | undefined;
   formatter;
   formattedValue: any;
@@ -143,8 +143,8 @@ export class DecimalComponent implements OnInit, OnDestroy {
     const currencyISOCode = this.configProps$?.currencyISOCode ?? '';
 
     const theSymbols = getCurrencyCharacters(currencyISOCode);
-    this.currDec = theSymbols.theDecimalIndicator;
-    this.currSep = showGroupSeparators ? theSymbols.theDigitGroupSeparator : '';
+    this.decimalSeparator = theSymbols.theDecimalIndicator;
+    this.thousandSeparator = showGroupSeparators ? theSymbols.theDigitGroupSeparator : '';
 
     const theCurrencyOptions = getCurrencyOptions(currencyISOCode);
     this.formatter = this.configProps$.formatter;
@@ -183,9 +183,7 @@ export class DecimalComponent implements OnInit, OnDestroy {
     }
 
     if (this.bReadonly$ && this.formatter === 'Currency') {
-      this.currSym = theSymbols.theCurrencySymbol;
-    } else {
-      this.currSym = '';
+      this.currencySymbol = theSymbols.theCurrencySymbol;
     }
     this.decimalPrecision = this.configProps$?.decimalPrecision ?? 2;
 
@@ -196,18 +194,15 @@ export class DecimalComponent implements OnInit, OnDestroy {
     const actionsApi = this.pConn$?.getActionsApi();
     const propName = this.pConn$?.getStateProps().value;
     let value = event?.target?.value;
-    // replacing thousand seperator with empty string as not required in api call
+    // replacing thousand separator with empty string as not required in api call
     if (this.configProps$.showGroupSeparators) {
-      if (this.currSep === '.') {
-        value = value?.replace(/\./g, '');
-      } else {
-        const regExp = new RegExp(String.raw`${this.currSep}`, 'g');
-        value = value.replace(regExp, '');
-      }
+      const thousandSep = this.thousandSeparator === '.' ? '\\.' : this.thousandSeparator;
+      const regExp = new RegExp(String.raw`${thousandSep}`, 'g');
+      value = value?.replace(regExp, '');
     }
-    // replacing decimal seperator with '.'
-    if (this.currDec !== '.') {
-      const regExp = new RegExp(String.raw`${this.currDec}`, 'g');
+    // replacing decimal separator with '.'
+    if (this.decimalSeparator !== '.') {
+      const regExp = new RegExp(String.raw`${this.decimalSeparator}`, 'g');
       value = value.replace(regExp, '.');
     }
     handleEvent(actionsApi, 'changeNblur', propName, value);

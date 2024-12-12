@@ -52,9 +52,9 @@ export class CurrencyComponent implements OnInit, OnDestroy {
   currencyOptions: Object = {};
 
   fieldControl = new FormControl<number | null>(null, { updateOn: 'blur' });
-  currSym: string;
-  currSep: string;
-  currDec: string;
+  currencySymbol: string;
+  thousandSeparator: string;
+  decimalSeparator: string;
   inputMode: any;
   decimalPrecision: number | undefined;
   formattedValue: string;
@@ -136,9 +136,9 @@ export class CurrencyComponent implements OnInit, OnDestroy {
     const currencyISOCode = this.configProps$?.currencyISOCode ?? '';
 
     const theSymbols = getCurrencyCharacters(currencyISOCode);
-    this.currSym = theSymbols.theCurrencySymbol;
-    this.currSep = theSymbols.theDigitGroupSeparator;
-    this.currDec = theSymbols.theDecimalIndicator;
+    this.currencySymbol = theSymbols.theCurrencySymbol;
+    this.thousandSeparator = theSymbols.theDigitGroupSeparator;
+    this.decimalSeparator = theSymbols.theDecimalIndicator;
     this.formatter = this.configProps$.formatter;
 
     if (this.displayMode$ === 'DISPLAY_ONLY' || this.displayMode$ === 'STACKED_LARGE_VAL') {
@@ -201,16 +201,13 @@ export class CurrencyComponent implements OnInit, OnDestroy {
     const propName = this.pConn$?.getStateProps().value;
     let value = event?.target?.value;
     value = value?.substring(1);
-    // replacing thousand seperator with empty string as not required in api call
-    if (this.currSep === '.') {
-      value = value?.replace(/\./g, '');
-    } else {
-      const regExp = new RegExp(String.raw`${this.currSep}`, 'g');
-      value = value.replace(regExp, '');
-    }
-    // replacing decimal seperator with '.'
-    if (this.currDec !== '.') {
-      const regExp = new RegExp(String.raw`${this.currDec}`, 'g');
+    // replacing thousand separator with empty string as not required in api call
+    const thousandSep = this.thousandSeparator === '.' ? '\\.' : this.thousandSeparator;
+    let regExp = new RegExp(String.raw`${thousandSep}`, 'g');
+    value = value?.replace(regExp, '');
+    // replacing decimal separator with '.'
+    if (this.decimalSeparator !== '.') {
+      regExp = new RegExp(String.raw`${this.decimalSeparator}`, 'g');
       value = value.replace(regExp, '.');
     }
     handleEvent(actionsApi, 'changeNblur', propName, value);

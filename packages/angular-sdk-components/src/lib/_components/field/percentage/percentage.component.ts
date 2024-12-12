@@ -48,8 +48,8 @@ export class PercentageComponent implements OnInit, OnDestroy {
   testId: string;
   helperText: string;
   placeholder: string;
-  currDec: string;
-  currSep: string;
+  decimalSeparator: string;
+  thousandSeparator: string;
   inputMode: any;
   decimalPrecision: number | undefined;
   fieldControl = new FormControl<number | null>(null, null);
@@ -128,8 +128,8 @@ export class PercentageComponent implements OnInit, OnDestroy {
     const showGroupSeparators = this.configProps$.showGroupSeparators;
 
     const theSymbols = getCurrencyCharacters('');
-    this.currDec = theSymbols.theDecimalIndicator || '2';
-    this.currSep = showGroupSeparators ? theSymbols.theDigitGroupSeparator : '';
+    this.decimalSeparator = theSymbols.theDecimalIndicator;
+    this.thousandSeparator = showGroupSeparators ? theSymbols.theDigitGroupSeparator : '';
 
     this.actionsApi = this.pConn$.getActionsApi();
     this.propName = this.pConn$.getStateProps().value;
@@ -188,18 +188,15 @@ export class PercentageComponent implements OnInit, OnDestroy {
   fieldOnBlur(event: any) {
     let value = event?.target?.value;
     value = value ? value.replace(/%/g, '') : '';
-    // replacing thousand seperator with empty string as not required in api call
+    // replacing thousand separator with empty string as not required in api call
     if (this.configProps$.showGroupSeparators) {
-      if (this.currSep === '.') {
-        value = value?.replace(/\./g, '');
-      } else {
-        const regExp = new RegExp(String.raw`${this.currSep}`, 'g');
-        value = value.replace(regExp, '');
-      }
+      const thousandSep = this.thousandSeparator === '.' ? '\\.' : this.thousandSeparator;
+      const regExp = new RegExp(String.raw`${thousandSep}`, 'g');
+      value = value?.replace(regExp, '');
     }
-    // replacing decimal seperator with '.'
-    if (this.currDec !== '.') {
-      const regExp = new RegExp(String.raw`${this.currDec}`, 'g');
+    // replacing decimal separator with '.'
+    if (this.decimalSeparator !== '.') {
+      const regExp = new RegExp(String.raw`${this.decimalSeparator}`, 'g');
       value = value.replace(regExp, '.');
     }
     handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
