@@ -60,7 +60,7 @@ export class DecimalComponent implements OnInit, OnDestroy {
   fieldControl = new FormControl<number | null>(null, null);
   decimalSeparator: string;
   thousandSeparator: string;
-  currencySymbol: string;
+  currencySymbol = '';
   decimalPrecision: number | undefined;
   formatter;
   formattedValue: any;
@@ -184,8 +184,6 @@ export class DecimalComponent implements OnInit, OnDestroy {
 
     if (this.bReadonly$ && this.formatter === 'Currency') {
       this.currencySymbol = theSymbols.theCurrencySymbol;
-    } else {
-      this.currencySymbol = '';
     }
     this.decimalPrecision = this.configProps$?.decimalPrecision ?? 2;
 
