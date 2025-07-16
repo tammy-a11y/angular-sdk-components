@@ -141,3 +141,16 @@ export function format(value, type, options = {}): string {
   }
   return formattedValue;
 }
+
+export function convertToTimezone(value, options) {
+  if (value && options) {
+    const defaultOptions = {
+      type: 'customFormat',
+      format: 'YYYY-MM-DDTHH:mm:ss',
+      timezone: getCurrentTimezone()
+    };
+    const params = { ...defaultOptions, ...options };
+    return DateFormatter.convertToTimezone(value, params);
+  }
+  return value;
+}
