@@ -38,17 +38,10 @@ export class PhoneComponent implements OnInit, OnDestroy {
   displayMode$?: string = '';
   controlName$: string;
   bHasForm$ = true;
-  componentReference = '';
   testId: string;
-  separateDialCode = false;
-  afterBlur: boolean;
   helperText: string;
 
   fieldControl = new FormControl('', null);
-
-  phoneForm = new FormGroup({
-    phone: new FormControl<string | null>(null)
-  });
 
   actionsApi: Object;
   propName: string;
@@ -151,10 +144,6 @@ export class PhoneComponent implements OnInit, OnDestroy {
       this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
     }
 
-    if (this.bReadonly$) {
-      this.phoneForm.setValue({ phone: this.value$ });
-    }
-
     // trigger display of error message with field control
     if (this.angularPConnectData.validateMessage != null && this.angularPConnectData.validateMessage != '') {
       const timer = interval(100).subscribe(() => {
@@ -170,13 +159,13 @@ export class PhoneComponent implements OnInit, OnDestroy {
     // 'blur' isn't getting fired
   }
 
-  fieldOnChange(event: any) {
+  fieldOnChange() {
     const oldVal = this.value$ ?? '';
-    const isValueChanged = event?.target?.value.toString() !== oldVal.toString();
+    const newVal = this.formGroup$.controls[this.controlName$].value;
+    const isValueChanged = newVal?.toString() !== oldVal.toString();
 
-    if (isValueChanged) {
-      const value = event?.target?.value || event?.value || '';
-      this.afterBlur = true;
+    if (isValueChanged && newVal) {
+      const value = this.formGroup$.controls[this.controlName$].value;
       handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
     }
   }
