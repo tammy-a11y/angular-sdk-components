@@ -8,7 +8,6 @@ import { ProgressSpinnerService } from '../../../_messages/progress-spinner.serv
 import { ReferenceComponent } from '../reference/reference.component';
 import { PreviewViewContainerComponent } from '../Containers/preview-view-container/preview-view-container.component';
 import { ModalViewContainerComponent } from '../Containers/modal-view-container/modal-view-container.component';
-import { HybridViewContainerComponent } from '../Containers/hybrid-view-container/hybrid-view-container.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 /**
@@ -23,11 +22,9 @@ const options = { context: 'app' };
   selector: 'app-root-container',
   templateUrl: './root-container.component.html',
   styleUrls: ['./root-container.component.scss'],
-  standalone: true,
   imports: [
     CommonModule,
     MatProgressSpinnerModule,
-    HybridViewContainerComponent,
     ModalViewContainerComponent,
     PreviewViewContainerComponent,
     forwardRef(() => ComponentMapperComponent)

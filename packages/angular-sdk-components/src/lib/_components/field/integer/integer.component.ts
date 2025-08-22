@@ -18,7 +18,6 @@ interface IntegerProps extends PConnFieldProps {
   selector: 'app-integer',
   templateUrl: './integer.component.html',
   styleUrls: ['./integer.component.scss'],
-  standalone: true,
   imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class IntegerComponent implements OnInit, OnDestroy {

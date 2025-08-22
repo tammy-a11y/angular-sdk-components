@@ -30,7 +30,6 @@ interface UserReferenceProps extends Omit<PConnFieldProps, 'value'> {
   selector: 'app-user-reference',
   templateUrl: './user-reference.component.html',
   styleUrls: ['./user-reference.component.scss'],
-  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,

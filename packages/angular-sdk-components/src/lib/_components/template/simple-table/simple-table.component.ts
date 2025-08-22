@@ -28,7 +28,6 @@ interface SimpleTableProps {
   selector: 'app-simple-table',
   templateUrl: './simple-table.component.html',
   styleUrls: ['./simple-table.component.scss'],
-  standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class SimpleTableComponent implements OnInit, OnDestroy {

@@ -62,7 +62,6 @@ class Group {
   selector: 'app-simple-table-manual',
   templateUrl: './simple-table-manual.component.html',
   styleUrls: ['./simple-table-manual.component.scss'],
-  standalone: true,
   imports: [
     CommonModule,
     MatTableModule,

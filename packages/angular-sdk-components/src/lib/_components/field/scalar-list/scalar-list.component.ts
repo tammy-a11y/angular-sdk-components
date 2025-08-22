@@ -17,7 +17,6 @@ interface ScalarListProps extends Omit<PConnFieldProps, 'value'> {
   selector: 'app-scalar-list',
   templateUrl: './scalar-list.component.html',
   styleUrls: ['./scalar-list.component.scss'],
-  standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class ScalarListComponent implements OnInit, OnDestroy {

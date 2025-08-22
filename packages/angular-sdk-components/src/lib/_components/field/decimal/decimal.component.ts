@@ -25,7 +25,6 @@ interface DecimalProps extends PConnFieldProps {
   selector: 'app-decimal',
   templateUrl: './decimal.component.html',
   styleUrls: ['./decimal.component.scss'],
-  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,

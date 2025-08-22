@@ -29,7 +29,6 @@ interface FieldGroupTemplateProps {
   selector: 'app-field-group-template',
   templateUrl: './field-group-template.component.html',
   styleUrls: ['./field-group-template.component.scss'],
-  standalone: true,
   imports: [CommonModule, MatButtonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class FieldGroupTemplateComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {

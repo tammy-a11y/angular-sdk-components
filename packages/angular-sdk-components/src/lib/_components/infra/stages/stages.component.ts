@@ -13,7 +13,6 @@ interface StagesProps {
   selector: 'app-stages',
   templateUrl: './stages.component.html',
   styleUrls: ['./stages.component.scss'],
-  standalone: true,
   imports: [CommonModule]
 })
 export class StagesComponent implements OnInit, OnDestroy {

@@ -58,7 +58,6 @@ export class Group {
   selector: 'app-list-view',
   templateUrl: './list-view.component.html',
   styleUrls: ['./list-view.component.scss'],
-  standalone: true,
   imports: [
     CommonModule,
     MatFormFieldModule,

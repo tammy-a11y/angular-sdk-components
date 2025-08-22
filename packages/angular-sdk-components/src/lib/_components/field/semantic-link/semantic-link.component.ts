@@ -15,7 +15,6 @@ interface SemanticLinkProps extends PConnFieldProps {
   selector: 'app-semantic-link',
   templateUrl: './semantic-link.component.html',
   styleUrls: ['./semantic-link.component.scss'],
-  standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class SemanticLinkComponent implements OnInit, OnDestroy {

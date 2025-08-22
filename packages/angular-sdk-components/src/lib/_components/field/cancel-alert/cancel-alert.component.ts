@@ -8,7 +8,6 @@ import { ProgressSpinnerService } from '../../../_messages/progress-spinner.serv
   selector: 'app-cancel-alert',
   templateUrl: './cancel-alert.component.html',
   styleUrls: ['./cancel-alert.component.scss'],
-  standalone: true,
   imports: [CommonModule, MatGridListModule, MatButtonModule]
 })
 export class CancelAlertComponent implements OnChanges {

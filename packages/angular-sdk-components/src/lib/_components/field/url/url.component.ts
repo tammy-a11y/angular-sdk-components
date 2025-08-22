@@ -18,7 +18,6 @@ interface URLProps extends PConnFieldProps {
   selector: 'app-url',
   templateUrl: './url.component.html',
   styleUrls: ['./url.component.scss'],
-  standalone: true,
   imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class UrlComponent implements OnInit, OnDestroy {

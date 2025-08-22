@@ -8,7 +8,6 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   selector: 'app-assignment-card',
   templateUrl: './assignment-card.component.html',
   styleUrls: ['./assignment-card.component.scss'],
-  standalone: true,
   imports: [CommonModule, ReactiveFormsModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class AssignmentCardComponent implements OnInit, OnChanges {

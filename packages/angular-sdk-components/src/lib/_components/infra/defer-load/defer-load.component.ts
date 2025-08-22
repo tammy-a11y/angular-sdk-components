@@ -15,7 +15,6 @@ import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/an
   selector: 'app-defer-load',
   templateUrl: './defer-load.component.html',
   styleUrls: ['./defer-load.component.scss'],
-  standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class DeferLoadComponent implements OnInit, OnDestroy, OnChanges {

@@ -82,7 +82,6 @@ interface ViewProps {
   selector: 'app-view',
   templateUrl: './view.component.html',
   styleUrls: ['./view.component.scss'],
-  standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class ViewComponent implements OnInit, OnDestroy, OnChanges {

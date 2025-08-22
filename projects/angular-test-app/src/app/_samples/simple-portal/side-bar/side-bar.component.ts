@@ -12,7 +12,6 @@ import { DatapageService } from '../../../../../../../packages/angular-sdk-compo
   selector: 'app-side-bar',
   templateUrl: './side-bar.component.html',
   styleUrls: ['./side-bar.component.scss'],
-  standalone: true,
   imports: [CommonModule, MatButtonModule]
 })
 export class SideBarComponent implements OnInit, OnDestroy {

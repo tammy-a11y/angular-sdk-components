@@ -27,7 +27,6 @@ interface RadioButtonsProps extends PConnFieldProps {
   templateUrl: './radio-buttons.component.html',
   styleUrls: ['./radio-buttons.component.scss'],
   providers: [Utils],
-  standalone: true,
   imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatRadioModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class RadioButtonsComponent implements OnInit, OnDestroy {

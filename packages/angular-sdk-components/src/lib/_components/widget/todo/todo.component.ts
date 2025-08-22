@@ -64,7 +64,6 @@ interface ToDoProps {
   templateUrl: './todo.component.html',
   styleUrls: ['./todo.component.scss'],
   providers: [Utils],
-  standalone: true,
   imports: [CommonModule, MatButtonModule]
 })
 export class TodoComponent implements OnInit, OnDestroy {

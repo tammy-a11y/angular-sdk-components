@@ -19,7 +19,6 @@ interface TimeProps extends PConnFieldProps {
   selector: 'app-time',
   templateUrl: './time.component.html',
   styleUrls: ['./time.component.scss'],
-  standalone: true,
   imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class TimeComponent implements OnInit, OnDestroy {

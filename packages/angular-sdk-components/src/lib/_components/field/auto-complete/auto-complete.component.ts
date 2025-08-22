@@ -34,7 +34,6 @@ interface AutoCompleteProps extends PConnFieldProps {
   selector: 'app-auto-complete',
   templateUrl: './auto-complete.component.html',
   styleUrls: ['./auto-complete.component.scss'],
-  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,

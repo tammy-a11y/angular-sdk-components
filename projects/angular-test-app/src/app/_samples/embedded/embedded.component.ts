@@ -28,7 +28,6 @@ declare global {
   templateUrl: './embedded.component.html',
   styleUrls: ['./embedded.component.scss'],
   providers: [Utils],
-  standalone: true,
   imports: [CommonModule, MatProgressSpinnerModule, MatToolbarModule, MatIconModule, MatButtonModule, HeaderComponent, MainScreenComponent]
 })
 export class EmbeddedComponent implements OnInit, OnDestroy {

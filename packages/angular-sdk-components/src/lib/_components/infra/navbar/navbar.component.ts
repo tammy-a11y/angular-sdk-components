@@ -17,7 +17,6 @@ interface NavBarProps {
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss'],
   providers: [Utils],
-  standalone: true,
   imports: [CommonModule, MatListModule, MatMenuModule]
 })
 export class NavbarComponent implements OnInit, OnDestroy {

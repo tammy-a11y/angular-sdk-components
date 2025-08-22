@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { interval } from 'rxjs';
-import { NgxMatIntlTelInputComponent } from 'ngx-mat-intl-tel-input';
+import { MatTelInput } from 'mat-tel-input';
+import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import { Utils } from '../../../_helpers/utils';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { handleEvent } from '../../../_helpers/event-util';
@@ -18,8 +19,7 @@ interface PhoneProps extends PConnFieldProps {
   selector: 'app-phone',
   templateUrl: './phone.component.html',
   styleUrls: ['./phone.component.scss'],
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, NgxMatIntlTelInputComponent, forwardRef(() => ComponentMapperComponent)]
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatTelInput, forwardRef(() => ComponentMapperComponent)]
 })
 export class PhoneComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
@@ -45,6 +45,7 @@ export class PhoneComponent implements OnInit, OnDestroy {
 
   actionsApi: Object;
   propName: string;
+  preferredCountries: string[] = ['us'];
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -111,6 +112,7 @@ export class PhoneComponent implements OnInit, OnDestroy {
     if (this.configProps$.value != undefined) {
       this.value$ = this.configProps$.value;
       this.fieldControl.setValue(this.value$);
+      this.updatePreferredCountries();
     }
     this.helperText = this.configProps$.helperText;
 
@@ -167,6 +169,16 @@ export class PhoneComponent implements OnInit, OnDestroy {
     if (isValueChanged && newVal) {
       const value = this.formGroup$.controls[this.controlName$].value;
       handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
+    }
+  }
+
+  updatePreferredCountries() {
+    if (this.value$ && typeof this.value$ === 'string') {
+      const phoneNumber = parsePhoneNumberFromString(this.value$);
+      this.preferredCountries =
+        phoneNumber?.country && !this.preferredCountries.includes(phoneNumber?.country.toLowerCase())
+          ? [phoneNumber?.country?.toLowerCase(), ...this.preferredCountries]
+          : this.preferredCountries;
     }
   }
 

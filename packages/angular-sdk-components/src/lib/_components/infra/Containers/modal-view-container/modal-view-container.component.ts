@@ -18,7 +18,6 @@ import { ReferenceComponent } from '../../reference/reference.component';
   selector: 'app-modal-view-container',
   templateUrl: './modal-view-container.component.html',
   styleUrls: ['./modal-view-container.component.scss'],
-  standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class ModalViewContainerComponent implements OnInit, OnDestroy {

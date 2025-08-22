@@ -9,7 +9,6 @@ const componentsRequireDisplayOnlyFAProp: string[] = ['HybridViewContainer', 'Mo
   selector: 'component-mapper',
   templateUrl: './component-mapper.component.html',
   styleUrls: ['./component-mapper.component.scss'],
-  standalone: true,
   imports: [CommonModule]
 })
 export class ComponentMapperComponent implements OnInit, OnDestroy, OnChanges {

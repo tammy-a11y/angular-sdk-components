@@ -15,7 +15,6 @@ interface InlineDashboardPageProps {
   selector: 'app-inline-dashboard-page',
   templateUrl: './inline-dashboard-page.component.html',
   styleUrls: ['./inline-dashboard-page.component.scss'],
-  standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class InlineDashboardPageComponent implements OnInit, OnChanges {

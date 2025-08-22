@@ -9,7 +9,6 @@ declare let tinymce: any;
   selector: 'app-rich-text-editor',
   templateUrl: './rich-text-editor.component.html',
   styleUrls: ['./rich-text-editor.component.scss'],
-  standalone: true,
   imports: [CommonModule, EditorModule, ReactiveFormsModule],
   providers: [{ provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' }]
 })

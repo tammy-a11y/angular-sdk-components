@@ -7,7 +7,6 @@ import { Utils } from '../../../_helpers/utils';
   selector: 'app-operator',
   templateUrl: './operator.component.html',
   styleUrls: ['./operator.component.scss'],
-  standalone: true,
   imports: [CommonModule, MatButtonModule]
 })
 export class OperatorComponent implements OnInit, OnChanges, OnDestroy {

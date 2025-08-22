@@ -7,7 +7,6 @@ import { MatGridListModule } from '@angular/material/grid-list';
   selector: 'app-action-buttons',
   templateUrl: './action-buttons.component.html',
   styleUrls: ['./action-buttons.component.scss'],
-  standalone: true,
   imports: [CommonModule, MatGridListModule, MatButtonModule]
 })
 export class ActionButtonsComponent {

@@ -17,7 +17,6 @@ interface FileUtilityProps {
   selector: 'app-file-utility',
   templateUrl: './file-utility.component.html',
   styleUrls: ['./file-utility.component.scss'],
-  standalone: true,
   imports: [CommonModule, MatButtonModule, MatFormFieldModule, MatInputModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class FileUtilityComponent implements OnInit, OnDestroy {

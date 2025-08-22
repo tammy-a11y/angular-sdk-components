@@ -19,7 +19,6 @@ interface WssNavBarProps {
   templateUrl: './wss-nav-bar.component.html',
   styleUrls: ['./wss-nav-bar.component.scss'],
   providers: [Utils],
-  standalone: true,
   imports: [CommonModule, MatListModule, MatMenuModule, MatIconModule, MatToolbarModule]
 })
 export class WssNavBarComponent implements OnInit, OnDestroy {

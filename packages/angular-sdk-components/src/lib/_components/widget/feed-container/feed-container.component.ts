@@ -14,7 +14,6 @@ import { Utils } from '../../../_helpers/utils';
   templateUrl: './feed-container.component.html',
   styleUrls: ['./feed-container.component.scss'],
   providers: [Utils],
-  standalone: true,
   imports: [CommonModule, MatFormFieldModule, MatInputModule, MatGridListModule, MatButtonModule]
 })
 export class FeedContainerComponent implements OnInit, OnDestroy {

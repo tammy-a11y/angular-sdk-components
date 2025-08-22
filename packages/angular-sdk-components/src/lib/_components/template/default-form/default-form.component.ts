@@ -28,7 +28,6 @@ interface DefaultFormProps {
   selector: 'app-default-form',
   templateUrl: './default-form.component.html',
   styleUrls: ['./default-form.component.scss'],
-  standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class DefaultFormComponent extends FormTemplateBase implements OnInit {

@@ -19,7 +19,6 @@ interface TextAreaProps extends PConnFieldProps {
   selector: 'app-text-area',
   templateUrl: './text-area.component.html',
   styleUrls: ['./text-area.component.scss'],
-  standalone: true,
   imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class TextAreaComponent implements OnInit, OnDestroy {

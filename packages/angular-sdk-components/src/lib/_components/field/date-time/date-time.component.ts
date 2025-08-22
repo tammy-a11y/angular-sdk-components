@@ -24,7 +24,6 @@ interface DateTimeProps extends PConnFieldProps {
   selector: 'app-date-time',
   templateUrl: './date-time.component.html',
   styleUrls: ['./date-time.component.scss'],
-  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,

@@ -6,7 +6,6 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   selector: 'app-single-reference-readonly',
   templateUrl: './single-reference-readonly.component.html',
   styleUrls: ['./single-reference-readonly.component.scss'],
-  standalone: true,
   imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class SingleReferenceReadonlyComponent {

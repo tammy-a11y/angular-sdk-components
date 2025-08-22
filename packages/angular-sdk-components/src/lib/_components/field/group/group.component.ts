@@ -18,7 +18,6 @@ interface GroupProps extends PConnFieldProps {
   selector: 'app-group',
   templateUrl: './group.component.html',
   styleUrls: ['./group.component.scss'],
-  standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class GroupComponent implements OnInit {

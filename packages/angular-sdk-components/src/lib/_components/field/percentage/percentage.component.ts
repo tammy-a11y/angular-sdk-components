@@ -24,7 +24,6 @@ interface PercentageProps extends PConnFieldProps {
   selector: 'app-percentage',
   templateUrl: './percentage.component.html',
   styleUrls: ['./percentage.component.scss'],
-  standalone: true,
   imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, NgxCurrencyDirective, forwardRef(() => ComponentMapperComponent)]
 })
 export class PercentageComponent implements OnInit, OnDestroy {
