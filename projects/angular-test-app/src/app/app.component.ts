@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { ThemeService } from 'packages/angular-sdk-components/src/lib/_services/theme.service';
-
+import { ThemeService } from '../../../../packages/angular-sdk-components/src/lib/_services/theme.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
