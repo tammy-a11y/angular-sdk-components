@@ -43,6 +43,7 @@ import { TimeComponent } from '../../_components/field/time/time.component';
 import { UrlComponent } from '../../_components/field/url/url.component';
 import { UserReferenceComponent } from '../../_components/field/user-reference/user-reference.component';
 import { ScalarListComponent } from '../../_components/field/scalar-list/scalar-list.component';
+import { SelectableCardComponent } from '../../_components/field/selectable-card/selectable-card.component';
 import { RichTextComponent } from '../../_components/field/rich-text/rich-text.component';
 
 // Template components
@@ -212,6 +213,7 @@ const pegaSdkComponentMap = {
   RichTextEditor: RichTextEditorComponent,
   RootContainer: RootContainerComponent,
   ScalarList: ScalarListComponent,
+  SelectableCard: SelectableCardComponent,
   SemanticLink: SemanticLinkComponent,
   SimpleTable: SimpleTableComponent,
   SimpleTableManual: SimpleTableManualComponent,
