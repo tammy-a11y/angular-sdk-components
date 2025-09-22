@@ -17,7 +17,6 @@
   padding: 0rem 0.125rem;
   min-width: unset;
   display: inline-block;
-  //color: var(--app-primary-color);
 }
 
 .psdk-send-svg-icon {
@@ -52,8 +51,6 @@
   align-items: center;
   text-align: center;
   display: flex;
-  //background: var(--app-primary-color);
-  //color: var(--app-form-color);
   font-weight: bold;
   font-size: 1.25rem;
 }
@@ -95,7 +92,6 @@
 }
 
 .psdk-pulse-message-time {
-  //color: var(--app-pulse-message-color);
 }
 
 .psdk-pulse-message-text {
@@ -141,7 +137,6 @@
 }
 
 .psdk-pulse-reply-message {
-  //background-color: var(--app-pulse-message-background-color);
   border-radius: 0.625rem;
   padding: 0rem 1.25rem;
   white-space: pre-line;
@@ -170,7 +165,6 @@
 }
 
 .psdk-pulse-reply-time {
-  //color: var(--app-pulse-message-color);
   padding-left: 0.625rem;
 }
 

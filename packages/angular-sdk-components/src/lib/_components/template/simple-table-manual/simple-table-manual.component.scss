@@ -137,7 +137,6 @@ td.mat-mdc-cell:last-child {
   align-items: center;
   height: 100%;
   width: 100%;
-  //background-color: var(--app-dialog-background-color);
   position: fixed;
   z-index: 999;
   top: 0px;
@@ -148,7 +147,6 @@ td.mat-mdc-cell:last-child {
   display: table;
   margin: auto;
   min-width: 150px;
-  //background-color: var(--app-form-color);
   border: 1px solid var(--app-inverse-form-color);
   border-radius: 10px;
   padding: 20px;
@@ -160,7 +158,6 @@ tr.mat-mdc-row {
 }
 
 tr.mat-mdc-header-row {
-  //background: var(--app-table-header-background-color);
 }
 
 .psdk-data-readonly {
@@ -173,7 +170,6 @@ tr.mat-mdc-header-row {
   text-align: center;
   border: 1px solid var(--mat-sys-outline-variant);
   border-top: none;
-  //background: var(--app-form-color);
 }
 
 .psdk-utility-card-action-svg-icon {
