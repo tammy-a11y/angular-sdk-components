@@ -22,7 +22,7 @@ declare global {
   selector: 'app-full-portal',
   templateUrl: './full-portal.component.html',
   styleUrls: ['./full-portal.component.scss'],
-  imports: [CommonModule, MatProgressSpinnerModule, ComponentMapperComponent]
+  standalone: false
 })
 export class FullPortalComponent implements OnInit, OnDestroy {
   pConn$: typeof PConnect;

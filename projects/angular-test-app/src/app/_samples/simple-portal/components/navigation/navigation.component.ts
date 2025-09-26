@@ -8,14 +8,13 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Subscription } from 'rxjs';
 import { loginIfNecessary, logout } from '@pega/auth/lib/sdk-auth-manager';
 
-import { UpdateWorklistService } from '../../../../../../../packages/angular-sdk-components/src/lib/_messages/update-worklist.service';
-import { ServerConfigService } from '../../../../../../../packages/angular-sdk-components/src/lib/_services/server-config.service';
-import { compareSdkPCoreVersions } from '../../../../../../../packages/angular-sdk-components/src/lib/_helpers/versionHelpers';
-import { MainContentComponent } from '../main-content/main-content.component';
-import { SideBarComponent } from '../side-bar/side-bar.component';
+import { ProgressSpinnerService } from 'packages/angular-sdk-components/src/lib/_messages/progress-spinner.service';
+import { UpdateWorklistService } from 'packages/angular-sdk-components/src/lib/_messages/update-worklist.service';
+import { ServerConfigService } from 'packages/angular-sdk-components/src/lib/_services/server-config.service';
 
-import { getSdkComponentMap } from '../../../../../../../packages/angular-sdk-components/src/lib/_bridge/helpers/sdk_component_map';
-import localSdkComponentMap from '../../../../../../../packages/angular-sdk-components/src/sdk-local-component-map';
+import { getSdkComponentMap } from 'packages/angular-sdk-components/src/lib/_bridge/helpers/sdk_component_map';
+import localSdkComponentMap from 'packages/angular-sdk-components/src/sdk-local-component-map';
+import { compareSdkPCoreVersions } from 'packages/angular-sdk-components/src/lib/_helpers/versionHelpers';
 
 declare global {
   interface Window {
@@ -27,16 +26,7 @@ declare global {
   selector: 'app-navigation',
   templateUrl: './navigation.component.html',
   styleUrls: ['./navigation.component.scss'],
-  imports: [
-    CommonModule,
-    MatProgressSpinnerModule,
-    MatToolbarModule,
-    MatIconModule,
-    MatButtonModule,
-    MatMenuModule,
-    SideBarComponent,
-    MainContentComponent
-  ]
+  standalone: false
 })
 export class NavigationComponent implements OnInit, OnDestroy {
   pConn$: typeof PConnect;

@@ -5,13 +5,13 @@ import { ShoppingCardComponent } from '../shopping-card/shopping-card.component'
 import { ProgressSpinnerService } from 'packages/angular-sdk-components/src/lib/_messages/progress-spinner.service';
 import { ServerConfigService } from 'packages/angular-sdk-components/src/lib/_services/server-config.service';
 import { ComponentMapperComponent } from 'packages/angular-sdk-components/src/lib/_bridge/component-mapper/component-mapper.component';
-import { shoppingOptions } from '../utils';
+import { shoppingOptions } from '../../helpers/utils';
 
 @Component({
   selector: 'app-main-screen',
   templateUrl: './main-screen.component.html',
   styleUrls: ['./main-screen.component.scss'],
-  imports: [CommonModule, ShoppingCardComponent, ComponentMapperComponent, ResolutionScreenComponent]
+  standalone: false
 })
 export class MainScreenComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
