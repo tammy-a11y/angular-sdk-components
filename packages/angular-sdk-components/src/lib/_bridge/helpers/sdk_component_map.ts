@@ -1,7 +1,7 @@
 // Helper singleton class to assist with loading and
 //  accessing the SDK components
 // import localSdkComponentMap from '../../../sdk-local-component-map';
-import pegaSdkComponentMap from './sdk-pega-component-map';
+// import pegaSdkComponentMap from './sdk-pega-component-map';
 
 // Statically load all "local" components
 
@@ -48,10 +48,7 @@ class ComponentMap {
         Object.keys(this.sdkComponentMap.localComponentMap).length === 0 &&
         Object.keys(this.sdkComponentMap.pegaProvidedComponentMap).length === 0
       ) {
-        const theLocalCompPromise = this.readLocalSdkComponentMap(inLocalSdkComponentMap);
-        const thePegaCompPromise = this.readPegaSdkComponentMap(pegaSdkComponentMap);
-
-        Promise.all([theLocalCompPromise, thePegaCompPromise])
+        this.readLocalSdkComponentMap(inLocalSdkComponentMap)
           .then((/* results */) => {
             resolve(this.sdkComponentMap);
           })

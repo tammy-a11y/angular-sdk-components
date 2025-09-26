@@ -7,7 +7,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { interval } from 'rxjs';
 import isEqual from 'fast-deep-equal';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
-import { DatapageService } from '../../../_services/datapage.service';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { handleEvent } from '../../../_helpers/event-util';
@@ -106,8 +105,7 @@ export class DropdownComponent implements OnInit, OnDestroy {
   constructor(
     private angularPConnect: AngularPConnectService,
     private cdRef: ChangeDetectorRef,
-    private utils: Utils,
-    private dataPageService: DatapageService
+    private utils: Utils
   ) {}
 
   ngOnInit(): void {
