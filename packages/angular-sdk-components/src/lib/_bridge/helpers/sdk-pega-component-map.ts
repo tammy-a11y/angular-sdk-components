@@ -31,6 +31,7 @@ import { GroupComponent } from '../../_components/field/group/group.component';
 import { IntegerComponent } from '../../_components/field/integer/integer.component';
 import { ListViewActionButtonsComponent } from '../../_components/field/list-view-action-buttons/list-view-action-buttons.component';
 import { LocationComponent } from '../../_components/field/location/location.component';
+import { ObjectReferenceComponent } from '../../_components/field/object-reference/object-reference.component';
 import { PercentageComponent } from '../../_components/field/percentage/percentage.component';
 import { PhoneComponent } from '../../_components/field/phone/phone.component';
 import { RadioButtonsComponent } from '../../_components/field/radio-buttons/radio-buttons.component';
@@ -74,6 +75,7 @@ import { ListViewComponent } from '../../_components/template/list-view/list-vie
 import { MultiReferenceReadonlyComponent } from '../../_components/template/multi-reference-readonly/multi-reference-readonly.component';
 import { MultiselectComponent } from '../../_components/field/multiselect/multiselect.component';
 import { NarrowWideFormComponent } from '../../_components/template/narrow-wide-form/narrow-wide-form.component';
+import { ObjectPageComponent } from '../../_components/template/object-page/object-page.component';
 import { OneColumnComponent } from '../../_components/template/one-column/one-column.component';
 import { OneColumnPageComponent } from '../../_components/template/one-column-page/one-column-page.component';
 import { OneColumnTabComponent } from '../../_components/template/one-column-tab/one-column-tab.component';
@@ -200,6 +202,8 @@ const pegaSdkComponentMap = {
   NarrowWideForm: NarrowWideFormComponent,
   //   'NarrowWidePage': NarrowWidePage,
   NavBar: NavbarComponent,
+  ObjectPage: ObjectPageComponent,
+  ObjectReference: ObjectReferenceComponent,
   OneColumn: OneColumnComponent,
   OneColumnPage: OneColumnPageComponent,
   OneColumnTab: OneColumnTabComponent,

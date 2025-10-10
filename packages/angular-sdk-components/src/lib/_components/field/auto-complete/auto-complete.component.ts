@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef, forwardRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, forwardRef, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
@@ -47,6 +47,7 @@ interface AutoCompleteProps extends PConnFieldProps {
 export class AutoCompleteComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
+  @Output() onRecordChange: EventEmitter<any> = new EventEmitter();
 
   // Used with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
@@ -331,8 +332,9 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
     }
     const value = key;
     handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
-    if (this.configProps$?.onRecordChange) {
-      this.configProps$.onRecordChange(event);
+
+    if (this.onRecordChange) {
+      this.onRecordChange.emit(value);
     }
   }
 

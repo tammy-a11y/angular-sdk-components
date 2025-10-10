@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef, forwardRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, forwardRef, OnDestroy, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
@@ -73,6 +73,7 @@ interface DropdownProps extends PConnFieldProps {
 export class DropdownComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
+  @Output() onRecordChange: EventEmitter<any> = new EventEmitter();
 
   // Used with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
@@ -336,12 +337,13 @@ export class DropdownComponent implements OnInit, OnDestroy {
       event.value = '';
     }
     handleEvent(this.actionsApi, 'changeNblur', this.propName, event.value);
-    if (this.configProps$?.onRecordChange) {
-      this.configProps$.onRecordChange(event);
-    }
+
     this.pConn$.clearErrorMessages({
       property: this.propName
     });
+    if (this.onRecordChange) {
+      this.onRecordChange.emit(event.value);
+    }
   }
 
   getLocalizedOptionValue(opt: IOption) {
